@@ -19,7 +19,7 @@ public class LexicalFileTest
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-            Main.scan(in, out, err);
+//            Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts
@@ -40,7 +40,7 @@ public class LexicalFileTest
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-            Main.scan(in, out, err);
+//            Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts

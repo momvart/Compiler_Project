@@ -18,14 +18,19 @@ public class Main
 {
     public static void main(String[] args)
     {
-        fn("/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/input.txt");
+        scan("/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/input.txt" ,
+                "/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/output.txt",
+                "/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/error.txt");
     }
 
-    private static void fn(String fileName)
+
+    public static void scan(String input, String output, String error)
     {
+        StringBuilder validTokens = new StringBuilder();
+        StringBuilder invalidTokens = new StringBuilder();
         try
         {
-            File file = new File(fileName);
+            File file = new File(input);
             FileInputStream fis = new FileInputStream(file);
             byte[] data = new byte[(int)file.length()];
             fis.read(data);
@@ -33,11 +38,10 @@ public class Main
             String str = new String(data, "UTF-8");
             TokenizeContext context = new TokenizeContext();
             context.resetText(str);
-            FileWriter fw = new FileWriter("/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/output.txt");
-            PrintWriter writer = new PrintWriter(fw);
             int line = 1;
             int actualLine = 0;
             boolean first = true;
+
             while (context.hasNextToken())
             {
                 Token token = context.getNextToken();
@@ -45,70 +49,56 @@ public class Main
                         (token.getType() == TokenType.WHITESPACE && token.getValue().chars().anyMatch(c-> c == '\n')))
                     line++;
 
-                if (token.getType() != TokenType.WHITESPACE && token.getType() != TokenType.COMMENT)
-                {
-                    if (actualLine != line)
-                    {
-                        if (first)
-                        {
-                            writer.print(line + ": ");
-                            first = false;
-                        }
-                        else
-                            writer.print("\n"+ line + ". ");
-                        actualLine = line;
-                    }
-                    writer.print(token.toString() + " ");
-                }
-            }
-            writer.close();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static void scan(InputStream input, OutputStream output, OutputStream error)
-    {
-        TokenizeContext context = new TokenizeContext();
-        Scanner scanner = new Scanner(input);
-        PrintStream tokensWriter = new PrintStream(output);
-        PrintStream errorsWriter = new PrintStream(error);
-        int lineNumber = 1;
-        while (scanner.hasNextLine())
-        {
-            context.resetText(scanner.nextLine());
-
-            StringBuilder validTokens = new StringBuilder();
-            StringBuilder invalidTokens = new StringBuilder();
-            Token token;
-            while (context.hasNextToken())
-                switch ((token = context.getNextToken()).getType())
+                switch (token.getType())
                 {
                     case COMMENT:
                     case WHITESPACE:
                         continue;
                     case INVALID:
-                        invalidTokens.append('(').append(token.getValue()).append(", ")
-                                .append("invalid input").append(") ");
+                        invalidTokens.append(line).append(". ").append('(').append(token.getValue()).append(", ")
+                                .append("invalid input").append(")\n");
                         break;
                     default:
-                        validTokens.append(token.toString()).append(" ");
+                        if (actualLine != line)
+                        {
+                            if (first)
+                            {
+                                validTokens.append(line + ": ");
+                                first = false;
+                            }
+                            else
+                                validTokens.append("\n" + line + ". ");
+                            actualLine = line;
+                        }
+                        validTokens.append(token.toString() + " ");
                         break;
                 }
-
-            writeTokensIfNotEmpty(tokensWriter, lineNumber, validTokens.toString());
-            writeTokensIfNotEmpty(errorsWriter, lineNumber, invalidTokens.toString());
-            lineNumber++;
+            }
         }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        writeTokensIfNotEmpty(output, validTokens.toString());
+        writeTokensIfNotEmpty(error, invalidTokens.toString());
     }
 
 
-    private static void writeTokensIfNotEmpty(PrintStream out, int lineNumber, String tokensList)
+    private static void writeTokensIfNotEmpty(String fileName, String content)
     {
-        if (!tokensList.isEmpty())
-            out.printf("%d. %s\n", lineNumber, tokensList);
+        if (!content.isEmpty()){
+            FileWriter fw = null;
+            try
+            {
+                fw = new FileWriter(fileName);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            PrintWriter writer = new PrintWriter(fw);
+            writer.print(content);
+            writer.close();
+        }
     }
 }
