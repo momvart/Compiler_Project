@@ -103,8 +103,9 @@ public class TokenizeContext
                 new DFAEdge(Entrance.anyOf("/"), commentStartState)
         );
 
-        //The state with detects invalid tokens
-        this.elseState = new DFAState(TokenType.INVALID, returnEdge);
+        //the state to detect invalid inputs
+        this.elseState = new DFAState(TokenType.INVALID,
+                new DFAEdge(Entrance.ANY, startState));
         this.currentState = startState;
     }
 
