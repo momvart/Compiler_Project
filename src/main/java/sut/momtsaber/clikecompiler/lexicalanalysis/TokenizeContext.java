@@ -11,7 +11,6 @@ public class TokenizeContext
     private static final String TYPE_1_SYMBOLS = ";:,[](){}+-*<";
     private static final String TYPE_2_SYMBOLS = "=";
     private static final Character slash = '/';
-    public boolean endOfLine = false;
     private static final Set<String> KEYWORDS = new HashSet<>(
             Arrays.asList("if", "else", "void", "int",
                     "while", "break", "continue", "switch",
@@ -114,11 +113,10 @@ public class TokenizeContext
         return currentReadPosition < text.length();
     }
 
+    boolean sleep = false;
     private char nextChar()
     {
-        char c = text.charAt(++currentReadPosition);
-        endOfLine = c == '\n';
-        return c;
+        return text.charAt(++currentReadPosition);
     }
 
     char getCurrentChar() { return text.charAt(currentReadPosition); }
@@ -138,7 +136,6 @@ public class TokenizeContext
     public Token getNextToken()
     {
         TokenType lastTokenType;
-        this.endOfLine = false;
         do
         {
             lastTokenType = currentState.getTokenType();

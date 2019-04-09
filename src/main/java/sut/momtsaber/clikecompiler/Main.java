@@ -35,13 +35,31 @@ public class Main
             context.resetText(str);
             FileWriter fw = new FileWriter("/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/output.txt");
             PrintWriter writer = new PrintWriter(fw);
+            int line = 1;
+            int actualLine = 0;
+            boolean first = true;
             while (context.hasNextToken())
             {
                 Token token = context.getNextToken();
+                if((token.getType() == TokenType.COMMENT && token.getValue().charAt(token.getValue().length() - 1) == '\n') ||
+                        (token.getType() == TokenType.WHITESPACE && token.getValue().chars().anyMatch(c-> c == '\n')))
+                    line++;
+
                 if (token.getType() != TokenType.WHITESPACE && token.getType() != TokenType.COMMENT)
+                {
+                    if (actualLine != line)
+                    {
+                        if (first)
+                        {
+                            writer.print(line + ": ");
+                            first = false;
+                        }
+                        else
+                            writer.print("\n"+ line + ". ");
+                        actualLine = line;
+                    }
                     writer.print(token.toString() + " ");
-                if (context.endOfLine)
-                    writer.print("\n");
+                }
             }
             writer.close();
         }
