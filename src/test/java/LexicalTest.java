@@ -84,4 +84,42 @@ public class LexicalTest
         assertEquals(TokenType.WHITESPACE, token.getType());
         assertEquals("  ", token.getValue());
     }
+    @Test
+    public void testSymbol()
+    {
+        context.resetText("compiler< database =hoosh == dsd");
+        Token token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("compiler", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.SYMBOL, token.getType());
+        assertEquals("<", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("database", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.SYMBOL, token.getType());
+        assertEquals("=", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("hoosh", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.SYMBOL, token.getType());
+        assertEquals("==", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("dsd", token.getValue());
+    }
 }
