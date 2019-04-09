@@ -41,14 +41,17 @@ public class TokenizeContext
         Entrance multiCommentContEntr = Entrance.negative(Entrance.anyOf("*"));
 
         this.startState = new DFAState();
-        DFAEdge returnEdge = new DFAEdge(
+
+        DFAEdge returnEdge = new DFAEdge(       //The exiting edge from id and number to start state
                 Entrance.or(Entrance.WHITESPACE,
                         Entrance.of('\0'),
                         symbolEntrance),
                 startState);
+
         DFAState numberState = new DFAState(TokenType.NUMBER,
                 new DFAEdge(Entrance.DIGIT, DFAState.SELF),
                 returnEdge);
+
         DFAState idState = new DFAState(TokenType.ID,
                 new DFAEdge(Entrance.LETTER_OR_DIGIT, DFAState.SELF),
                 returnEdge);
@@ -57,21 +60,23 @@ public class TokenizeContext
                 new DFAEdge(Entrance.WHITESPACE, DFAState.SELF),
                 new DFAEdge(Entrance.negative(Entrance.WHITESPACE), startState));
 
+        //Symbols
         DFAState symbolTerminalState = new DFAState(TokenType.SYMBOL,
-                new DFAEdge(Entrance.ANY , startState));
+                new DFAEdge(Entrance.ANY, startState));
 
         DFAState symbolIntermediateState = new DFAState(TokenType.SYMBOL,
                 new DFAEdge(type2SymbolEntrance, symbolTerminalState),
                 new DFAEdge(Entrance.ANY, startState)
         );
 
+        //Comment
         DFAState commentTerminalState = new DFAState(TokenType.COMMENT,
                 new DFAEdge(Entrance.ANY, startState));
         DFAState commentEndStarState = new DFAState(TokenType.COMMENT);
 
         DFAState multiLineCommentContent = new DFAState(TokenType.COMMENT,
-            new DFAEdge(multiCommentContEntr, DFAState.SELF),
-            new DFAEdge(Entrance.STAR, commentEndStarState)
+                new DFAEdge(multiCommentContEntr, DFAState.SELF),
+                new DFAEdge(Entrance.STAR, commentEndStarState)
         );
 
         commentEndStarState.setExitingEdges(
@@ -82,12 +87,13 @@ public class TokenizeContext
                 new DFAEdge(singCommentContEntr, DFAState.SELF),
                 new DFAEdge(Entrance.anyOf("\n"), commentTerminalState),
                 new DFAEdge(Entrance.anyOf("\0"), startState)
-                );
+        );
         DFAState commentStartState = new DFAState(TokenType.COMMENT,
                 new DFAEdge(Entrance.STAR, multiLineCommentContent),
                 new DFAEdge(Entrance.SLASH, singleLineCommentContent)
         );
 
+        //The start (main) state
         this.startState.setExitingEdges(
                 new DFAEdge(Entrance.DIGIT, numberState),
                 new DFAEdge(Entrance.LETTER, idState),
@@ -95,9 +101,9 @@ public class TokenizeContext
                 new DFAEdge(type1SymbolEntrance, symbolTerminalState),
                 new DFAEdge(type2SymbolEntrance, symbolIntermediateState),
                 new DFAEdge(Entrance.anyOf("/"), commentStartState)
-                );
+        );
 
-
+        //The state with detects invalid tokens
         this.elseState = new DFAState(TokenType.INVALID, returnEdge);
         this.currentState = startState;
     }
