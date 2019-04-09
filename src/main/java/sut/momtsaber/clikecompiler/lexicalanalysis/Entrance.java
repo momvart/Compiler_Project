@@ -32,4 +32,6 @@ public interface Entrance
     Entrance LETTER_OR_DIGIT = Character::isLetterOrDigit;
     Entrance ANY = c -> true;
     Entrance WHITESPACE = Character::isWhitespace;
+    Entrance STAR = input -> input == '*';
+    Entrance SLASH = input -> input == '/';
 }

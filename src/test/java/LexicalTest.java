@@ -122,4 +122,39 @@ public class LexicalTest
         assertEquals(TokenType.ID, token.getType());
         assertEquals("dsd", token.getValue());
     }
+    @Test
+    public void testComment()
+    {
+        context.resetText("this // this is a single line comment \n if /*hello and welcome to you all this is john champion in the commentary box */that //this is another single comment");
+        Token token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("this", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.COMMENT, token.getType());
+        assertEquals("// this is a single line comment \n", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.KEYWORD, token.getType());
+        assertEquals("if", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.COMMENT, token.getType());
+        assertEquals("/*hello and welcome to you all this is john champion in the commentary box */", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.ID, token.getType());
+        assertEquals("that", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.WHITESPACE, token.getType());
+        assertEquals(" ", token.getValue());
+        token = context.getNextToken();
+        assertEquals(TokenType.COMMENT, token.getType());
+        assertEquals("//this is another single comment", token.getValue());
+    }
 }

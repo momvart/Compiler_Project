@@ -38,4 +38,9 @@ public class DFAState
                 .map(state -> state == SELF ? DFAState.this : state)
                 .orElse(null);
     }
+
+    public static void main(String[] args)
+    {
+        System.out.println("this // this is a single line comment \n if /*hello and welcome to you all this is john champion in the commentary box */ that ".length());
+    }
 }
