@@ -176,4 +176,21 @@ public class LexicalTest
         assertEquals(TokenType.KEYWORD, token.getType());
         assertEquals("else", token.getValue());
     }
+
+    @Test
+    public void testHasNext()
+    {
+        context.resetCharProvider("123 salam 10");
+        assertTrue(context.hasNextToken());
+        context.getNextToken();     //123
+        context.getNextToken();     //whitespace
+        assertTrue(context.hasNextToken());
+        context.getNextToken();     //salam
+        context.getNextToken();     //whitespace
+        context.getNextToken();     //10
+        assertFalse(context.hasNextToken());
+
+        context.resetCharProvider("");
+        assertFalse(context.hasNextToken());
+    }
 }

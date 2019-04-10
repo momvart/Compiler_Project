@@ -114,8 +114,8 @@ public class TokenizeContext
 
     private boolean hasNextChar()
     {
-        return currentReadPosition < buffer.length()
-                || charProvider.hasNext();
+        return charProvider.hasNext() ||
+                (buffer.length() > 0 && currentReadPosition < buffer.length() && buffer.charAt(0) != '\0');
     }
 
     private char nextChar()
@@ -127,7 +127,6 @@ public class TokenizeContext
     }
 
     char getCurrentChar() { return buffer.charAt(currentReadPosition); }
-
 
     public void resetCharProvider(CharacterProvider charProvider)
     {
