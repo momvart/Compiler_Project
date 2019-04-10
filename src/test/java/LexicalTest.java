@@ -6,6 +6,7 @@ import org.junit.Test;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 
 public class LexicalTest
 {
@@ -14,18 +15,18 @@ public class LexicalTest
     @Before
     public void init()
     {
-        context = new TokenizeContext();
+        context = new TokenizeContext(new ReaderCharacterProvider(""));
     }
 
     @Test
     public void testNumber()
     {
-        context.resetText("12344");
+        context.resetCharProvider("12344");
         Token token = context.getNextToken();
         assertEquals(TokenType.NUMBER, token.getType());
         assertEquals("12344", token.getValue());
 
-        context.resetText("1234 5678 9");
+        context.resetCharProvider("1234 5678 9");
         token = context.getNextToken();
         assertEquals(TokenType.NUMBER, token.getType());
         assertEquals("1234", token.getValue());
@@ -46,19 +47,19 @@ public class LexicalTest
     @Test
     public void testIdentifier()
     {
-        context.resetText("salam123");
+        context.resetCharProvider("salam123");
 
     }
 
     @Test
     public void testKeyword()
     {
-        context.resetText("if");
+        context.resetCharProvider("if");
         Token token = context.getNextToken();
         assertEquals(TokenType.KEYWORD, token.getType());
         assertEquals("if", token.getValue());
 
-        context.resetText("else while if continue  ");
+        context.resetCharProvider("else while if continue  ");
         token = context.getNextToken();
         assertEquals(TokenType.KEYWORD, token.getType());
         assertEquals("else", token.getValue());
@@ -88,7 +89,7 @@ public class LexicalTest
     @Test
     public void testSymbol()
     {
-        context.resetText("compiler< database =hoosh == dsd");
+        context.resetCharProvider("compiler< database =hoosh == dsd");
         Token token = context.getNextToken();
         assertEquals(TokenType.ID, token.getType());
         assertEquals("compiler", token.getValue());
@@ -127,7 +128,7 @@ public class LexicalTest
     @Test
     public void testComment()
     {
-        context.resetText("this // this is a single line comment \n if " +
+        context.resetCharProvider("this // this is a single line comment \n if " +
                 "/*hello and welcome to you all this is john champion in the commentary box */" +
                 "that //this is another single comment\n" +
                 "/* this is\n" +

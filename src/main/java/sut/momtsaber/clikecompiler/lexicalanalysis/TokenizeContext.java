@@ -4,20 +4,23 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.CharacterProvider;
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
+
 
 public class TokenizeContext
 {
     private static final String SYMBOLS = ";:,[](){}+-*=<";
     private static final String TYPE_1_SYMBOLS = ";:,[](){}+-*<";
     private static final String TYPE_2_SYMBOLS = "=";
-    private static final Character slash = '/';
     private static final Set<String> KEYWORDS = new HashSet<>(
             Arrays.asList("if", "else", "void", "int",
                     "while", "break", "continue", "switch",
                     "default", "case", "return"));
 
-    private String text;
-    private int cursorStartPosition;
+    private CharacterProvider charProvider;
+    private StringBuffer buffer;
+
     private int currentReadPosition;
 
     private DFAState startState;
@@ -25,8 +28,9 @@ public class TokenizeContext
     private DFAState currentState;
 
 
-    public TokenizeContext()
+    public TokenizeContext(CharacterProvider charProvider)
     {
+        this.resetCharProvider(charProvider);
         init();
     }
 
@@ -108,29 +112,38 @@ public class TokenizeContext
         this.currentState = startState;
     }
 
-    private boolean hasNext()
+    private boolean hasNextChar()
     {
-        return currentReadPosition < text.length();
+        return currentReadPosition < buffer.length()
+                || charProvider.hasNext();
     }
 
-    boolean sleep = false;
     private char nextChar()
     {
-        return text.charAt(++currentReadPosition);
+        if (currentReadPosition + 1 == buffer.length())
+            buffer.append(charProvider.next());
+
+        return buffer.charAt(++currentReadPosition);
     }
 
-    char getCurrentChar() { return text.charAt(currentReadPosition); }
+    char getCurrentChar() { return buffer.charAt(currentReadPosition); }
 
-    public void resetText(String text)
+
+    public void resetCharProvider(CharacterProvider charProvider)
     {
-        this.text = text.concat("\0");
-        this.cursorStartPosition = 0;
+        this.charProvider = charProvider;
+        this.buffer = new StringBuffer();
         this.currentReadPosition = -1;
+    }
+
+    public void resetCharProvider(String text)
+    {
+        this.resetCharProvider(new ReaderCharacterProvider(text));
     }
 
     public boolean hasNextToken()
     {
-        return cursorStartPosition < text.length() - 1;
+        return hasNextChar();
     }
 
     public Token getNextToken()
@@ -145,14 +158,14 @@ public class TokenizeContext
                 currentState = elseState;
 
         } //When we are back to start, a token is generated
-        while (this.hasNext() && currentState != startState);
+        while (this.hasNextChar() && currentState != startState);
 
-        Token retVal = new Token(lastTokenType, text.substring(cursorStartPosition, currentReadPosition));
+        Token retVal = new Token(lastTokenType, buffer.substring(0, currentReadPosition));
         if (retVal.getType() == TokenType.ID && KEYWORDS.contains(retVal.getValue()))
             retVal.setType(TokenType.KEYWORD);
 
-        cursorStartPosition = currentReadPosition;
-        currentReadPosition--;          //Putting the pointer back for next the token
+        buffer.replace(0, currentReadPosition, "");
+        currentReadPosition = -1;          //Putting the pointer back for next the token
         return retVal;
     }
 }
