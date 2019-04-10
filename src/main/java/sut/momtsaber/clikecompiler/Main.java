@@ -1,104 +1,92 @@
 package sut.momtsaber.clikecompiler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Scanner;
+import java.io.*;
 
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 
 public class Main
 {
     public static void main(String[] args)
     {
-        scan("/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/input.txt" ,
-                "/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/output.txt",
-                "/home/saber/IdeaProjects/Compiler_Project/src/main/java/sut/momtsaber/clikecompiler/lexicalanalysis/error.txt");
+        String in, out, err;
+        if (args.length >= 1)
+            in = args[0];
+        else
+            in = "input.txt";
+        if (args.length >= 2)
+            out = args[1];
+        else
+            out = "scanner.txt";
+        if (args.length >= 3)
+            err = args[2];
+        else
+            err = "lexical_errors.txt";
+        scan(in, out, err);
     }
 
-
-    public static void scan(String input, String output, String error)
+    public static void scan(String inputPath, String outputPath, String errorPath)
     {
-        StringBuilder validTokens = new StringBuilder();
-        StringBuilder invalidTokens = new StringBuilder();
-        try
+        try (InputStream input = new FileInputStream(inputPath);
+             OutputStream output = new FileOutputStream(outputPath, false);
+             OutputStream error = new FileOutputStream(errorPath, false))
         {
-            File file = new File(input);
-            FileInputStream fis = new FileInputStream(file);
-            byte[] data = new byte[(int)file.length()];
-            fis.read(data);
-            fis.close();
-            String str = new String(data, "UTF-8");
-            TokenizeContext context = new TokenizeContext();
-            context.resetText(str);
-            int line = 1;
-            int actualLine = 0;
-            boolean first = true;
+            scan(input, output, error);
+        }
+        catch (IOException ex) { ex.printStackTrace(); }
+    }
 
-            while (context.hasNextToken())
+    public static void scan(InputStream input, OutputStream output, OutputStream error)
+    {
+        int outputLineNum = 1, errorLineNum = 1;
+        int prevOutputLineNum = 0;
+        PrintStream outPrinter = new PrintStream(output),
+                errPrinter = new PrintStream(error);
+
+        TokenizeContext context = new TokenizeContext(new ReaderCharacterProvider(input));
+
+        boolean first = true;
+
+
+        while (context.hasNextToken())
+        {
+            Token token = context.getNextToken();
+
+            switch (token.getType())
             {
-                Token token = context.getNextToken();
-                if((token.getType() == TokenType.COMMENT && token.getValue().charAt(token.getValue().length() - 1) == '\n') ||
-                        (token.getType() == TokenType.WHITESPACE && token.getValue().chars().anyMatch(c-> c == '\n')))
-                    line++;
-
-                switch (token.getType())
-                {
-                    case COMMENT:
-                    case WHITESPACE:
-                        continue;
-                    case INVALID:
-                        invalidTokens.append(line).append(". ").append('(').append(token.getValue()).append(", ")
-                                .append("invalid input").append(")\n");
-                        break;
-                    default:
-                        if (actualLine != line)
+                case COMMENT:
+                case WHITESPACE:
+                    break;
+                case INVALID:
+                    errPrinter.printf("%d. (%s, invalid input)%s", outputLineNum, token.getValue(), System.lineSeparator());
+                    break;
+                default:
+                    if (prevOutputLineNum != outputLineNum)
+                    {
+                        if (first)
                         {
-                            if (first)
-                            {
-                                validTokens.append(line + ": ");
-                                first = false;
-                            }
-                            else
-                                validTokens.append("\n" + line + ". ");
-                            actualLine = line;
+                            outPrinter.printf("%d. ", outputLineNum);
+                            first = false;
                         }
-                        validTokens.append(token.toString() + " ");
-                        break;
-                }
+                        else
+                            outPrinter.printf("%s%d. ", System.lineSeparator(), outputLineNum);
+                        prevOutputLineNum = outputLineNum;
+                    }
+                    outPrinter.printf("%s ", token.toString());
+                    break;
             }
+            outputLineNum = context.getCurrentLineNumber();
         }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        writeTokensIfNotEmpty(output, validTokens.toString());
-        writeTokensIfNotEmpty(error, invalidTokens.toString());
+
     }
 
 
-    private static void writeTokensIfNotEmpty(String fileName, String content)
+    private static void writeTokensIfNotEmpty(PrintStream output, int lineNum, String tokensList)
     {
-        if (!content.isEmpty()){
-            FileWriter fw = null;
-            try
-            {
-                fw = new FileWriter(fileName);
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            PrintWriter writer = new PrintWriter(fw);
-            writer.print(content);
-            writer.close();
-        }
+        if (tokensList.isEmpty())
+            return;
+
+        output.printf("%d. %s", lineNum, tokensList);
     }
 }

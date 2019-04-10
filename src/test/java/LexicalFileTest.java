@@ -13,13 +13,15 @@ public class LexicalFileTest
     @Test
     public void testSimple()
     {
-        String inputString = "void main()\n\n{ int a = 10; }";
+        String inputString = "void main()\n" +
+                "\n" +
+                "{ int a = 10; }";
         String outputString = "", errorString = "";
         try (InputStream in = new ByteArrayInputStream(inputString.getBytes());
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-//            Main.scan(in, out, err);
+            Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts
@@ -40,7 +42,7 @@ public class LexicalFileTest
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-//            Main.scan(in, out, err);
+            Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts
