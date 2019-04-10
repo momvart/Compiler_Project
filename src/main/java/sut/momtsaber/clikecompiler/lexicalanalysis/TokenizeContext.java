@@ -20,8 +20,8 @@ public class TokenizeContext
 
     private CharacterProvider charProvider;
     private StringBuffer buffer;
-
     private int currentReadPosition;
+    private int currentLineNumber;
 
     private DFAState startState;
     private DFAState elseState;
@@ -121,18 +121,29 @@ public class TokenizeContext
     private char nextChar()
     {
         if (currentReadPosition + 1 == buffer.length())
-            buffer.append(charProvider.next());
+        {
+            char c = charProvider.next();
+            if (c == '\n')
+                currentLineNumber += 1;
+            buffer.append(c);
+        }
 
         return buffer.charAt(++currentReadPosition);
     }
 
     char getCurrentChar() { return buffer.charAt(currentReadPosition); }
 
+    public int getCurrentLineNumber()
+    {
+        return currentLineNumber;
+    }
+
     public void resetCharProvider(CharacterProvider charProvider)
     {
         this.charProvider = charProvider;
         this.buffer = new StringBuffer();
         this.currentReadPosition = -1;
+        this.currentLineNumber = 1;
     }
 
     public void resetCharProvider(String text)

@@ -193,4 +193,44 @@ public class LexicalTest
         context.resetCharProvider("");
         assertFalse(context.hasNextToken());
     }
+
+    @Test
+    public void testLineNumber()
+    {
+        context.resetCharProvider("test\n" +
+                "salam\n" +
+                "\n" +
+                "test hi");
+        assertEquals(1, context.getCurrentLineNumber());
+        context.getNextToken();     //test
+        assertEquals(2, context.getCurrentLineNumber());
+        context.getNextToken();     //newline
+        assertEquals(2, context.getCurrentLineNumber());
+        context.getNextToken();     //salam
+        assertEquals(3, context.getCurrentLineNumber());
+        context.getNextToken();     //newline
+        assertEquals(4, context.getCurrentLineNumber());
+        context.getNextToken();     //newline
+        assertEquals(4, context.getCurrentLineNumber());
+        context.getNextToken();     //test
+        assertEquals(4, context.getCurrentLineNumber());
+        context.getNextToken();     //whitespace
+        assertEquals(4, context.getCurrentLineNumber());
+        context.getNextToken();     //hi
+        assertEquals(4, context.getCurrentLineNumber());
+
+
+        context.resetCharProvider("void main()\n" +
+                "\n" +
+                "{ int a = 10; }");
+        context.getNextToken();     //void
+        context.getNextToken();     //whitespace
+        context.getNextToken();     //main
+        context.getNextToken();     //(
+        context.getNextToken();     //)
+        context.getNextToken();     //newline
+        context.getNextToken();     //newline
+        assertEquals(3, context.getCurrentLineNumber());
+        context.getNextToken();     //{
+    }
 }
