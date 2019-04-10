@@ -39,7 +39,7 @@ public class Main
 
     public static void scan(InputStream input, OutputStream output, OutputStream error)
     {
-        int outputLineNum = 1, errorLineNum = 1;
+        int outputLineNum = 1;
         int prevOutputLineNum = 0;
         PrintStream outPrinter = new PrintStream(output),
                 errPrinter = new PrintStream(error);
@@ -79,14 +79,5 @@ public class Main
             outputLineNum = context.getCurrentLineNumber();
         }
 
-    }
-
-
-    private static void writeTokensIfNotEmpty(PrintStream output, int lineNum, String tokensList)
-    {
-        if (tokensList.isEmpty())
-            return;
-
-        output.printf("%d. %s", lineNum, tokensList);
     }
 }
