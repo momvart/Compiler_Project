@@ -1,22 +1,13 @@
 package sut.momtsaber.clikecompiler.lexicalanalysis;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.CharacterProvider;
 import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 
 
 public class TokenizeContext
 {
-    private static final String SYMBOLS = ";:,[](){}+-*=<";
     private static final String TYPE_1_SYMBOLS = ";:,[](){}+-*<";
     private static final String TYPE_2_SYMBOLS = "=";
-    private static final Set<String> KEYWORDS = new HashSet<>(
-            Arrays.asList("if", "else", "void", "int",
-                    "while", "break", "continue", "switch",
-                    "default", "case", "return"));
 
     private CharacterProvider charProvider;
     private StringBuffer buffer;
@@ -36,7 +27,7 @@ public class TokenizeContext
 
     private void init()
     {
-        Entrance symbolEntrance = Entrance.anyOf(SYMBOLS);
+        Entrance symbolEntrance = Entrance.anyOf(Token.SYMBOLS);
         Entrance type1SymbolEntrance = Entrance.anyOf(TYPE_1_SYMBOLS);
         Entrance type2SymbolEntrance = Entrance.anyOf(TYPE_2_SYMBOLS);
 
@@ -171,7 +162,7 @@ public class TokenizeContext
         while (this.hasNextChar() && currentState != startState);
 
         Token retVal = new Token(lastTokenType, buffer.substring(0, currentReadPosition));
-        if (retVal.getType() == TokenType.ID && KEYWORDS.contains(retVal.getValue()))
+        if (retVal.getType() == TokenType.ID && Token.KEYWORDS.contains(retVal.getValue()))
             retVal.setType(TokenType.KEYWORD);
 
         buffer.replace(0, currentReadPosition, "");
