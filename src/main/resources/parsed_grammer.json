@@ -1,0 +1,854 @@
+{
+  "nonTerminalNames": {
+    "0": "program",
+    "1": "declaration_list",
+    "2": "declaration",
+    "3": "var_declaration",
+    "4": "type_specifier",
+    "5": "fun_declaration",
+    "6": "params",
+    "7": "param_list",
+    "8": "param",
+    "9": "compound_stmt",
+    "10": "statement_list",
+    "11": "statement",
+    "12": "expression_stmt",
+    "13": "selection_stmt",
+    "14": "iteration_stmt",
+    "15": "return_stmt",
+    "16": "switch_stmt",
+    "17": "case_stmts",
+    "18": "case_stmt",
+    "19": "default_stmt",
+    "20": "expression",
+    "21": "var",
+    "22": "simple_expression",
+    "23": "relop",
+    "24": "additive_expression",
+    "25": "addop",
+    "26": "term",
+    "27": "signed_factor",
+    "28": "factor",
+    "29": "call",
+    "30": "args",
+    "31": "arg_list"
+  },
+  "productions": {
+    "0": {
+      "leftHand": {
+        "id": 0
+      },
+      "rightHands": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "tokenType": "EOF"
+          }
+        ]
+      ]
+    },
+    "1": {
+      "leftHand": {
+        "id": 1
+      },
+      "rightHands": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "id": 2
+          }
+        ],
+        [
+          {}
+        ]
+      ]
+    },
+    "2": {
+      "leftHand": {
+        "id": 2
+      },
+      "rightHands": [
+        [
+          {
+            "id": 3
+          }
+        ],
+        [
+          {
+            "id": 5
+          }
+        ]
+      ]
+    },
+    "3": {
+      "leftHand": {
+        "id": 3
+      },
+      "rightHands": [
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "NUMBER"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "4": {
+      "leftHand": {
+        "id": 4
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "int"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "void"
+          }
+        ]
+      ]
+    },
+    "5": {
+      "leftHand": {
+        "id": 5
+      },
+      "rightHands": [
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 6
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 9
+          }
+        ]
+      ]
+    },
+    "6": {
+      "leftHand": {
+        "id": 6
+      },
+      "rightHands": [
+        [
+          {
+            "id": 7
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "void"
+          }
+        ]
+      ]
+    },
+    "7": {
+      "leftHand": {
+        "id": 7
+      },
+      "rightHands": [
+        [
+          {
+            "id": 7
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ","
+          },
+          {
+            "id": 8
+          }
+        ],
+        [
+          {
+            "id": 8
+          }
+        ]
+      ]
+    },
+    "8": {
+      "leftHand": {
+        "id": 8
+      },
+      "rightHands": [
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          }
+        ],
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ]
+      ]
+    },
+    "9": {
+      "leftHand": {
+        "id": 9
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "{"
+          },
+          {
+            "id": 1
+          },
+          {
+            "id": 10
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "}"
+          }
+        ]
+      ]
+    },
+    "10": {
+      "leftHand": {
+        "id": 10
+      },
+      "rightHands": [
+        [
+          {
+            "id": 10
+          },
+          {
+            "id": 11
+          }
+        ],
+        [
+          {}
+        ]
+      ]
+    },
+    "11": {
+      "leftHand": {
+        "id": 11
+      },
+      "rightHands": [
+        [
+          {
+            "id": 12
+          }
+        ],
+        [
+          {
+            "id": 9
+          }
+        ],
+        [
+          {
+            "id": 13
+          }
+        ],
+        [
+          {
+            "id": 14
+          }
+        ],
+        [
+          {
+            "id": 15
+          }
+        ],
+        [
+          {
+            "id": 16
+          }
+        ]
+      ]
+    },
+    "12": {
+      "leftHand": {
+        "id": 12
+      },
+      "rightHands": [
+        [
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "continue"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "break"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "13": {
+      "leftHand": {
+        "id": 13
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "if"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 11
+          },
+          {
+            "tokenType": "KEYWORD",
+            "value": "else"
+          },
+          {
+            "id": 11
+          }
+        ]
+      ]
+    },
+    "14": {
+      "leftHand": {
+        "id": 14
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "while"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 11
+          }
+        ]
+      ]
+    },
+    "15": {
+      "leftHand": {
+        "id": 15
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "return"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "return"
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "16": {
+      "leftHand": {
+        "id": 16
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "switch"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "{"
+          },
+          {
+            "id": 17
+          },
+          {
+            "id": 19
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "}"
+          }
+        ]
+      ]
+    },
+    "17": {
+      "leftHand": {
+        "id": 17
+      },
+      "rightHands": [
+        [
+          {
+            "id": 17
+          },
+          {
+            "id": 18
+          }
+        ],
+        [
+          {}
+        ]
+      ]
+    },
+    "18": {
+      "leftHand": {
+        "id": 18
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "case"
+          },
+          {
+            "tokenType": "NUMBER"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ":"
+          },
+          {
+            "id": 10
+          }
+        ]
+      ]
+    },
+    "19": {
+      "leftHand": {
+        "id": 19
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "default"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ":"
+          },
+          {
+            "id": 10
+          }
+        ],
+        [
+          {}
+        ]
+      ]
+    },
+    "20": {
+      "leftHand": {
+        "id": 20
+      },
+      "rightHands": [
+        [
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
+          },
+          {
+            "id": 20
+          }
+        ],
+        [
+          {
+            "id": 22
+          }
+        ]
+      ]
+    },
+    "21": {
+      "leftHand": {
+        "id": 21
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          }
+        ],
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ]
+      ]
+    },
+    "22": {
+      "leftHand": {
+        "id": 22
+      },
+      "rightHands": [
+        [
+          {
+            "id": 24
+          },
+          {
+            "id": 23
+          },
+          {
+            "id": 24
+          }
+        ],
+        [
+          {
+            "id": 24
+          }
+        ]
+      ]
+    },
+    "23": {
+      "leftHand": {
+        "id": 23
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003c"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d\u003d"
+          }
+        ]
+      ]
+    },
+    "24": {
+      "leftHand": {
+        "id": 24
+      },
+      "rightHands": [
+        [
+          {
+            "id": 24
+          },
+          {
+            "id": 25
+          },
+          {
+            "id": 26
+          }
+        ],
+        [
+          {
+            "id": 26
+          }
+        ]
+      ]
+    },
+    "25": {
+      "leftHand": {
+        "id": 25
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          }
+        ]
+      ]
+    },
+    "26": {
+      "leftHand": {
+        "id": 26
+      },
+      "rightHands": [
+        [
+          {
+            "id": 26
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "*"
+          },
+          {
+            "id": 27
+          }
+        ],
+        [
+          {
+            "id": 27
+          }
+        ]
+      ]
+    },
+    "27": {
+      "leftHand": {
+        "id": 27
+      },
+      "rightHands": [
+        [
+          {
+            "id": 28
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          },
+          {
+            "id": 28
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          },
+          {
+            "id": 28
+          }
+        ]
+      ]
+    },
+    "28": {
+      "leftHand": {
+        "id": 28
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ],
+        [
+          {
+            "id": 21
+          }
+        ],
+        [
+          {
+            "id": 29
+          }
+        ],
+        [
+          {
+            "tokenType": "NUMBER"
+          }
+        ]
+      ]
+    },
+    "29": {
+      "leftHand": {
+        "id": 29
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 30
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ]
+      ]
+    },
+    "30": {
+      "leftHand": {
+        "id": 30
+      },
+      "rightHands": [
+        [
+          {
+            "id": 31
+          }
+        ],
+        [
+          {}
+        ]
+      ]
+    },
+    "31": {
+      "leftHand": {
+        "id": 31
+      },
+      "rightHands": [
+        [
+          {
+            "id": 31
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ","
+          },
+          {
+            "id": 20
+          }
+        ],
+        [
+          {
+            "id": 20
+          }
+        ]
+      ]
+    }
+  },
+  "startSymbol": {
+    "id": 0
+  }
+}
