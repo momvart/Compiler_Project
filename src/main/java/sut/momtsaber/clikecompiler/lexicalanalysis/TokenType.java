@@ -8,5 +8,6 @@ public enum TokenType
     COMMENT,
     SYMBOL,
     WHITESPACE,
+    EOF,
     INVALID
 }
