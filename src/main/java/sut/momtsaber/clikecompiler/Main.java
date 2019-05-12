@@ -59,7 +59,7 @@ public class Main
                 case WHITESPACE:
                     break;
                 case INVALID:
-                    errPrinter.printf("%d. (%s, invalid input)%s", outputLineNum, token.getValue(), System.lineSeparator());
+                    errPrinter.printf("%d. (%s, invalid input)%n", outputLineNum, token.getValue());
                     break;
                 default:
                     if (prevOutputLineNum != outputLineNum)
@@ -70,7 +70,7 @@ public class Main
                             first = false;
                         }
                         else
-                            outPrinter.printf("%s%d. ", System.lineSeparator(), outputLineNum);
+                            outPrinter.printf("%n%d. ", outputLineNum);
                         prevOutputLineNum = outputLineNum;
                     }
                     outPrinter.printf("%s ", token.toString());
