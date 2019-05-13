@@ -1,6 +1,8 @@
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +18,7 @@ public class GrammarParserTest
         GrammarParser parser = new GrammarParser();
         parser.parseAndAddProduction("S -> NUMBER + S | EPS");
         CFG grammar = parser.closeAndProduce();
-        LinkedList<LinkedList<CFGSymbol>> rightHands = grammar.getProductions().get(0).getRightHands();
+        LinkedList<ArrayList<CFGSymbol>> rightHands = grammar.getProductions().get(0).getRightHands();
         CFGSymbol numSymbol = rightHands.get(0).get(0);
         assertTrue(numSymbol instanceof CFGTerminal);
         assertEquals(TokenType.NUMBER, ((CFGTerminal)numSymbol).getTokenType());

@@ -1,21 +1,27 @@
 package sut.momtsaber.clikecompiler.cfg;
 
+import java.util.Objects;
+
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
 public class CFGTerminal extends CFGSymbol
 {
-    private TokenType tokenType;
-    private String value;
+    private final TokenType tokenType;
+    private final String value;
 
-    private CFGTerminal() {}
+    private CFGTerminal(TokenType tokenType, String value)
+    {
+        this.tokenType = tokenType;
+        this.value = value;
+    }
 
     public static CFGTerminal parse(String raw)
     {
         if (raw.equals("ϵ") || raw.equals("EPS"))
             return EPSILON;
-        CFGTerminal retVal = new CFGTerminal();
         TokenType type;
+        String value = null;
         try { type = TokenType.valueOf(raw); }
         catch (Exception ignored)
         {
@@ -26,14 +32,13 @@ public class CFGTerminal extends CFGSymbol
             else
                 throw new IllegalArgumentException("No token type found for: " + raw);
 
-            retVal.value = raw;
+            value = raw;
         }
-        retVal.tokenType = type;
 
-        return retVal;
+        return new CFGTerminal(type, value);
     }
 
-    public static final CFGTerminal EPSILON = new CFGTerminal();
+    public static final CFGTerminal EPSILON = new CFGTerminal(null, null);
 
     public TokenType getTokenType()
     {
@@ -43,5 +48,21 @@ public class CFGTerminal extends CFGSymbol
     public String getValue()
     {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof CFGTerminal)) return false;
+        CFGTerminal that = (CFGTerminal)o;
+        return getTokenType() == that.getTokenType() &&
+                Objects.equals(getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getTokenType(), getValue());
     }
 }

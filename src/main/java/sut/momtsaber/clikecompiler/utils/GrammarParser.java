@@ -1,18 +1,13 @@
 package sut.momtsaber.clikecompiler.utils;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -73,7 +68,7 @@ public class GrammarParser
         for (int i = 0; i < rawProductions.size(); i++)
         {
             CFGNonTerminal left = nonTerminals.get(i);
-            LinkedList<LinkedList<CFGSymbol>> right = rawProductions.get(i).stream()
+            LinkedList<ArrayList<CFGSymbol>> right = rawProductions.get(i).stream()
                     .map(raws -> raws.stream().map(r ->
                     {
                         Integer id = nonTerminalIds.get(r);
@@ -81,9 +76,9 @@ public class GrammarParser
                             return CFGTerminal.parse(r);
                         else
                             return nonTerminals.get(id);
-                    }).collect(Collectors.toCollection(LinkedList::new)))
+                    }).collect(Collectors.toCollection(ArrayList::new)))
                     .collect(Collectors.toCollection(LinkedList::new));
-            grammar.addProduction(new CFGProduction(left, right));
+            grammar.putProduction(new CFGProduction(left, right));
         }
 
         nonTerminalIds.forEach((name, id) -> grammar.putNonTerminalName(nonTerminals.get(id), name));
@@ -107,7 +102,9 @@ public class GrammarParser
             GrammarParser parser = new GrammarParser();
             while (scanner.hasNextLine())
                 parser.parseAndAddProduction(scanner.nextLine());
-            System.out.println(new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create().toJson(parser.closeAndProduce()));
+            CFG grammar = parser.closeAndProduce();
+            grammar = GrammarTrimmer.doLeftFactoring(grammar);
+            System.out.println(new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create().toJson(grammar));
         }
     }
 }
