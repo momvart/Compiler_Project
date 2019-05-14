@@ -43,7 +43,7 @@ public class CFGProduction implements Cloneable
                 CFGProduction uncommonProduct = new CFGProduction(uncommon, possibleTermsIndices.stream()
                         .map(clone.rightHands::get)
                         .map(it -> it.subList(minCount, it.size()))
-                        .map(it -> it.isEmpty() ? new ArrayList<CFGSymbol>(Arrays.asList(CFGTerminal.EPSILON)) : new ArrayList<>(it))
+                        .map(ArrayList::new)
                         .collect(Collectors.toCollection(LinkedList::new)));
 
                 retVal.putAll(leftFactor(uncommonProduct, freeId));

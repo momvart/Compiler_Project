@@ -18,7 +18,6 @@ public class CFGTerminal extends CFGSymbol
 
     public static CFGTerminal parse(String raw)
     {
-        CFGTerminal retVal = new CFGTerminal();
         TokenType type;
         String value = null;
         try { type = TokenType.valueOf(raw); }

@@ -53,7 +53,7 @@ public class GrammarTrimmer
         if (primeRightHands.size() == 0)
             return Collections.singletonList(production);
 
-        primeRightHands.add(new ArrayList<>(Collections.singletonList(CFGTerminal.EPSILON)));
+        primeRightHands.add(new ArrayList<>());
         LinkedList<ArrayList<CFGSymbol>> newRightHands = production.getRightHands().stream()
                 .filter(rightHand -> !rightHand.get(0).equals(production.getLeftHand()))
                 .map(ArrayList::new)
