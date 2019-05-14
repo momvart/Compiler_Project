@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class CFG
 {
     //Just keeping them for testing, debugging and human-readability
+    @Deprecated
     private HashMap<Integer, String> nonTerminalNames = new HashMap<>();
 
     private HashMap<Integer, CFGProduction> productions = new HashMap<>();
@@ -23,6 +24,7 @@ public class CFG
         return productions;
     }
 
+    @Deprecated
     public void putNonTerminalName(CFGNonTerminal nt, String name)
     {
         nonTerminalNames.put(nt.getId(), name);
