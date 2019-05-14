@@ -13,7 +13,13 @@ public class CFGProduction implements Cloneable
         LinkedList<ArrayList<CFGSymbol>> finalRightHands = new LinkedList<>();
         while (clone.rightHands.size() > 0)
         {
-            ArrayList<CFGSymbol> term = clone.rightHands.get(0);
+            ArrayList<CFGSymbol> term = clone.rightHands.peek();
+            if (term.isEmpty()) //epsilon
+            {
+                finalRightHands.add(clone.rightHands.poll());
+                continue;
+            }
+
             ArrayList<Integer> commonsCount = clone.rightHands.stream()
                     .map(t ->
                     {

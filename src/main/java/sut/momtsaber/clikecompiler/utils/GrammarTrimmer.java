@@ -17,19 +17,20 @@ public class GrammarTrimmer
                 .forEach(p ->
                 {
                     LinkedList<ArrayList<CFGSymbol>> rightHands = p.getRightHands().stream()
-                            .flatMap(term ->
+                            .flatMap(rule ->
                             {
-                                if (term.get(0) instanceof CFGNonTerminal &&
-                                        ((CFGNonTerminal)term.get(0)).getId() < p.getLeftHand().getId())
-                                    return newGrammar.getProduction(((CFGNonTerminal)term.get(0)).getId()).getRightHands().stream()
-                                            .map(t ->
+                                if (!rule.isEmpty() &&
+                                        rule.get(0) instanceof CFGNonTerminal &&
+                                        ((CFGNonTerminal)rule.get(0)).getId() < p.getLeftHand().getId())
+                                    return newGrammar.getProduction(((CFGNonTerminal)rule.get(0)).getId()).getRightHands().stream()
+                                            .map(r ->
                                             {
-                                                ArrayList<CFGSymbol> newTerm = new ArrayList<>(t); //TODO: epsilon
-                                                newTerm.addAll(term.subList(1, term.size()));
+                                                ArrayList<CFGSymbol> newTerm = new ArrayList<>(r); //TODO: epsilon
+                                                newTerm.addAll(rule.subList(1, rule.size()));
                                                 return newTerm;
                                             });
                                 else
-                                    return Stream.of(term);
+                                    return Stream.of(rule);
                             })
                             .collect(Collectors.toCollection(LinkedList::new));
                     List<CFGProduction> imm = eliminateImmediateLeftRecursion(new CFGProduction(p.getLeftHand(), rightHands),
@@ -46,18 +47,18 @@ public class GrammarTrimmer
     {
         CFGNonTerminal prime = new CFGNonTerminal(freeId);
         LinkedList<ArrayList<CFGSymbol>> primeRightHands = production.getRightHands().stream()
-                .filter(rightHand -> rightHand.get(0).equals(production.getLeftHand()))
+                .filter(rightHand -> !rightHand.isEmpty() && rightHand.get(0).equals(production.getLeftHand()))
                 .map(recursive -> new ArrayList<>(recursive.subList(1, recursive.size())))
                 .peek(recursive -> recursive.add(prime))
                 .collect(Collectors.toCollection(LinkedList::new));
-        if (primeRightHands.size() == 0)
+        if (primeRightHands.size() == 0)    //No recursive rule
             return Collections.singletonList(production);
 
-        primeRightHands.add(new ArrayList<>());
+        primeRightHands.add(new ArrayList<>()); //epsilon
         LinkedList<ArrayList<CFGSymbol>> newRightHands = production.getRightHands().stream()
-                .filter(rightHand -> !rightHand.get(0).equals(production.getLeftHand()))
+                .filter(rightHand -> rightHand.isEmpty() || !rightHand.get(0).equals(production.getLeftHand()))
                 .map(ArrayList::new)
-                .peek(nonRecursive -> nonRecursive.add(prime)) //TODO: epsilon
+                .peek(nonRecursive -> nonRecursive.add(prime))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         return Arrays.asList(new CFGProduction(production.getLeftHand(), newRightHands),
@@ -73,8 +74,6 @@ public class GrammarTrimmer
         CFG retVal = new CFG();
         retVal.putAllProduction(factoredProductions);
         return retVal;
-
-
     }
 
 }
