@@ -8,6 +8,7 @@ import sut.momtsaber.clikecompiler.utils.GrammarParser;
 import sut.momtsaber.clikecompiler.utils.GrammarTrimmer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CFGProductionTest
 {
@@ -73,6 +74,45 @@ public class CFGProductionTest
         parser.parseAndAddProduction("S -> S else | int | if");
         CFG grammar = GrammarTrimmer.eliminateLeftRecursions(parser.closeAndProduce());
         assertEquals(2, grammar.getProductions().size());
+
+        CFGProduction newS = grammar.getProduction(0);
+        assertEquals(2, newS.getRightHands().size());
+        assertEquals(CFGTerminal.parse("int"), newS.getRightHands().get(0).get(0));
+        assertEquals(new CFGNonTerminal(1), newS.getRightHands().get(0).get(1));
+        assertEquals(CFGTerminal.parse("if"), newS.getRightHands().get(1).get(0));
+        assertEquals(new CFGNonTerminal(1), newS.getRightHands().get(1).get(1));
+
+        CFGProduction sPrime = grammar.getProduction(1);
+        assertEquals(2, newS.getRightHands().size());
+        assertEquals(CFGTerminal.parse("else"), sPrime.getRightHands().get(0).get(0));
+        assertEquals(new CFGNonTerminal(1), sPrime.getRightHands().get(0).get(1));
+        assertTrue(sPrime.getRightHands().get(1).isEmpty()); //epsilon
+    }
+
+    @Test
+    public void testLeftRecursion1()
+    {
+        GrammarParser parser = new GrammarParser();
+        parser.parseAndAddProduction("S -> A else | int | if");
+        parser.parseAndAddProduction("A -> A NUMBER | S +");
+        CFG grammar = GrammarTrimmer.eliminateLeftRecursions(parser.closeAndProduce());
         grammar.getProductions().values().forEach(System.err::println);
+
+
+        CFGProduction newA = grammar.getProduction(1);
+        assertEquals(CFGTerminal.parse("int"), newA.getRightHands().get(0).get(0));
+        assertEquals(CFGTerminal.parse("+"), newA.getRightHands().get(0).get(1));
+        assertEquals(new CFGNonTerminal(2), newA.getRightHands().get(0).get(2));
+        assertEquals(CFGTerminal.parse("if"), newA.getRightHands().get(1).get(0));
+        assertEquals(CFGTerminal.parse("+"), newA.getRightHands().get(1).get(1));
+        assertEquals(new CFGNonTerminal(2), newA.getRightHands().get(1).get(2));
+
+        CFGProduction aPrime = grammar.getProduction(2);
+        assertEquals(CFGTerminal.parse("NUMBER"), aPrime.getRightHands().get(0).get(0));
+        assertEquals(new CFGNonTerminal(2), aPrime.getRightHands().get(0).get(1));
+        assertEquals(CFGTerminal.parse("else"), aPrime.getRightHands().get(1).get(0));
+        assertEquals(CFGTerminal.parse("+"), aPrime.getRightHands().get(1).get(1));
+        assertEquals(new CFGNonTerminal(2), aPrime.getRightHands().get(1).get(2));
+        assertTrue(aPrime.getRightHands().get(2).isEmpty());
     }
 }

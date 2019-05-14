@@ -20,7 +20,7 @@ public class CFGTerminal extends CFGSymbol
     {
         TokenType type;
         String value = null;
-        try { type = TokenType.valueOf(raw); }
+        try { type = TokenType.valueOf(raw.toUpperCase()); }
         catch (Exception ignored)
         {
             if (Token.KEYWORDS.contains(raw))

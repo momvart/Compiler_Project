@@ -96,11 +96,10 @@ public class CFGProduction implements Cloneable
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append(leftHand).append(" -> ");
-        sb.append(String.join(" | ", (Iterable<String>)() -> rightHands.stream()
-                .map(rh -> String.join(" ", (Iterable<String>)() -> rh.stream()
-                        .map(Object::toString).iterator())).iterator()));
-        return sb.toString();
+        return leftHand + " -> " +
+                String.join(" | ", (Iterable<String>)() -> rightHands.stream()
+                        .map(rh -> rh.isEmpty() ? "EPS" :
+                                String.join(" ", (Iterable<String>)() -> rh.stream()
+                                        .map(Object::toString).iterator())).iterator());
     }
 }
