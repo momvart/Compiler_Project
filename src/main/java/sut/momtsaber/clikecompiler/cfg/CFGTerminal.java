@@ -12,8 +12,6 @@ public class CFGTerminal extends CFGSymbol
 
     public static CFGTerminal parse(String raw)
     {
-        if (raw.equals("ϵ") || raw.equals("EPS"))
-            return EPSILON;
         CFGTerminal retVal = new CFGTerminal();
         TokenType type;
         try { type = TokenType.valueOf(raw); }
@@ -33,7 +31,6 @@ public class CFGTerminal extends CFGSymbol
         return retVal;
     }
 
-    public static final CFGTerminal EPSILON = new CFGTerminal();
 
     public TokenType getTokenType()
     {

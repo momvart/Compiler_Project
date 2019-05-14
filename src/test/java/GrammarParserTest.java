@@ -28,8 +28,6 @@ public class GrammarParserTest
         assertTrue(recursionSymbol instanceof CFGNonTerminal);
         assertEquals(0, ((CFGNonTerminal)recursionSymbol).getId());
 
-        CFGSymbol epsilonSymbol = rightHands.get(1).get(0);
-        assertTrue(epsilonSymbol instanceof CFGTerminal);
-        assertEquals(epsilonSymbol, CFGTerminal.EPSILON);
+        assertTrue(rightHands.get(1).isEmpty());
     }
 }
