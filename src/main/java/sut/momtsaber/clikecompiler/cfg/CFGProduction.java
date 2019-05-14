@@ -23,4 +23,13 @@ public class CFGProduction
     {
         return rightHands;
     }
+
+    @Override
+    public String toString()
+    {
+        return "CFGProduction{" +
+                "leftHand=" + leftHand +
+                ", rightHands=" + rightHands +
+                '}';
+    }
 }

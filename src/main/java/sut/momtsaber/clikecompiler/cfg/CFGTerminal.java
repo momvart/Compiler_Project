@@ -33,8 +33,14 @@ public class CFGTerminal extends CFGSymbol
         return retVal;
     }
 
-    public static final CFGTerminal EPSILON = new CFGTerminal();
-
+    public static final CFGTerminal EPSILON;
+    public static final CFGTerminal EOF;
+    static
+    {
+        EPSILON = new CFGTerminal();
+        EOF = new CFGTerminal();
+        EOF.tokenType = TokenType.EOF;
+    }
     public TokenType getTokenType()
     {
         return tokenType;
@@ -43,5 +49,14 @@ public class CFGTerminal extends CFGSymbol
     public String getValue()
     {
         return value;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "CFGTerminal{" +
+                "tokenType=" + tokenType +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

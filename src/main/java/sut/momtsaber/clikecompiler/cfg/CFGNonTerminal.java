@@ -30,4 +30,12 @@ public class CFGNonTerminal extends CFGSymbol
     {
         return id;
     }
+
+    @Override
+    public String toString()
+    {
+        return "CFGNonTerminal{" +
+                "id=" + id +
+                '}';
+    }
 }
