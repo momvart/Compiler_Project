@@ -31,6 +31,7 @@ public class CFGTerminal extends CFGSymbol
         return retVal;
     }
 
+    public static final CFGTerminal EPSILON = new CFGTerminal();
     public static final CFGTerminal EOF;
     static
     {

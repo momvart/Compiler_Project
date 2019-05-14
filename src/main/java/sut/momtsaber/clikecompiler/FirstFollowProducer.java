@@ -36,19 +36,22 @@ public class FirstFollowProducer
     private static Set<CFGTerminal> findFirst(ArrayList<CFGSymbol> seri, ArrayList<CFGSymbol> parent, boolean first_time_call)
     {
         Set<CFGTerminal> firstSet = new HashSet<>();
-        CFGSymbol startSymbol = seri.get(0);
-        if (startSymbol == CFGTerminal.EPSILON)
+        if (seri.size() == 0)
             if (first_time_call || parent.size() <= 0)
                 return new HashSet<>(Collections.singletonList(CFGTerminal.EPSILON));
             else
                 firstSet.addAll(findFirst(new ArrayList<>(parent.subList(0, 1)), new ArrayList<>(parent.subList(1, parent.size())), false));
-        else if (startSymbol instanceof CFGTerminal)
-            firstSet.add((CFGTerminal)startSymbol);
         else
         {
-            CFGNonTerminal nonTerminal = (CFGNonTerminal)startSymbol;
-            for (LinkedList<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
-                firstSet.addAll(findFirst(new ArrayList<>(rightHand), new ArrayList<>(seri.subList(1, seri.size())), false));
+            CFGSymbol startSymbol = seri.get(0);
+            if (startSymbol instanceof CFGTerminal)
+                firstSet.add((CFGTerminal)startSymbol);
+            else
+            {
+                CFGNonTerminal nonTerminal = (CFGNonTerminal)startSymbol;
+                for (LinkedList<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
+                    firstSet.addAll(findFirst(new ArrayList<>(rightHand), new ArrayList<>(seri.subList(1, seri.size())), false));
+            }
         }
         return firstSet;
     }

@@ -43,9 +43,9 @@ public class FirstFollowTest
         nonTerminals = FuncProvider.removeDuplicates(nonTerminals);
 
         expectedFirsts.add(new HashSet<>(Arrays.asList(ter("("), ter("-"))));
-        expectedFirsts.add(new HashSet<>(Arrays.asList(ter("+"), ter("EPS"))));
+        expectedFirsts.add(new HashSet<>(Arrays.asList(ter("+"), CFGTerminal.EPSILON)));
         expectedFirsts.add(new HashSet<>(Arrays.asList(ter("("), ter("-"))));
-        expectedFirsts.add(new HashSet<>(Arrays.asList(ter("*"), ter("EPS"))));
+        expectedFirsts.add(new HashSet<>(Arrays.asList(ter("*"), CFGTerminal.EPSILON)));
         expectedFirsts.add(new HashSet<>(Arrays.asList(ter("("), ter("-"))));
 
 
