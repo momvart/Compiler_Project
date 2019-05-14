@@ -1,17 +1,8 @@
 package sut.momtsaber.clikecompiler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import sut.momtsaber.clikecompiler.cfg.CFG;
-import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
-import sut.momtsaber.clikecompiler.cfg.CFGProduction;
-import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.cfg.*;
 
 public class FirstFollowProducer
 {
@@ -28,7 +19,7 @@ public class FirstFollowProducer
         if (subject instanceof CFGTerminal)
             return new HashSet<>(Collections.singletonList((CFGTerminal)subject));
         CFGNonTerminal nonTerminal = (CFGNonTerminal)subject;
-        for (LinkedList<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
+        for (List<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
             firstSet.addAll(findFirst(new ArrayList<>(rightHand), null, true));
         return firstSet;
     }
@@ -49,7 +40,7 @@ public class FirstFollowProducer
             else
             {
                 CFGNonTerminal nonTerminal = (CFGNonTerminal)startSymbol;
-                for (LinkedList<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
+                for (List<CFGSymbol> rightHand : cfg.getProductions().get(nonTerminal.getId()).getRightHands())
                     firstSet.addAll(findFirst(new ArrayList<>(rightHand), new ArrayList<>(seri.subList(1, seri.size())), false));
             }
         }
@@ -63,7 +54,7 @@ public class FirstFollowProducer
         if (myCase.equals(cfg.getProductions().get(0).getLeftHand()))
             followSet.add(CFGTerminal.EOF);
         for (Map.Entry<Integer, CFGProduction> entry : cfg.getProductions().entrySet())
-            for (LinkedList<CFGSymbol> rightHand : entry.getValue().getRightHands())
+            for (List<CFGSymbol> rightHand : entry.getValue().getRightHands())
                 for (CFGSymbol symbol : rightHand)
                     if (symbol.equals(myCase))
                         if (rightHand.indexOf(symbol) == rightHand.size() - 1 && !entry.getValue().getLeftHand().equals(symbol))
