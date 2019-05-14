@@ -65,4 +65,10 @@ public class CFGTerminal extends CFGSymbol
     {
         return Objects.hash(getTokenType(), getValue());
     }
+
+    @Override
+    public String toString()
+    {
+        return value == null ? tokenType == null ? "EPS" : tokenType.toString() : value;
+    }
 }

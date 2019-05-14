@@ -17,6 +17,11 @@ public class CFG
         productions.put(production.getLeftHand().getId(), production);
     }
 
+    public CFGProduction getProduction(int id)
+    {
+        return productions.get(id);
+    }
+
     public void putAllProduction(Map<Integer, CFGProduction> newProductions)
     {
         this.productions.putAll(newProductions);

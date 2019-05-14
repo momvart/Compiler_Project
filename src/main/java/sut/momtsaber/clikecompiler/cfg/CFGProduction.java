@@ -92,4 +92,15 @@ public class CFGProduction implements Cloneable
         rightHands.forEach(term -> rightCopy.add(new ArrayList<>(term)));
         return new CFGProduction(leftHand, rightCopy);
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(leftHand).append(" -> ");
+        sb.append(String.join(" | ", (Iterable<String>)() -> rightHands.stream()
+                .map(rh -> String.join(" ", (Iterable<String>)() -> rh.stream()
+                        .map(Object::toString).iterator())).iterator()));
+        return sb.toString();
+    }
 }

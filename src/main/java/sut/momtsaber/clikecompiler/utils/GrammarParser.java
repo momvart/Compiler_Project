@@ -2,22 +2,13 @@ package sut.momtsaber.clikecompiler.utils;
 
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import sut.momtsaber.clikecompiler.cfg.CFG;
-import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
-import sut.momtsaber.clikecompiler.cfg.CFGProduction;
-import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.cfg.*;
 
 public class GrammarParser
 {
