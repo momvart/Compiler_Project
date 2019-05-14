@@ -1,20 +1,26 @@
 package sut.momtsaber.clikecompiler.cfg;
 
+import java.util.Objects;
+
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
 public class CFGTerminal extends CFGSymbol
 {
-    private TokenType tokenType;
-    private String value;
+    private final TokenType tokenType;
+    private final String value;
 
-    private CFGTerminal() {}
+    private CFGTerminal(TokenType tokenType, String value)
+    {
+        this.tokenType = tokenType;
+        this.value = value;
+    }
 
     public static CFGTerminal parse(String raw)
     {
-        CFGTerminal retVal = new CFGTerminal();
         TokenType type;
-        try { type = TokenType.valueOf(raw); }
+        String value = null;
+        try { type = TokenType.valueOf(raw.toUpperCase()); }
         catch (Exception ignored)
         {
             if (Token.KEYWORDS.contains(raw))
@@ -24,20 +30,15 @@ public class CFGTerminal extends CFGSymbol
             else
                 throw new IllegalArgumentException("No token type found for: " + raw);
 
-            retVal.value = raw;
+            value = raw;
         }
-        retVal.tokenType = type;
 
-        return retVal;
+        return new CFGTerminal(type, value);
     }
 
-    public static final CFGTerminal EPSILON = new CFGTerminal();
-    public static final CFGTerminal EOF;
-    static
-    {
-        EOF = new CFGTerminal();
-        EOF.tokenType = TokenType.EOF;
-    }
+    public static final CFGTerminal EPSILON = new CFGTerminal(null, null);
+    public static final CFGTerminal EOF = new CFGTerminal(TokenType.EOF, null);
+
     public TokenType getTokenType()
     {
         return tokenType;
@@ -49,11 +50,24 @@ public class CFGTerminal extends CFGSymbol
     }
 
     @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof CFGTerminal)) return false;
+        CFGTerminal that = (CFGTerminal)o;
+        return getTokenType() == that.getTokenType() &&
+                Objects.equals(getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(getTokenType(), getValue());
+    }
+
+    @Override
     public String toString()
     {
-        return "CFGTerminal{" +
-                "tokenType=" + tokenType +
-                ", value='" + value + '\'' +
-                '}';
+        return value == null ? tokenType == null ? "EPS" : tokenType.toString() : value;
     }
 }

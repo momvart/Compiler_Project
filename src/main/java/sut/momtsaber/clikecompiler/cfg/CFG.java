@@ -1,6 +1,9 @@
 package sut.momtsaber.clikecompiler.cfg;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CFG
 {
@@ -8,20 +11,26 @@ public class CFG
     @Deprecated
     private HashMap<Integer, String> nonTerminalNames = new HashMap<>();
 
-    private HashMap<Integer, CFGProduction> productions = new HashMap<>();
+    private LinkedHashMap<Integer, CFGProduction> productions = new LinkedHashMap<>();
 
-    private CFGNonTerminal startSymbol;
-
-    public void addProduction(CFGProduction production)
+    public void putProduction(CFGProduction production)
     {
-        if (productions.size() == 0)
-            startSymbol = production.getLeftHand();
         productions.put(production.getLeftHand().getId(), production);
     }
 
-    public HashMap<Integer, CFGProduction> getProductions()
+    public CFGProduction getProduction(int id)
     {
-        return productions;
+        return productions.get(id);
+    }
+
+    public void putAllProduction(Map<Integer, CFGProduction> newProductions)
+    {
+        this.productions.putAll(newProductions);
+    }
+
+    public Map<Integer, CFGProduction> getProductions()
+    {
+        return Collections.unmodifiableMap(productions);
     }
 
     @Deprecated

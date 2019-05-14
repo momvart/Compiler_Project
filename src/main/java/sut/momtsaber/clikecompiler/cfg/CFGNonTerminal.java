@@ -34,8 +34,6 @@ public class CFGNonTerminal extends CFGSymbol
     @Override
     public String toString()
     {
-        return "CFGNonTerminal{" +
-                "id=" + id +
-                '}';
+        return String.format("NT{id: %d}", id);
     }
 }
