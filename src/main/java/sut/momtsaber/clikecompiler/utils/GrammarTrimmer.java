@@ -22,10 +22,11 @@ public class GrammarTrimmer
                                 if (!rule.isEmpty() &&
                                         rule.get(0) instanceof CFGNonTerminal &&
                                         ((CFGNonTerminal)rule.get(0)).getId() < p.getLeftHand().getId())
+                                    //Replacing A_i -> A_j a with A_i -> g1 a | g2 a where A_j -> g1 | g2
                                     return newGrammar.getProduction(((CFGNonTerminal)rule.get(0)).getId()).getRightHands().stream()
                                             .map(r ->
                                             {
-                                                ArrayList<CFGSymbol> newTerm = new ArrayList<>(r); //TODO: epsilon
+                                                ArrayList<CFGSymbol> newTerm = new ArrayList<>(r);
                                                 newTerm.addAll(rule.subList(1, rule.size()));
                                                 return newTerm;
                                             });
@@ -33,8 +34,11 @@ public class GrammarTrimmer
                                     return Stream.of(rule);
                             })
                             .collect(Collectors.toCollection(LinkedList::new));
-                    List<CFGProduction> imm = eliminateImmediateLeftRecursion(new CFGProduction(p.getLeftHand(), rightHands),
-                            newGrammar.getProductions().size());
+
+                    List<CFGProduction> imm = CFGProduction.eliminateImmediateLeftRecursion(
+                            new CFGProduction(p.getLeftHand(), rightHands), newGrammar.getProductions().size());
+
+                    //Updating grammar and push to the new grammar
                     input.putProduction(imm.get(0));
                     newGrammar.putAllProduction(imm.stream()
                             .collect(Collectors.toMap(np -> np.getLeftHand().getId(), np -> np)));
@@ -43,27 +47,7 @@ public class GrammarTrimmer
         return newGrammar;
     }
 
-    private static List<CFGProduction> eliminateImmediateLeftRecursion(CFGProduction production, int freeId)
-    {
-        CFGNonTerminal prime = new CFGNonTerminal(freeId);
-        LinkedList<ArrayList<CFGSymbol>> primeRightHands = production.getRightHands().stream()
-                .filter(rightHand -> !rightHand.isEmpty() && rightHand.get(0).equals(production.getLeftHand()))
-                .map(recursive -> new ArrayList<>(recursive.subList(1, recursive.size())))
-                .peek(recursive -> recursive.add(prime))
-                .collect(Collectors.toCollection(LinkedList::new));
-        if (primeRightHands.size() == 0)    //No recursive rule
-            return Collections.singletonList(production);
 
-        primeRightHands.add(new ArrayList<>()); //epsilon
-        LinkedList<ArrayList<CFGSymbol>> newRightHands = production.getRightHands().stream()
-                .filter(rightHand -> rightHand.isEmpty() || !rightHand.get(0).equals(production.getLeftHand()))
-                .map(ArrayList::new)
-                .peek(nonRecursive -> nonRecursive.add(prime))
-                .collect(Collectors.toCollection(LinkedList::new));
-
-        return Arrays.asList(new CFGProduction(production.getLeftHand(), newRightHands),
-                new CFGProduction(prime, primeRightHands));
-    }
 
     public static CFG doLeftFactoring(CFG input)
     {

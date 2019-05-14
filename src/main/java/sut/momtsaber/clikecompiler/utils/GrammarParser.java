@@ -98,7 +98,8 @@ public class GrammarParser
                 parser.parseAndAddProduction(scanner.nextLine());
             CFG grammar = parser.closeAndProduce();
             grammar = GrammarTrimmer.doLeftFactoring(grammar);
-            System.out.println(new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create().toJson(grammar));
+            grammar = GrammarTrimmer.eliminateLeftRecursions(grammar);
+            System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(grammar));
         }
     }
 }

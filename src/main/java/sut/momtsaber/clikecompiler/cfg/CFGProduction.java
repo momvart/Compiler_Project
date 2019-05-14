@@ -72,6 +72,28 @@ public class CFGProduction implements Cloneable
         return retVal;
     }
 
+    public static List<CFGProduction> eliminateImmediateLeftRecursion(CFGProduction production, int freeId)
+    {
+        CFGNonTerminal prime = new CFGNonTerminal(freeId);
+        LinkedList<ArrayList<CFGSymbol>> primeRightHands = production.getRightHands().stream()
+                .filter(rh -> !rh.isEmpty() && rh.get(0).equals(production.getLeftHand()))  //Recursive rules
+                .map(recursive -> new ArrayList<>(recursive.subList(1, recursive.size())))
+                .peek(recursive -> recursive.add(prime))
+                .collect(Collectors.toCollection(LinkedList::new));
+        if (primeRightHands.size() == 0)    //No recursive rule found
+            return Collections.singletonList(production);
+
+        primeRightHands.add(new ArrayList<>()); //epsilon
+        LinkedList<ArrayList<CFGSymbol>> newRightHands = production.getRightHands().stream()
+                .filter(rh -> rh.isEmpty() || !rh.get(0).equals(production.getLeftHand()))
+                .map(ArrayList::new)
+                .peek(nonRecursive -> nonRecursive.add(prime))
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        return Arrays.asList(new CFGProduction(production.getLeftHand(), newRightHands),
+                new CFGProduction(prime, primeRightHands));
+    }
+
     private CFGNonTerminal leftHand;
     private LinkedList<ArrayList<CFGSymbol>> rightHands;
 
