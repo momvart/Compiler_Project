@@ -60,14 +60,17 @@ public class GrammarParser
         {
             CFGNonTerminal left = nonTerminals.get(i);
             LinkedList<ArrayList<CFGSymbol>> right = rawProductions.get(i).stream()
-                    .map(raws -> raws.stream().map(r ->
-                    {
-                        Integer id = nonTerminalIds.get(r);
-                        if (id == null)
-                            return CFGTerminal.parse(r);
-                        else
-                            return nonTerminals.get(id);
-                    }).collect(Collectors.toCollection(ArrayList::new)))
+                    .map(raws -> raws.stream()
+                            .filter(r -> !(r.equals("ϵ") || r.equals("EPS"))) //empty list for epsilon
+                            .map(r ->
+                            {
+                                Integer id = nonTerminalIds.get(r);
+                                if (id == null)
+                                    return CFGTerminal.parse(r);
+                                else
+                                    return nonTerminals.get(id);
+                            })
+                            .collect(Collectors.toCollection(ArrayList::new)))
                     .collect(Collectors.toCollection(LinkedList::new));
             grammar.putProduction(new CFGProduction(left, right));
         }
