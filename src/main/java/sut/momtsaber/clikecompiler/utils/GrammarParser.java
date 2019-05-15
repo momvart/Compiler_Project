@@ -97,8 +97,8 @@ public class GrammarParser
             while (scanner.hasNextLine())
                 parser.parseAndAddProduction(scanner.nextLine());
             CFG grammar = parser.closeAndProduce();
-            grammar = GrammarTrimmer.doLeftFactoring(grammar);
             grammar = GrammarTrimmer.eliminateLeftRecursions(grammar);
+            grammar = GrammarTrimmer.doLeftFactoring(grammar);
             System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(grammar));
         }
     }
