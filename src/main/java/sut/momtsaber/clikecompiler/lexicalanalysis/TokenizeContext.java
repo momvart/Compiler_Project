@@ -1,7 +1,8 @@
 package sut.momtsaber.clikecompiler.lexicalanalysis;
 
-import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.CharacterProvider;
-import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
+import sut.momtsaber.clikecompiler.dfa.Entrance;
+import sut.momtsaber.clikecompiler.lexicalanalysis.dfa.*;
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.*;
 
 
 public class TokenizeContext
@@ -14,9 +15,9 @@ public class TokenizeContext
     private int currentReadPosition;
     private int currentLineNumber;
 
-    private DFAState startState;
-    private DFAState elseState;
-    private DFAState currentState;
+    private TDFAState startState;
+    private TDFAState elseState;
+    private TDFAState currentState;
 
 
     public TokenizeContext(CharacterProvider charProvider)
@@ -27,79 +28,79 @@ public class TokenizeContext
 
     private void init()
     {
-        Entrance symbolEntrance = Entrance.anyOf(Token.SYMBOLS);
-        Entrance type1SymbolEntrance = Entrance.anyOf(TYPE_1_SYMBOLS);
-        Entrance type2SymbolEntrance = Entrance.anyOf(TYPE_2_SYMBOLS);
+        CharEntrance symbolEntrance = CharEntrance.anyOf(Token.SYMBOLS);
+        CharEntrance type1SymbolEntrance = CharEntrance.anyOf(TYPE_1_SYMBOLS);
+        CharEntrance type2SymbolEntrance = CharEntrance.anyOf(TYPE_2_SYMBOLS);
 
-        Entrance singCommentContEntr = Entrance.negative(Entrance.anyOf("\n\0"));
-        Entrance multiCommentContEntr = Entrance.negative(Entrance.anyOf("*"));
+        Entrance<Character> singCommentContEntr = Entrance.negative(CharEntrance.anyOf("\n\0"));
+        Entrance<Character> multiCommentContEntr = Entrance.negative(CharEntrance.anyOf("*"));
 
-        this.startState = new DFAState();
+        this.startState = new TDFAState();
 
-        DFAEdge returnEdge = new DFAEdge(       //The exiting edge from id and number to start state
-                Entrance.or(Entrance.WHITESPACE,
-                        Entrance.of('\0'),
+        TDFAEdge returnEdge = new TDFAEdge(       //The exiting edge from id and number to start state
+                Entrance.or(CharEntrance.WHITESPACE,
+                        CharEntrance.of('\0'),
                         symbolEntrance),
                 startState);
 
-        DFAState numberState = new DFAState(TokenType.NUMBER,
-                new DFAEdge(Entrance.DIGIT, DFAState.SELF),
+        TDFAState numberState = new TDFAState(TokenType.NUMBER,
+                new TDFAEdge(CharEntrance.DIGIT, TDFAState.SELF),
                 returnEdge);
 
-        DFAState idState = new DFAState(TokenType.ID,
-                new DFAEdge(Entrance.LETTER_OR_DIGIT, DFAState.SELF),
+        TDFAState idState = new TDFAState(TokenType.ID,
+                new TDFAEdge(CharEntrance.LETTER_OR_DIGIT, TDFAState.SELF),
                 returnEdge);
 
-        DFAState whiteSpaceState = new DFAState(TokenType.WHITESPACE,
-                new DFAEdge(Entrance.WHITESPACE, DFAState.SELF),
-                new DFAEdge(Entrance.negative(Entrance.WHITESPACE), startState));
+        TDFAState whiteSpaceState = new TDFAState(TokenType.WHITESPACE,
+                new TDFAEdge(CharEntrance.WHITESPACE, TDFAState.SELF),
+                new TDFAEdge(Entrance.negative(CharEntrance.WHITESPACE), startState));
 
         //Symbols
-        DFAState symbolTerminalState = new DFAState(TokenType.SYMBOL,
-                new DFAEdge(Entrance.ANY, startState));
+        TDFAState symbolTerminalState = new TDFAState(TokenType.SYMBOL,
+                new TDFAEdge(CharEntrance.ANY, startState));
 
-        DFAState symbolIntermediateState = new DFAState(TokenType.SYMBOL,
-                new DFAEdge(type2SymbolEntrance, symbolTerminalState),
-                new DFAEdge(Entrance.ANY, startState)
+        TDFAState symbolIntermediateState = new TDFAState(TokenType.SYMBOL,
+                new TDFAEdge(type2SymbolEntrance, symbolTerminalState),
+                new TDFAEdge(CharEntrance.ANY, startState)
         );
 
         //Comment
-        DFAState commentTerminalState = new DFAState(TokenType.COMMENT,
-                new DFAEdge(Entrance.ANY, startState));
-        DFAState commentEndStarState = new DFAState(TokenType.COMMENT);
+        TDFAState commentTerminalState = new TDFAState(TokenType.COMMENT,
+                new TDFAEdge(CharEntrance.ANY, startState));
+        TDFAState commentEndStarState = new TDFAState(TokenType.COMMENT);
 
-        DFAState multiLineCommentContent = new DFAState(TokenType.COMMENT,
-                new DFAEdge(multiCommentContEntr, DFAState.SELF),
-                new DFAEdge(Entrance.STAR, commentEndStarState)
+        TDFAState multiLineCommentContent = new TDFAState(TokenType.COMMENT,
+                new TDFAEdge(multiCommentContEntr, TDFAState.SELF),
+                new TDFAEdge(CharEntrance.STAR, commentEndStarState)
         );
 
         commentEndStarState.setExitingEdges(
-                new DFAEdge(Entrance.SLASH, commentTerminalState),
-                new DFAEdge(Entrance.STAR, DFAState.SELF),
-                new DFAEdge(Entrance.negative(Entrance.or(Entrance.STAR, Entrance.SLASH)), multiLineCommentContent));
-        DFAState singleLineCommentContent = new DFAState(TokenType.COMMENT,
-                new DFAEdge(singCommentContEntr, DFAState.SELF),
-                new DFAEdge(Entrance.anyOf("\n"), commentTerminalState),
-                new DFAEdge(Entrance.anyOf("\0"), startState)
+                new TDFAEdge(CharEntrance.SLASH, commentTerminalState),
+                new TDFAEdge(CharEntrance.STAR, TDFAState.SELF),
+                new TDFAEdge(Entrance.negative(Entrance.or(CharEntrance.STAR, CharEntrance.SLASH)), multiLineCommentContent));
+        TDFAState singleLineCommentContent = new TDFAState(TokenType.COMMENT,
+                new TDFAEdge(singCommentContEntr, TDFAState.SELF),
+                new TDFAEdge(CharEntrance.of('\n'), commentTerminalState),
+                new TDFAEdge(CharEntrance.of('\0'), startState)
         );
-        DFAState commentStartState = new DFAState(TokenType.COMMENT,
-                new DFAEdge(Entrance.STAR, multiLineCommentContent),
-                new DFAEdge(Entrance.SLASH, singleLineCommentContent)
+        TDFAState commentStartState = new TDFAState(TokenType.COMMENT,
+                new TDFAEdge(CharEntrance.STAR, multiLineCommentContent),
+                new TDFAEdge(CharEntrance.SLASH, singleLineCommentContent)
         );
 
         //The start (main) state
         this.startState.setExitingEdges(
-                new DFAEdge(Entrance.DIGIT, numberState),
-                new DFAEdge(Entrance.LETTER, idState),
-                new DFAEdge(Entrance.WHITESPACE, whiteSpaceState),
-                new DFAEdge(type1SymbolEntrance, symbolTerminalState),
-                new DFAEdge(type2SymbolEntrance, symbolIntermediateState),
-                new DFAEdge(Entrance.anyOf("/"), commentStartState)
+                new TDFAEdge(CharEntrance.DIGIT, numberState),
+                new TDFAEdge(CharEntrance.LETTER, idState),
+                new TDFAEdge(CharEntrance.WHITESPACE, whiteSpaceState),
+                new TDFAEdge(type1SymbolEntrance, symbolTerminalState),
+                new TDFAEdge(type2SymbolEntrance, symbolIntermediateState),
+                new TDFAEdge(CharEntrance.of('/'), commentStartState)
         );
 
         //the state to detect invalid inputs
-        this.elseState = new DFAState(TokenType.INVALID,
-                new DFAEdge(Entrance.ANY, startState));
+        this.elseState = new TDFAState(TokenType.INVALID,
+                new TDFAEdge(CharEntrance.ANY, startState));
         this.currentState = startState;
     }
 
@@ -153,7 +154,7 @@ public class TokenizeContext
         do
         {
             lastTokenType = currentState.getTokenType();
-            currentState = currentState.getNextState(nextChar());
+            currentState = currentState.getNextStateOld(nextChar());
 
             if (currentState == null)
                 currentState = elseState;
