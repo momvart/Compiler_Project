@@ -18,7 +18,7 @@ public class GrammarParserTest
         GrammarParser parser = new GrammarParser();
         parser.parseAndAddProduction("S -> NUMBER + S | EPS");
         CFG grammar = parser.closeAndProduce();
-        LinkedList<ArrayList<CFGSymbol>> rightHands = grammar.getProductions().get(0).getRightHands();
+        List<CFGRule> rightHands = grammar.getProductions().get(0).getRightHands();
         CFGSymbol numSymbol = rightHands.get(0).get(0);
         assertTrue(numSymbol instanceof CFGTerminal);
         assertEquals(TokenType.NUMBER, ((CFGTerminal)numSymbol).getTokenType());

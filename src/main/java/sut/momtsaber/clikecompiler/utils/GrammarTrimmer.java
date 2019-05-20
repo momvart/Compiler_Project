@@ -16,20 +16,15 @@ public class GrammarTrimmer
                 .sorted(Comparator.comparingInt(p -> p.getLeftHand().getId()))
                 .forEach(p ->
                 {
-                    LinkedList<ArrayList<CFGSymbol>> rightHands = p.getRightHands().stream()
+                    LinkedList<CFGRule> rightHands = p.getRightHands().stream()
                             .flatMap(rule ->
                             {
-                                if (!rule.isEmpty() &&
+                                if (!rule.isEpsilon() &&
                                         rule.get(0) instanceof CFGNonTerminal &&
                                         ((CFGNonTerminal)rule.get(0)).getId() < p.getLeftHand().getId())
                                     //Replacing A_i -> A_j a with A_i -> g1 a | g2 a where A_j -> g1 | g2
                                     return newGrammar.getProduction(((CFGNonTerminal)rule.get(0)).getId()).getRightHands().stream()
-                                            .map(r ->
-                                            {
-                                                ArrayList<CFGSymbol> newTerm = new ArrayList<>(r);
-                                                newTerm.addAll(rule.subList(1, rule.size()));
-                                                return newTerm;
-                                            });
+                                            .map(r -> r.concat(rule.subRule(1)));
                                 else
                                     return Stream.of(rule);
                             })

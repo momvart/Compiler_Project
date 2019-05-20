@@ -10,22 +10,22 @@ public class CFGProduction implements Cloneable
         Map<Integer, CFGProduction> retVal = new HashMap<>();
 
         CFGProduction clone = (CFGProduction)product.clone();
-        LinkedList<ArrayList<CFGSymbol>> finalRightHands = new LinkedList<>();
+        LinkedList<CFGRule> finalRightHands = new LinkedList<>();
         while (clone.rightHands.size() > 0)
         {
-            ArrayList<CFGSymbol> term = clone.rightHands.peek();
-            if (term.isEmpty()) //epsilon
+            CFGRule rule = clone.rightHands.peek();
+            if (rule.isEpsilon())
             {
                 finalRightHands.add(clone.rightHands.poll());
                 continue;
             }
 
             ArrayList<Integer> commonsCount = clone.rightHands.stream()
-                    .map(t ->
+                    .map(r ->
                     {
                         int i = 0;
-                        for (; i < Math.min(t.size(), term.size()); i++)
-                            if (!t.get(i).equals(term.get(i)))
+                        for (; i < Math.min(r.size(), rule.size()); i++)
+                            if (!r.get(i).equals(rule.get(i)))
                                 break;
                         return i;
                     })
@@ -42,20 +42,19 @@ public class CFGProduction implements Cloneable
 
                 CFGNonTerminal uncommon = new CFGNonTerminal(freeId++);
                 int minCount = commonsCount.get(minIndex.get());
-                ArrayList<CFGSymbol> newTerm = new ArrayList<>(term.subList(0, minCount));
-                newTerm.add(uncommon);
-                finalRightHands.add(newTerm);
+                CFGRule newRule = rule.subRule(0, minCount);
+                newRule.add(uncommon);
+                finalRightHands.add(newRule);
 
                 CFGProduction uncommonProduct = new CFGProduction(uncommon, possibleTermsIndices.stream()
                         .map(clone.rightHands::get)
-                        .map(it -> it.subList(minCount, it.size()))
-                        .map(ArrayList::new)
+                        .map(it -> it.subRule(minCount, it.size()))
                         .collect(Collectors.toCollection(LinkedList::new)));
 
                 retVal.putAll(leftFactor(uncommonProduct, freeId));
             }
             else
-                finalRightHands.add(term);
+                finalRightHands.add(rule);
             //Removing
             {
                 Iterator it = clone.rightHands.iterator();
@@ -75,18 +74,18 @@ public class CFGProduction implements Cloneable
     public static List<CFGProduction> eliminateImmediateLeftRecursion(CFGProduction production, int freeId)
     {
         CFGNonTerminal prime = new CFGNonTerminal(freeId);
-        LinkedList<ArrayList<CFGSymbol>> primeRightHands = production.getRightHands().stream()
+        LinkedList<CFGRule> primeRightHands = production.getRightHands().stream()
                 .filter(rh -> !rh.isEmpty() && rh.get(0).equals(production.getLeftHand()))  //Recursive rules
-                .map(recursive -> new ArrayList<>(recursive.subList(1, recursive.size())))
+                .map(recursive -> recursive.subRule(1, recursive.size()))
                 .peek(recursive -> recursive.add(prime))
                 .collect(Collectors.toCollection(LinkedList::new));
         if (primeRightHands.size() == 0)    //No recursive rule found
             return Collections.singletonList(production);
 
-        primeRightHands.add(new ArrayList<>()); //epsilon
-        LinkedList<ArrayList<CFGSymbol>> newRightHands = production.getRightHands().stream()
-                .filter(rh -> rh.isEmpty() || !rh.get(0).equals(production.getLeftHand()))
-                .map(ArrayList::new)
+        primeRightHands.add(CFGRule.createEpsilon()); //epsilon
+        LinkedList<CFGRule> newRightHands = production.getRightHands().stream()
+                .filter(rh -> rh.isEpsilon() || !rh.get(0).equals(production.getLeftHand()))
+                .map(CFGRule::clone)    //keeping the source unchanged
                 .peek(nonRecursive -> nonRecursive.add(prime))
                 .collect(Collectors.toCollection(LinkedList::new));
 
@@ -95,9 +94,9 @@ public class CFGProduction implements Cloneable
     }
 
     private CFGNonTerminal leftHand;
-    private LinkedList<ArrayList<CFGSymbol>> rightHands;
+    private LinkedList<CFGRule> rightHands;
 
-    public CFGProduction(CFGNonTerminal leftHand, LinkedList<ArrayList<CFGSymbol>> rightHands)
+    public CFGProduction(CFGNonTerminal leftHand, LinkedList<CFGRule> rightHands)
     {
         this.leftHand = leftHand;
         this.rightHands = rightHands;
@@ -108,7 +107,7 @@ public class CFGProduction implements Cloneable
         return leftHand;
     }
 
-    public LinkedList<ArrayList<CFGSymbol>> getRightHands()
+    public LinkedList<CFGRule> getRightHands()
     {
         return rightHands;
     }
@@ -116,8 +115,8 @@ public class CFGProduction implements Cloneable
     @Override
     protected Object clone()
     {
-        LinkedList<ArrayList<CFGSymbol>> rightCopy = new LinkedList<>();
-        rightHands.forEach(term -> rightCopy.add(new ArrayList<>(term)));
+        LinkedList<CFGRule> rightCopy = new LinkedList<>();
+        rightHands.forEach(rule -> rightCopy.add(new CFGRule(rule)));
         return new CFGProduction(leftHand, rightCopy);
     }
 
