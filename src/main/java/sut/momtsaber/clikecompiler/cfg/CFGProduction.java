@@ -1,7 +1,20 @@
 package sut.momtsaber.clikecompiler.cfg;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import sut.momtsaber.clikecompiler.parser.DFA;
 
 public class CFGProduction implements Cloneable
 {
@@ -92,6 +105,7 @@ public class CFGProduction implements Cloneable
         return Arrays.asList(new CFGProduction(production.getLeftHand(), newRightHands),
                 new CFGProduction(prime, primeRightHands));
     }
+
 
     private CFGNonTerminal leftHand;
     private LinkedList<CFGRule> rightHands;

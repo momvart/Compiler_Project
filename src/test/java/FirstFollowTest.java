@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import sut.momtsaber.clikecompiler.FirstFollowProducer;
+import sut.momtsaber.clikecompiler.utils.FirstFollowProducer;
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGTerminal;

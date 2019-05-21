@@ -2,6 +2,8 @@ package sut.momtsaber.clikecompiler.dfa;
 
 import java.util.Arrays;
 
+import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+
 public interface Entrance<T>
 {
     boolean canEnter(T input);
@@ -16,4 +18,5 @@ public interface Entrance<T>
     {
         return input -> !entrance.canEnter(input);
     }
+    public static Entrance<Token> any = input -> true;
 }

@@ -1,4 +1,4 @@
-package sut.momtsaber.clikecompiler;
+package sut.momtsaber.clikecompiler.utils;
 
 import java.util.*;
 

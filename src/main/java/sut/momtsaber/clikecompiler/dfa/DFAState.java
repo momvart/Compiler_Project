@@ -1,14 +1,19 @@
 package sut.momtsaber.clikecompiler.dfa;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
+import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
 
 public class DFAState<T>
 {
     public static final DFAState SELF = new DFAState();
 
     private List<DFAEdge<T>> exitingEdges;
-
+    private CFGNonTerminal referencing;
+    private CFGTerminal consumed;
     public DFAState()
     { }
 
@@ -21,6 +26,12 @@ public class DFAState<T>
     {
         this.exitingEdges = Arrays.asList(exitingEdges);
     }
+    public void addExitEdge(DFAEdge<T> exitEdge)
+    {
+        if (exitingEdges == null)
+            exitingEdges = new ArrayList<>();
+        this.exitingEdges.add(exitEdge);
+    }
 
     public NextStateResult<T> getNextState(T input)
     {
@@ -31,6 +42,27 @@ public class DFAState<T>
                         edge.getNextState() == SELF ? DFAState.this : edge.getNextState(),
                         edge.isConsuming()))
                 .orElse(null);
+    }
+
+
+    public CFGNonTerminal getReferencing()
+    {
+        return referencing;
+    }
+
+    public void setReferencing(CFGNonTerminal referencing)
+    {
+        this.referencing = referencing;
+    }
+
+    public CFGTerminal getConsumed()
+    {
+        return consumed;
+    }
+
+    public void setConsumed(CFGTerminal consumed)
+    {
+        this.consumed = consumed;
     }
 
     public static class NextStateResult<T>
@@ -53,5 +85,6 @@ public class DFAState<T>
         {
             return consuming;
         }
+
     }
 }

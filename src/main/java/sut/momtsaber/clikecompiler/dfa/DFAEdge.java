@@ -27,4 +27,5 @@ public class DFAEdge<T>
     {
         return consuming;
     }
+
 }
