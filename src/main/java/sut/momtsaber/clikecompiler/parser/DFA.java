@@ -56,14 +56,15 @@ public class DFA
     static DFA getDFA(CFGProduction production, CFG grammar)
     {
         DFA dfa = new DFA(new DFAState<>(), new DFAState<>());
-        for (CFGRule rule : production.getRightHands())
+        for (int i = 0; i < production.getRightHands().size(); i++)
         {
+            CFGRule rule = production.getRightHands().get(i);
             // restarting the currentPosition in the beginning of the rule
             DFAState<Token> currentPosition = dfa.getStartState();
 
             //calculating the entrance with which the input should go into this rule
             Entrance<Token> ruleEntrance;
-            Set<CFGTerminal> matchList = grammar.findFirst(new ArrayList<>(rule), null, true);
+            Set<CFGTerminal> matchList = grammar.findFirst(production, i);
             if (matchList.contains(CFGTerminal.EPSILON))
                 matchList.addAll(grammar.findFollow(production.getLeftHand()));
             ruleEntrance = Entrance.matches(matchList);

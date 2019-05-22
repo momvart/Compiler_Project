@@ -1,13 +1,7 @@
 package sut.momtsaber.clikecompiler.cfg;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.BiFunction;
 
 public class CFG
 {
@@ -16,6 +10,9 @@ public class CFG
     private HashMap<Integer, String> nonTerminalNames = new HashMap<>();
 
     private LinkedHashMap<Integer, CFGProduction> productions = new LinkedHashMap<>();
+
+    private HashMap<Integer, Set<CFGTerminal>> cachedFirsts = new HashMap<>();
+    private HashMap<Integer, Set<CFGTerminal>> cachedFollows = new HashMap<>();
 
     public void putProduction(CFGProduction production)
     {
@@ -44,25 +41,49 @@ public class CFG
     }
 
 
+    private static final BiFunction<Integer, Integer, Integer> firstKeyBuilder = (ntId, ruleIndex) ->
+            (ntId << Integer.SIZE / 2) + (ruleIndex & 0xFFFF);
+
     public Set<CFGTerminal> findFirst(CFGSymbol subject)
     {
-        Set<CFGTerminal> firstSet = new HashSet<>();
         if (subject instanceof CFGTerminal)
             return new HashSet<>(Collections.singletonList((CFGTerminal)subject));
+
         CFGNonTerminal nonTerminal = (CFGNonTerminal)subject;
-        for (List<CFGSymbol> rightHand : this.getProductions().get(nonTerminal.getId()).getRightHands())
-            firstSet.addAll(findFirst(new ArrayList<>(rightHand), null, true));
+        Integer key = firstKeyBuilder.apply(nonTerminal.getId(), -1);
+        Set<CFGTerminal> firstSet = cachedFirsts.get(key);
+        if (firstSet != null)       //cached
+            return firstSet;
+
+        firstSet = new HashSet<>();
+        CFGProduction production = getProduction(nonTerminal.getId());
+        for (int i = 0; i < production.getRightHands().size(); i++)
+            firstSet.addAll(findFirst(production, i));
+        cachedFirsts.put(key, firstSet);
         return firstSet;
     }
 
-    public Set<CFGTerminal> findFirst(ArrayList<CFGSymbol> seri, ArrayList<CFGSymbol> parent, boolean first_time_call)
+    public Set<CFGTerminal> findFirst(CFGProduction production, int index)
+    {
+        Integer key = firstKeyBuilder.apply(production.getLeftHand().getId(), index);
+        Set<CFGTerminal> firstSet = cachedFirsts.get(key);
+        if (firstSet != null)       //cached
+            return firstSet;
+
+        //TODO: linked list accessed by index
+        firstSet = findFirstInternal(Collections.unmodifiableList(production.getRightHands().get(index)), null, true);
+        cachedFirsts.put(key, firstSet);
+        return firstSet;
+    }
+
+    private Set<CFGTerminal> findFirstInternal(List<CFGSymbol> seri, List<CFGSymbol> parent, boolean firstTimeCall)
     {
         Set<CFGTerminal> firstSet = new HashSet<>();
         if (seri.size() == 0)
-            if (first_time_call || parent.size() <= 0)
+            if (firstTimeCall || parent.size() <= 0)
                 return new HashSet<>(Collections.singletonList(CFGTerminal.EPSILON));
             else
-                firstSet.addAll(findFirst(new ArrayList<>(parent.subList(0, 1)), new ArrayList<>(parent.subList(1, parent.size())), false));
+                firstSet.addAll(findFirstInternal(parent.subList(0, 1), parent.subList(1, parent.size()), false));
         else
         {
             CFGSymbol startSymbol = seri.get(0);
@@ -72,7 +93,7 @@ public class CFG
             {
                 CFGNonTerminal nonTerminal = (CFGNonTerminal)startSymbol;
                 for (List<CFGSymbol> rightHand : this.getProductions().get(nonTerminal.getId()).getRightHands())
-                    firstSet.addAll(findFirst(new ArrayList<>(rightHand), new ArrayList<>(seri.subList(1, seri.size())), false));
+                    firstSet.addAll(findFirstInternal(Collections.unmodifiableList(rightHand), seri.subList(1, seri.size()), false));
             }
         }
         return firstSet;
@@ -80,7 +101,11 @@ public class CFG
 
     public Set<CFGTerminal> findFollow(CFGNonTerminal myCase)
     {
-        Set<CFGTerminal> followSet = new HashSet<>();
+        Set<CFGTerminal> followSet = cachedFollows.get(myCase.getId());
+        if (followSet != null)      //cached
+            return followSet;
+
+        followSet = new HashSet<>();
         if (myCase.equals(this.getProductions().get(0).getLeftHand()))
             followSet.add(CFGTerminal.EOF);
         for (Map.Entry<Integer, CFGProduction> entry : this.getProductions().entrySet())

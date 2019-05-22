@@ -100,6 +100,7 @@ public class GrammarParser
             CFG grammar = parser.closeAndProduce();
             grammar = GrammarTrimmer.eliminateLeftRecursions(grammar);
             grammar = GrammarTrimmer.doLeftFactoring(grammar);
+
             System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(grammar));
         }
     }

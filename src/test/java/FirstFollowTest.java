@@ -65,39 +65,17 @@ public class FirstFollowTest
     {
         if (!(expected.size() == observed.size()))
             return false;
-        for (Set<CFGTerminal> item : expected)
-            if (!checkEqual(item, observed.get(expected.indexOf(item))))
+        for (int i = 0; i < expected.size(); i++)
+        {
+            if (!expected.get(i).equals(observed.get(i)))
             {
-                System.out.println(item);
-                System.out.println(observed.get(expected.indexOf(item)));
+                System.out.println(expected.get(i));
+                System.out.println(observed.get(i));
                 return false;
             }
+        }
 
         return true;
-    }
-
-    private boolean checkEqual(Set<CFGTerminal> first, Set<CFGTerminal> second)
-    {
-        if (first.size() != second.size())
-            return false;
-        ArrayList<CFGTerminal> copyfirst = new ArrayList<>(first);
-        ArrayList<CFGTerminal> copysecond = new ArrayList<>(second);
-        ArrayList<CFGTerminal> matched = new ArrayList<>();
-        for (CFGTerminal firstTerminal : copyfirst)
-            for (CFGTerminal secondTerminal : copysecond)
-            {
-                if (matched.contains(firstTerminal) || matched.contains(secondTerminal))
-                    continue;
-                if (firstTerminal.getTokenType() == secondTerminal.getTokenType() &&
-                        ((firstTerminal.getValue() == null && secondTerminal.getValue() == null) ||
-                                (firstTerminal.getValue() != null && firstTerminal.getValue().equals(secondTerminal.getValue()))
-                        ))
-                {
-                    matched.add(firstTerminal);
-                    matched.add(secondTerminal);
-                }
-            }
-        return matched.size() == 2 * first.size();
     }
 
     @Test

@@ -110,10 +110,10 @@ public class CFGProduction implements Cloneable
     private CFGNonTerminal leftHand;
     private LinkedList<CFGRule> rightHands;
 
-    public CFGProduction(CFGNonTerminal leftHand, LinkedList<CFGRule> rightHands)
+    public CFGProduction(CFGNonTerminal leftHand, List<CFGRule> rightHands)
     {
         this.leftHand = leftHand;
-        this.rightHands = rightHands;
+        this.rightHands = new LinkedList<>(rightHands);
     }
 
     public CFGNonTerminal getLeftHand()
