@@ -24,7 +24,7 @@ public class FirstFollowProducer
         return firstSet;
     }
 
-    private static Set<CFGTerminal> findFirst(ArrayList<CFGSymbol> seri, ArrayList<CFGSymbol> parent, boolean first_time_call)
+    public static Set<CFGTerminal> findFirst(ArrayList<CFGSymbol> seri, ArrayList<CFGSymbol> parent, boolean first_time_call)
     {
         Set<CFGTerminal> firstSet = new HashSet<>();
         if (seri.size() == 0)
