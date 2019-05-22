@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import sut.momtsaber.clikecompiler.Main;
+import sut.momtsaber.clikecompiler.Phase0Main;
 
 public class LexicalFileTest
 {
@@ -21,7 +21,7 @@ public class LexicalFileTest
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-            Main.scan(in, out, err);
+            Phase0Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts
@@ -42,7 +42,7 @@ public class LexicalFileTest
              ByteArrayOutputStream out = new ByteArrayOutputStream();
              ByteArrayOutputStream err = new ByteArrayOutputStream())
         {
-            Main.scan(in, out, err);
+            Phase0Main.scan(in, out, err);
             outputString = out.toString();
             errorString = err.toString();
             //TODO: write some asserts

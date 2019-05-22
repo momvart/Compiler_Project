@@ -3,10 +3,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
-import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
+import sut.momtsaber.clikecompiler.lexicalanalysis.*;
+import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.*;
 
 public class LexicalTest
 {

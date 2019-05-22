@@ -15,7 +15,6 @@ import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.utils.FirstFollowProducer;
 
 public class DFA
 {

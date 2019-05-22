@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import sut.momtsaber.clikecompiler.utils.FirstFollowProducer;
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
@@ -55,7 +54,6 @@ public class FirstFollowTest
         expectedFollows.add(new HashSet<>(Arrays.asList(ter("+"), CFGTerminal.EOF, ter(")"))));
         expectedFollows.add(new HashSet<>(Arrays.asList(ter("+"), CFGTerminal.EOF, ter(")"))));
         expectedFollows.add(new HashSet<>(Arrays.asList(ter("*"), ter("+"), CFGTerminal.EOF, ter(")"))));
-        FirstFollowProducer.init(grammar);
     }
 
     private CFGTerminal ter(String raw)

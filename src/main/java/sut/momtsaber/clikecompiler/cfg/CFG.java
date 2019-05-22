@@ -78,7 +78,6 @@ public class CFG
         return firstSet;
     }
 
-
     public Set<CFGTerminal> findFollow(CFGNonTerminal myCase)
     {
         Set<CFGTerminal> followSet = new HashSet<>();

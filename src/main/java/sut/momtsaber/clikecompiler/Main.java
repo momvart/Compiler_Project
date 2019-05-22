@@ -1,10 +1,5 @@
 package sut.momtsaber.clikecompiler;
 
-import java.io.*;
-
-import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
-import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 
 public class Main
 {
@@ -23,61 +18,6 @@ public class Main
             err = args[2];
         else
             err = "lexical_errors.txt";
-        scan(in, out, err);
-    }
-
-    public static void scan(String inputPath, String outputPath, String errorPath)
-    {
-        try (InputStream input = new FileInputStream(inputPath);
-             OutputStream output = new FileOutputStream(outputPath, false);
-             OutputStream error = new FileOutputStream(errorPath, false))
-        {
-            scan(input, output, error);
-        }
-        catch (IOException ex) { ex.printStackTrace(); }
-    }
-
-    public static void scan(InputStream input, OutputStream output, OutputStream error)
-    {
-        int outputLineNum = 1;
-        int prevOutputLineNum = 0;
-        PrintStream outPrinter = new PrintStream(output),
-                errPrinter = new PrintStream(error);
-
-        TokenizeContext context = new TokenizeContext(new ReaderCharacterProvider(input));
-
-        boolean first = true;
-
-
-        while (context.hasNextToken())
-        {
-            Token token = context.getNextToken();
-
-            switch (token.getType())
-            {
-                case COMMENT:
-                case WHITESPACE:
-                    break;
-                case INVALID:
-                    errPrinter.printf("%d. (%s, invalid input)%n", outputLineNum, token.getValue());
-                    break;
-                default:
-                    if (prevOutputLineNum != outputLineNum)
-                    {
-                        if (first)
-                        {
-                            outPrinter.printf("%d. ", outputLineNum);
-                            first = false;
-                        }
-                        else
-                            outPrinter.printf("%n%d. ", outputLineNum);
-                        prevOutputLineNum = outputLineNum;
-                    }
-                    outPrinter.printf("%s ", token.toString());
-                    break;
-            }
-            outputLineNum = context.getCurrentLineNumber();
-        }
 
     }
 }

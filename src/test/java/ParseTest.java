@@ -8,7 +8,6 @@ import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.parser.ParseContext;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
-import sut.momtsaber.clikecompiler.utils.FirstFollowProducer;
 import sut.momtsaber.clikecompiler.utils.GrammarParser;
 
 public class ParseTest
@@ -26,7 +25,6 @@ public class ParseTest
         parser.parseAndAddProduction("Y -> * F Y | EPS");
         parser.parseAndAddProduction("F -> ( E ) | -");
         grammar = parser.closeAndProduce();
-        FirstFollowProducer.init(grammar);
         context = new ParseContext(grammar);
     }
 
