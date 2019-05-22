@@ -1,0 +1,32 @@
+program -> declaration_list EOF 
+declaration_list -> declaration_list declaration | ϵ 
+declaration -> var_declaration | fun_declaration 
+var_declaration -> type_specifier ID ; | type_specifier ID [ NUMBER ] ; 
+type_specifier -> int | void 
+fun_declaration -> type_specifier ID ( params ) compound_stmt 
+params -> param_list | void 
+param_list -> param_list , param | param 
+param -> type_specifier ID | type_specifier ID [ ] 
+compound_stmt -> { declaration_list statement_list } 
+statement_list -> statement_list statement | ϵ 
+statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt 
+expression_stmt -> expression ; | continue ; | break ; | ; 
+selection_stmt -> if ( expression ) statement else statement 
+iteration_stmt -> while ( expression ) statement 
+return_stmt -> return ; | return expression ; 
+switch_stmt -> switch ( expression ) { case_stmts default_stmt } 
+case_stmts -> case_stmts case_stmt | ϵ 
+case_stmt -> case NUMBER : statement_list 
+default_stmt -> default : statement_list | ϵ
+expression -> var = expression | simple_expression 
+var -> ID | ID [ expression ] 
+simple_expression -> additive_expression relop additive_expression | additive_expression 
+relop -> < | == 
+additive_expression -> additive_expression addop term | term 
+addop -> + | -
+term -> term * signed_factor | signed_factor 
+signed_factor -> factor | + factor | - factor 
+factor -> ( expression ) | var | call | NUMBER 
+call -> ID ( args ) 
+args -> arg_list | ϵ 
+arg_list -> arg_list , expression | expression
