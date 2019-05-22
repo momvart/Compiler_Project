@@ -26,11 +26,11 @@ public class ParseContext
         init(grammar);
     }
 
-    public void init(CFG cfg)
+    private void init(CFG cfg)
     {
         grammar = cfg;
-        DFAs = grammar.getProductions().keySet().stream().map(key -> grammar.getProductions().get(key)).map(DFA::getDFA).collect(Collectors.toList());
-        currentDFA = DFA.getDFA(grammar.getProductions().get(0));
+        DFAs = grammar.getProductions().keySet().stream().map(key -> grammar.getProductions().get(key)).map(production -> DFA.getDFA(production, grammar)).collect(Collectors.toList());
+        currentDFA = DFA.getDFA(grammar.getProductions().get(0), grammar);
         dfaStack = new Stack<>();
         dfaStack.push(currentDFA);
     }
@@ -54,7 +54,7 @@ public class ParseContext
             {
                 int reference = response.getReferencing().getId();
                 currentDFA.getCurrentState().setReferencing(null);
-                dfaStack.push(DFA.getDFA(grammar.getProductions().get(reference)));
+                dfaStack.push(DFA.getDFA(grammar.getProductions().get(reference), grammar));
                 ParseTree newTree = new ParseTree(grammar.getProductions().get(reference).getLeftHand());
                 treeStack.peek().addNonTerminal(grammar.getProductions().get(reference).getLeftHand(), newTree);
                 treeStack.push(newTree);

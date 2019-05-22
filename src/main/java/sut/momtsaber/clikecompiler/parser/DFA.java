@@ -1,11 +1,11 @@
 package sut.momtsaber.clikecompiler.parser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGProduction;
 import sut.momtsaber.clikecompiler.cfg.CFGRule;
@@ -15,9 +15,7 @@ import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.utils.FirstFollowProducer;
-import sut.momtsaber.clikecompiler.utils.FuncProvider;
 
 public class DFA
 {
@@ -56,7 +54,7 @@ public class DFA
         return new DFAResponse(currentState.equals(acceptState), result.isConsuming(), currentState.getConsumed(), currentState.getReferencing());
     }
 
-    static DFA getDFA(CFGProduction production)
+    static DFA getDFA(CFGProduction production, CFG grammar)
     {
         DFA dfa = new DFA(new DFAState<>(), new DFAState<>());
         for (CFGRule rule : production.getRightHands())
@@ -66,9 +64,9 @@ public class DFA
 
             //calculating the entrance with which the input should go into this rule
             Entrance<Token> ruleEntrance;
-            Set<CFGTerminal> matchList = FirstFollowProducer.findFirst(new ArrayList<>(rule), null, true);
+            Set<CFGTerminal> matchList = grammar.findFirst(new ArrayList<>(rule), null, true);
             if (matchList.contains(CFGTerminal.EPSILON))
-                matchList.addAll(FirstFollowProducer.findFollow(production.getLeftHand()));
+                matchList.addAll(grammar.findFollow(production.getLeftHand()));
             ruleEntrance = Entrance.matches(matchList);
 
             if (rule.isEpsilon())

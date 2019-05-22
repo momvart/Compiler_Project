@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FirstFollowTest
 {
+    private CFG grammar;
     private ArrayList<CFGNonTerminal> nonTerminals = new ArrayList<>();
     private ArrayList<CFGTerminal> terminals = new ArrayList<>();
     private ArrayList<Set<CFGTerminal>> expectedFirsts = new ArrayList<>();
@@ -31,7 +32,7 @@ public class FirstFollowTest
         parser.parseAndAddProduction("T -> F Y");
         parser.parseAndAddProduction("Y -> * F Y | EPS");
         parser.parseAndAddProduction("F -> ( E ) | -");
-        CFG grammar = parser.closeAndProduce();
+        grammar = parser.closeAndProduce();
         grammar.getProductions().forEach((k, v) -> nonTerminals.add(v.getLeftHand()));
         grammar.getProductions().forEach((k, v) -> v.getRightHands().forEach(rhs -> {
             rhs.forEach(symbol -> {
@@ -106,7 +107,7 @@ public class FirstFollowTest
     {
         ArrayList<Set<CFGTerminal>> observedFirsts = new ArrayList<>();
         for (CFGNonTerminal nonTerminal : nonTerminals)
-            observedFirsts.add(FirstFollowProducer.findFirst(nonTerminal));
+            observedFirsts.add(grammar.findFirst(nonTerminal));
         assertTrue(checkEqual(expectedFirsts, observedFirsts));
     }
 
@@ -115,7 +116,7 @@ public class FirstFollowTest
     {
         ArrayList<Set<CFGTerminal>> observedFollows = new ArrayList<>();
         for (CFGNonTerminal nonTerminal : nonTerminals)
-            observedFollows.add(FirstFollowProducer.findFollow(nonTerminal));
+            observedFollows.add(grammar.findFollow(nonTerminal));
         assertTrue(checkEqual(expectedFollows, observedFollows));
     }
 

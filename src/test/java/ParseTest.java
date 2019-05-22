@@ -25,7 +25,6 @@ public class ParseTest
         parser.parseAndAddProduction("T -> F Y");
         parser.parseAndAddProduction("Y -> * F Y | EPS");
         parser.parseAndAddProduction("F -> ( E ) | -");
-//        parser.parseAndAddProduction("E -> * E | EPS");
         grammar = parser.closeAndProduce();
         FirstFollowProducer.init(grammar);
         context = new ParseContext(grammar);
