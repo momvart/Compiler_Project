@@ -66,6 +66,13 @@ public class CFGRule implements List<CFGSymbol>
     @Override
     public CFGRule clone() {return new CFGRule(symbols);}
 
+    @Override
+    public String toString()
+    {
+        return isEpsilon() ? "EPS" :
+                String.join(" ", (Iterable<String>)() -> stream().map(Object::toString).iterator());
+    }
+
     //region Delegated
     @Override
     public int size() {return symbols.size();}
@@ -156,9 +163,6 @@ public class CFGRule implements List<CFGSymbol>
 
     @Override
     public boolean containsAll(Collection<?> c) {return symbols.containsAll(c);}
-
-    @Override
-    public String toString() {return symbols.toString();}
 
     @Override
     public Stream<CFGSymbol> stream() {return symbols.stream();}

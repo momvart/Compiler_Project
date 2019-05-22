@@ -106,24 +106,28 @@ public class CFG
             return followSet;
 
         followSet = new HashSet<>();
-        if (myCase.equals(this.getProductions().get(0).getLeftHand()))
+        cachedFollows.put(myCase.getId(), followSet);
+        if (myCase.getId() == 0)      //initial state
             followSet.add(CFGTerminal.EOF);
-        for (Map.Entry<Integer, CFGProduction> entry : this.getProductions().entrySet())
-            for (List<CFGSymbol> rightHand : entry.getValue().getRightHands())
-                for (CFGSymbol symbol : rightHand)
+        for (CFGProduction production : getProductions().values())
+            for (CFGRule rightHand : production.getRightHands())
+                for (int iSymbol = 0; iSymbol < rightHand.size(); iSymbol++)
+                {
+                    CFGSymbol symbol = rightHand.get(iSymbol);
                     if (symbol.equals(myCase))
-                        if (rightHand.indexOf(symbol) == rightHand.size() - 1 && !entry.getValue().getLeftHand().equals(symbol))
-                            followSet.addAll(findFollow(entry.getValue().getLeftHand()));
+                        if (iSymbol == rightHand.size() - 1 && !production.getLeftHand().equals(symbol))
+                            followSet.addAll(findFollow(production.getLeftHand()));
                         else
-                            for (int i = rightHand.indexOf(symbol) + 1; i < rightHand.size(); i++)
+                            for (int i = iSymbol + 1; i < rightHand.size(); i++)
                             {
                                 Set<CFGTerminal> found = findFirst(rightHand.get(i));
                                 followSet.addAll(found);
                                 if (!found.contains(CFGTerminal.EPSILON))
                                     break;
-                                if (i == rightHand.size() - 1)
-                                    followSet.addAll(findFollow(entry.getValue().getLeftHand()));
+                                if (i == rightHand.size() - 1 && !production.getLeftHand().equals(symbol))
+                                    followSet.addAll(findFollow(production.getLeftHand()));
                             }
+                }
         followSet.remove(CFGTerminal.EPSILON);
         return followSet;
     }

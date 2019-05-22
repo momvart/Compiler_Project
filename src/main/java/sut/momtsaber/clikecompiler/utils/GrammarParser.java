@@ -19,7 +19,7 @@ public class GrammarParser
     public void parseAndAddProduction(String production)
     {
         {
-            Pattern p = Pattern.compile("(\\w+)\\s*->\\s*");
+            Pattern p = Pattern.compile("(\\w+'?)\\s*->\\s*");
             Matcher m = p.matcher(production);
             if (!m.find())
                 throw new InvalidProductionException("Left hand side not found.");
@@ -100,7 +100,11 @@ public class GrammarParser
             CFG grammar = parser.closeAndProduce();
             grammar = GrammarTrimmer.eliminateLeftRecursions(grammar);
             grammar = GrammarTrimmer.doLeftFactoring(grammar);
-
+            for (CFGProduction production : grammar.getProductions().values())   //forcing caches to be generated
+            {
+                grammar.findFirst(production.getLeftHand());
+                grammar.findFollow(production.getLeftHand());
+            }
             System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(grammar));
         }
     }

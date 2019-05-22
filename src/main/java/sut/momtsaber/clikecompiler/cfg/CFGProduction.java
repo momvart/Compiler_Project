@@ -1,20 +1,7 @@
 package sut.momtsaber.clikecompiler.cfg;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import sut.momtsaber.clikecompiler.parser.DFA;
+import java.util.*;
+import java.util.stream.*;
 
 public class CFGProduction implements Cloneable
 {
@@ -139,8 +126,6 @@ public class CFGProduction implements Cloneable
     {
         return leftHand + " -> " +
                 String.join(" | ", (Iterable<String>)() -> rightHands.stream()
-                        .map(rh -> rh.isEmpty() ? "EPS" :
-                                String.join(" ", (Iterable<String>)() -> rh.stream()
-                                        .map(Object::toString).iterator())).iterator());
+                        .map(Objects::toString).iterator());
     }
 }
