@@ -25,6 +25,7 @@ public class DFAState<T>
     {
         this.exitingEdges = Arrays.asList(exitingEdges);
     }
+
     public void addExitEdge(DFAEdge<T> exitEdge)
     {
         if (exitingEdges == null)
@@ -38,6 +39,7 @@ public class DFAState<T>
                 .filter(edge -> edge.getEntrance().canEnter(input))
                 .findFirst()
                 .map(edge -> new NextStateResult<>(
+                        edge,
                         edge.getNextState() == SELF ? DFAState.this : edge.getNextState(),
                         edge.isConsuming()))
                 .orElse(null);
@@ -45,13 +47,20 @@ public class DFAState<T>
 
     public static class NextStateResult<T>
     {
+        private final DFAEdge<T> edge;
         private final DFAState<T> nextState;
         private final boolean consuming;
 
-        public NextStateResult(DFAState<T> nextState, boolean consuming)
+        public NextStateResult(DFAEdge<T> edge, DFAState<T> nextState, boolean consuming)
         {
+            this.edge = edge;
             this.nextState = nextState;
             this.consuming = consuming;
+        }
+
+        public DFAEdge<T> getEdge()
+        {
+            return edge;
         }
 
         public DFAState<T> getNextState()
