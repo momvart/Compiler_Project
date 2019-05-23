@@ -1,14 +1,6 @@
 package sut.momtsaber.clikecompiler.dfa;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-
-import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
-import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
 public interface Entrance<T>
 {

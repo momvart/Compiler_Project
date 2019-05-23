@@ -1,4 +1,3 @@
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,11 +11,9 @@ import sut.momtsaber.clikecompiler.utils.GrammarParser;
 
 public class ParseTest
 {
-    private ParseContext context;
 
-    private CFG grammar;
-    @Before
-    public void init()
+    @Test
+    public void test1()
     {
         GrammarParser parser = new GrammarParser();
         parser.parseAndAddProduction("E -> T R");
@@ -24,20 +21,34 @@ public class ParseTest
         parser.parseAndAddProduction("T -> F Y");
         parser.parseAndAddProduction("Y -> * F Y | EPS");
         parser.parseAndAddProduction("F -> ( E ) | -");
-        grammar = parser.closeAndProduce();
-        context = new ParseContext(grammar);
-    }
+        CFG grammar = parser.closeAndProduce();
+        ParseContext context = new ParseContext(grammar);
 
-    @Test
-    public void parse()
-    {
+
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token(TokenType.SYMBOL, "-"));
         tokens.add(new Token(TokenType.SYMBOL, "+"));
         tokens.add(new Token(TokenType.SYMBOL, "-"));
-        tokens.add(new Token(TokenType.EOF,null));
+        tokens.add(new Token(TokenType.EOF, null));
 
 
+        ParseTree tree = context.parse(tokens);
+        System.out.println(tree.toHumanReadableString());
+    }
+
+    @Test
+    public void selfReferencingRuleTest()
+    {
+        GrammarParser parser = new GrammarParser();
+        parser.parseAndAddProduction("A -> * A | EPS");
+        CFG grammar = parser.closeAndProduce();
+        ParseContext context = new ParseContext(grammar);
+
+
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(TokenType.SYMBOL, "*"));
+        tokens.add(new Token(TokenType.SYMBOL, "*"));
+        tokens.add(new Token(TokenType.EOF, null));
         ParseTree tree = context.parse(tokens);
         System.out.println(tree.toHumanReadableString());
     }

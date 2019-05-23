@@ -1,14 +1,17 @@
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-import sut.momtsaber.clikecompiler.cfg.*;
+import sut.momtsaber.clikecompiler.cfg.CFG;
+import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
+import sut.momtsaber.clikecompiler.cfg.CFGRule;
+import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
+import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.utils.GrammarParser;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GrammarParserTest
 {

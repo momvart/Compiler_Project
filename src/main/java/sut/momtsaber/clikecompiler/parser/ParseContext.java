@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.parser.dfa.DFA;
 import sut.momtsaber.clikecompiler.parser.dfa.DFAResponse;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
@@ -31,8 +32,8 @@ public class ParseContext
     private void init(CFG cfg)
     {
         grammar = cfg;
-        DFAs = grammar.getProductions().keySet().stream().map(key -> grammar.getProductions().get(key)).map(production -> DFA.getDFA(production, grammar)).collect(Collectors.toList());
-        currentDFA = DFA.getDFA(grammar.getProductions().get(0), grammar);
+        DFAs = grammar.getProductions().keySet().stream().map(key -> grammar.getProductions().get(key)).map(production -> new DFA(production, grammar)).collect(Collectors.toList());
+        currentDFA = DFAs.get(0);
         dfaStack = new Stack<>();
         dfaStack.push(currentDFA);
     }
@@ -47,24 +48,24 @@ public class ParseContext
         {
             currentDFA = dfaStack.peek();
             DFAResponse response = currentDFA.advance(parsingContent.get(currentToken));
-            if (response.isEndOfDFA())
-            {
-                dfaStack.pop();
-                treeStack.pop();
-            }
             if (response.getReferencing() != null)
             {
                 int reference = response.getReferencing().getId();
-                currentDFA.getCurrentState().setReferencing(null);
-                dfaStack.push(DFA.getDFA(grammar.getProductions().get(reference), grammar));
+                currentDFA.getCurrentReferenceMap().put(currentDFA.getCurrentState(), null);
+                dfaStack.push(new DFA(DFAs.get(reference)));
                 ParseTree newTree = new ParseTree(grammar.getProductions().get(reference).getLeftHand());
                 treeStack.peek().addNonTerminal(grammar.getProductions().get(reference).getLeftHand(), newTree);
                 treeStack.push(newTree);
             }
-            if (response.isConsumed())
+            if (response.getConsumedTerminal() != null)
             {
                 treeStack.peek().addTerminal(response.getConsumedTerminal(), parsingContent.get(currentToken));
                 currentToken++;
+            }
+            if (response.isEndOfDFA())
+            {
+                dfaStack.pop();
+                treeStack.pop();
             }
         }
         return mainTree;

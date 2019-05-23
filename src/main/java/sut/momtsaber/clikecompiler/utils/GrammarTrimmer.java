@@ -1,10 +1,17 @@
 package sut.momtsaber.clikecompiler.utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import sut.momtsaber.clikecompiler.cfg.*;
+import sut.momtsaber.clikecompiler.cfg.CFG;
+import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
+import sut.momtsaber.clikecompiler.cfg.CFGProduction;
+import sut.momtsaber.clikecompiler.cfg.CFGRule;
 
 public class GrammarTrimmer
 {

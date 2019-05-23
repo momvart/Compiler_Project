@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
-
 public class DFAState<T>
 {
     public static final DFAState SELF = new DFAState();
@@ -45,6 +42,7 @@ public class DFAState<T>
                 .orElse(null);
     }
 
+
     public static class NextStateResult<T>
     {
         private final DFAEdge<T> edge;
@@ -68,10 +66,6 @@ public class DFAState<T>
             return nextState;
         }
 
-        public boolean isConsuming()
-        {
-            return consuming;
-        }
 
     }
 }

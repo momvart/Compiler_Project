@@ -1,10 +1,15 @@
 package sut.momtsaber.clikecompiler.utils;
 
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
-import sut.momtsaber.clikecompiler.cfg.*;
+import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
+import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
+import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
 
 public class CFGSymbolDeserializer implements JsonDeserializer<CFGSymbol>
 {
