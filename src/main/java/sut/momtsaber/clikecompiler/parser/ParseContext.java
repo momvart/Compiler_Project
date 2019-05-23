@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.parser.dfa.DFA;
+import sut.momtsaber.clikecompiler.parser.dfa.DFAResponse;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
 
 public class ParseContext

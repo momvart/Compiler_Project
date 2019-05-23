@@ -1,4 +1,4 @@
-package sut.momtsaber.clikecompiler.parser;
+package sut.momtsaber.clikecompiler.parser.dfa;
 
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGTerminal;

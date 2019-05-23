@@ -25,12 +25,5 @@ public interface Entrance<T>
         return input -> !entrance.canEnter(input);
     }
 
-    // parser phase additions
-    public static Entrance<Token> any = input -> true;
-
-    public static Entrance<Token> matches(Set<CFGTerminal> pattern)
-    {
-        return input -> pattern.stream().anyMatch(member -> member.getTokenType() == input.getType() &&
-                (!(member.getTokenType() == TokenType.KEYWORD || member.getTokenType() == TokenType.SYMBOL) || member.getValue().equals(input.getValue())));
-    }
+    Entrance<Object> ANY = input -> true;
 }

@@ -1,45 +1,38 @@
-package sut.momtsaber.clikecompiler.parser;
+package sut.momtsaber.clikecompiler.parser.dfa;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import sut.momtsaber.clikecompiler.cfg.CFG;
-import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
-import sut.momtsaber.clikecompiler.cfg.CFGProduction;
-import sut.momtsaber.clikecompiler.cfg.CFGRule;
-import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.cfg.*;
 import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
 public class DFA
 {
-    private DFAState<Token> startState;
-    private DFAState<Token> acceptState;
-    private DFAState<Token> currentState;
+    private ParseDFAState startState;
+    private ParseDFAState acceptState;
+    private ParseDFAState currentState;
 
-    private DFA(DFAState<Token> startState, DFAState<Token> acceptState)
+    private DFA(ParseDFAState startState, ParseDFAState acceptState)
     {
         this.startState = startState;
         this.acceptState = acceptState;
         this.currentState = startState;
     }
 
-    private DFAState<Token> getStartState()
+    private ParseDFAState getStartState()
     {
         return startState;
     }
 
-    private DFAState<Token> getAcceptState()
+    private ParseDFAState getAcceptState()
     {
         return acceptState;
     }
 
-    public DFAState<Token> getCurrentState()
+    public ParseDFAState getCurrentState()
     {
         return currentState;
     }
@@ -49,61 +42,61 @@ public class DFA
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
         if (result == null)
             System.out.println(input);
-        currentState = result.getNextState();
+        currentState = (ParseDFAState)result.getNextState();
         return new DFAResponse(currentState.equals(acceptState), result.isConsuming(), currentState.getConsumed(), currentState.getReferencing());
     }
 
-    static DFA getDFA(CFGProduction production, CFG grammar)
+    public static DFA getDFA(CFGProduction production, CFG grammar)
     {
-        DFA dfa = new DFA(new DFAState<>(), new DFAState<>());
+        DFA dfa = new DFA(new ParseDFAState(), new ParseDFAState());
         for (int i = 0; i < production.getRightHands().size(); i++)
         {
             CFGRule rule = production.getRightHands().get(i);
             // restarting the currentPosition in the beginning of the rule
-            DFAState<Token> currentPosition = dfa.getStartState();
+            ParseDFAState currentPosition = dfa.getStartState();
 
             //calculating the entrance with which the input should go into this rule
             Entrance<Token> ruleEntrance;
             Set<CFGTerminal> matchList = grammar.findFirst(production, i);
             if (matchList.contains(CFGTerminal.EPSILON))
                 matchList.addAll(grammar.findFollow(production.getLeftHand()));
-            ruleEntrance = Entrance.matches(matchList);
+            ruleEntrance = matchEntrance(matchList);
 
             if (rule.isEpsilon())
                 currentPosition.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
             else
             {
-                for (CFGSymbol symbol : rule)
+                for (int iSymbol = 0; iSymbol < rule.size(); iSymbol++)
                 {
+                    CFGSymbol symbol = rule.get(iSymbol);
                     if (symbol instanceof CFGTerminal)
                     {
-                        DFAState<Token> newState;
-                        if (rule.indexOf(symbol) == rule.size() - 1)
+                        ParseDFAState newState;
+                        if (iSymbol == rule.size() - 1)
                             newState = dfa.getAcceptState();
                         else
-                            newState = new DFAState<>();
-                        currentPosition.addExitEdge(new DFAEdge<>(Entrance.matches(new HashSet<>(Collections.singletonList((CFGTerminal)symbol))),
+                            newState = new ParseDFAState();
+                        currentPosition.addExitEdge(new DFAEdge<>(matchEntrance(Collections.singletonList((CFGTerminal)symbol)),
                                 newState, true));
                         currentPosition = newState;
                         currentPosition.setConsumed((CFGTerminal)symbol);
-                        continue;
                     }
-                    if (symbol instanceof CFGNonTerminal)
+                    else if (symbol instanceof CFGNonTerminal)
                     {
-                        DFAState<Token> intermediateState = new DFAState<>();
-                        DFAState<Token> newState;
-                        if (rule.indexOf(symbol) == rule.size() - 1)
+                        ParseDFAState intermediateState = new ParseDFAState();
+                        ParseDFAState newState;
+                        if (iSymbol == rule.size() - 1)
                             newState = dfa.getAcceptState();
                         else
-                            newState = new DFAState<>();
+                            newState = new ParseDFAState();
 
-                        Entrance<Token> nonTerminalEntrance;
-                        if (rule.indexOf(symbol) == 0)
+                        Entrance<? super Token> nonTerminalEntrance;
+                        if (iSymbol == 0)
                             nonTerminalEntrance = ruleEntrance;
                         else
-                            nonTerminalEntrance = Entrance.any;
+                            nonTerminalEntrance = Entrance.ANY;
                         currentPosition.addExitEdge(new DFAEdge<>(nonTerminalEntrance, intermediateState, false));
-                        intermediateState.addExitEdge(new DFAEdge<>(Entrance.any, newState, false));
+                        intermediateState.addExitEdge(new DFAEdge<>(Entrance.ANY, newState, false));
                         intermediateState.setReferencing((CFGNonTerminal)symbol);
                         currentPosition = newState;
                     }
@@ -111,5 +104,11 @@ public class DFA
             }
         }
         return dfa;
+    }
+
+    private static Entrance<Token> matchEntrance(Collection<CFGTerminal> pattern)
+    {
+        return input -> pattern.stream().anyMatch(member -> member.getTokenType() == input.getType() &&
+                (member.getValue() == null || member.getValue().equals(input.getValue())));
     }
 }
