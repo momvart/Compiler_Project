@@ -16,6 +16,7 @@ import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
 import sut.momtsaber.clikecompiler.parser.SyntaxError;
 import sut.momtsaber.clikecompiler.parser.SyntaxErrorType;
@@ -68,6 +69,11 @@ public class DFA
         if (result == null)
         {
             DFAEdge<Token> edge = currentState.getExitingEdges().get(0);
+            if (input.getType() == TokenType.EOF)
+            {
+                return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null)), false);
+            }
 
             // error on terminal edge
             if (consumptionMap.get(edge) != null)
@@ -89,7 +95,12 @@ public class DFA
                 }
                 else
                 {
-                    // we stand in the same position as before and put the token we have encountered into garbage.
+                    // putting unexpected tokens into garbage
+                    if (currentState.getExitingEdges().get(currentState.getExitingEdges().size() - 1).getEntrance().canEnter(new Token(TokenType.EOF, null)))
+                    {
+                        return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
+                                new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input), true);
+                    }
                     return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
                             new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input), true);
                 }
