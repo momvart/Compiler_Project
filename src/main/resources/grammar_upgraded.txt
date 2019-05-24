@@ -4,7 +4,8 @@ declaration -> type_specifier ID var_declaration_rest | type_specifier ID fun_de
 var_declaration_rest -> ; | [ NUMBER ] ;
 type_specifier -> int | void
 fun_declaration_rest -> ( params ) compound_stmt
-params -> void | void ID , param_list | int ID , param_list
+params -> void | void ID param_mult_list_optional | void ID [ ] param_mult_list_optional | int ID param_mult_list_optional | int ID [ ] param_mult_list_optional
+param_mult_list_optional -> , param_list | ϵ
 param_list -> param_list , param | param
 param -> type_specifier ID | type_specifier ID [ ]
 compound_stmt -> { declaration_list statement_list }

@@ -45,8 +45,8 @@ public class Main
     public static void parse(String inputPath, String outputPath, String errorPath)
     {
         try (InputStream input = /*new FileInputStream(inputPath)*/ System.in;
-             OutputStream output = new FileOutputStream(outputPath, false);
-             OutputStream error = new FileOutputStream(errorPath, false))
+             OutputStream output = /*new FileOutputStream(outputPath, false)*/ System.out;
+             OutputStream error = /*new FileOutputStream(errorPath, false)*/ System.err)
         {
             parse(input, output, error);
         }
@@ -104,13 +104,13 @@ public class Main
                                 new CFGRule(StreamSupport.stream(json.getAsJsonArray().spliterator(), false)
                                         .map(element -> context.deserialize(element, CFGSymbol.class))))
                         .create();
-                CFG grammar = gson.fromJson(new InputStreamReader(Test.class.getClassLoader().getResourceAsStream("parsed_grammar.json")), CFG.class);
+                CFG grammar = gson.fromJson(new InputStreamReader(Test.class.getClassLoader().getResourceAsStream("parsed_grammar.cfgjson")), CFG.class);
 
                 ParseContext context = new ParseContext(grammar);
                 ParseTree outTree = context.parse(pipeline);
 
-                System.out.println(outTree.toHumanReadableString(grammar));
-                System.out.println(outTree.toInorderString());
+                outPrinter.println(outTree.toHumanReadableString(grammar));
+                outPrinter.println(outTree.toInorderString());
             }
             catch (Exception ex) { ex.printStackTrace(); }
         }, "Parser");
