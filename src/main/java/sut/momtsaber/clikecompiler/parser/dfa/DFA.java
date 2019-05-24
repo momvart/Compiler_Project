@@ -184,7 +184,7 @@ public class DFA
         return startState;
     }
 
-    private DFAState<Token> getAcceptState()
+    public DFAState<Token> getAcceptState()
     {
         return acceptState;
     }

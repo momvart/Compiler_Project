@@ -6,6 +6,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
+import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
@@ -54,6 +56,24 @@ public class ParseContext
                     currentToken = tokens.take();
                 }
                 while (currentToken.getType() == TokenType.COMMENT || currentToken.getType() == TokenType.WHITESPACE);
+                Token EOFToken = new Token(TokenType.EOF, null);
+                DFAState.NextStateResult<Token> result = currentDFA.getCurrentState().getNextState(EOFToken);
+                if (result != null && result.getNextState().equals(currentDFA.getAcceptState()))
+                {
+                    if (currentToken.getType() != TokenType.EOF)
+                    {
+                        errors.put(new SyntaxError(currentToken.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, EOFToken));
+                        break;
+                    }
+                }
+                else
+                {
+                    if (currentToken.getType() == TokenType.EOF)
+                    {
+                        errors.put(new SyntaxError(currentToken.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, EOFToken));
+                        break;
+                    }
+                }
             }
             response = currentDFA.advance(currentToken, grammar);
             if (response.getError() != null)
@@ -78,7 +98,7 @@ public class ParseContext
                 }
                 else
                 {
-                    treeStack.peek().addTerminal(response.getConsumedTerminal(), new Token(response.getConsumedTerminal().getTokenType(), response.getConsumedTerminal().getValue()));//todo should be made the token corresponding by the symbol
+                    treeStack.peek().addTerminal(response.getConsumedTerminal(), new Token(response.getConsumedTerminal().getTokenType(), response.getConsumedTerminal().getValue()));
                 }
             }
             if (response.isGarbage())
