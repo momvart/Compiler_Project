@@ -2,6 +2,7 @@ package sut.momtsaber.clikecompiler.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
@@ -16,14 +17,9 @@ import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
 public class ParseContext
 {
     private CFG grammar;
-    private List<DFA> DFAs;
+    private Map<Integer, DFA> DFAs;
     private DFA currentDFA;
     private Stack<DFA> dfaStack;
-
-    public List<DFA> getDFAs()
-    {
-        return DFAs;
-    }
 
     public ParseContext(CFG grammar)
     {
@@ -33,8 +29,11 @@ public class ParseContext
     private void init(CFG cfg)
     {
         grammar = cfg;
-        DFAs = grammar.getProductions().keySet().stream().map(key -> grammar.getProductions().get(key)).map(production -> new DFA(production, grammar)).collect(Collectors.toList());
-        currentDFA = DFAs.get(0);
+        DFAs = grammar.getProductions().keySet().stream()
+                .map(key -> grammar.getProductions().get(key))
+                .map(production -> new DFA(production, grammar))
+                .collect(Collectors.toMap(dfa -> dfa.getProduction().getLeftHand().getId(), dfa -> dfa));
+        currentDFA = new DFA(cfg.getProduction(0), grammar);
         dfaStack = new Stack<>();
         dfaStack.push(currentDFA);
     }

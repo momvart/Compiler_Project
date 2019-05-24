@@ -2,6 +2,7 @@ package sut.momtsaber.clikecompiler.cfg;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class CFG
 {
@@ -40,6 +41,25 @@ public class CFG
         nonTerminalNames.put(nt.getId(), name);
     }
 
+    public void copyNamesFrom(CFG other)
+    {
+        this.nonTerminalNames.putAll(other.nonTerminalNames);
+    }
+
+    public String getNonTerminalName(CFGNonTerminal nt)
+    {
+        return getNonTerminalName(nt.getId());
+    }
+
+    public String getNonTerminalName(int id)
+    {
+        String name = nonTerminalNames.get(id);
+        if (name == null)
+            return String.format("NT{id: %d}", id);
+        return name;
+    }
+
+    //region First and Follow
 
     private static final BiFunction<Integer, Integer, Integer> firstKeyBuilder = (ntId, ruleIndex) ->
             (ntId << Integer.SIZE / 2) + (ruleIndex & 0xFFFF);
@@ -56,10 +76,10 @@ public class CFG
             return firstSet;
 
         firstSet = new HashSet<>();
+        cachedFirsts.put(key, firstSet);
         CFGProduction production = getProduction(nonTerminal.getId());
         for (int i = 0; i < production.getRightHands().size(); i++)
             firstSet.addAll(findFirst(production, i));
-        cachedFirsts.put(key, firstSet);
         return firstSet;
     }
 
@@ -71,11 +91,29 @@ public class CFG
             return firstSet;
 
         //TODO: linked list accessed by index
-        firstSet = findFirstInternal(Collections.unmodifiableList(production.getRightHands().get(index)), null, true);
+//        firstSet = findFirstInternal(Collections.unmodifiableList(production.getRightHands().get(index)), null, true);
+        firstSet = findFirstInternal(production.getRightHands().get(index));
         cachedFirsts.put(key, firstSet);
         return firstSet;
     }
 
+    private Set<CFGTerminal> findFirstInternal(CFGRule rule)
+    {
+        if (rule.isEpsilon())
+            return Collections.singleton(CFGTerminal.EPSILON);
+
+        HashSet<CFGTerminal> retVal = new HashSet<>();
+        for (CFGSymbol symbol : rule)
+        {
+            Set<CFGTerminal> first = findFirst(symbol);
+            retVal.addAll(first);
+            if (!first.contains(CFGTerminal.EPSILON))
+                break;
+        }
+        return retVal;
+    }
+
+    @Deprecated
     private Set<CFGTerminal> findFirstInternal(List<CFGSymbol> seri, List<CFGSymbol> parent, boolean firstTimeCall)
     {
         Set<CFGTerminal> firstSet = new HashSet<>();
@@ -92,7 +130,7 @@ public class CFG
             else
             {
                 CFGNonTerminal nonTerminal = (CFGNonTerminal)startSymbol;
-                for (List<CFGSymbol> rightHand : this.getProductions().get(nonTerminal.getId()).getRightHands())
+                for (CFGRule rightHand : this.getProductions().get(nonTerminal.getId()).getRightHands())
                     firstSet.addAll(findFirstInternal(Collections.unmodifiableList(rightHand), seri.subList(1, seri.size()), false));
             }
         }
@@ -131,4 +169,6 @@ public class CFG
         followSet.remove(CFGTerminal.EPSILON);
         return followSet;
     }
+
+    //endregion
 }

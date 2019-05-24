@@ -102,7 +102,7 @@ public class GrammarParser
     {
         public static void main(String[] args)
         {
-            Scanner scanner = new Scanner(System.in);
+            Scanner scanner = new Scanner(JsonBuilder.class.getClassLoader().getResourceAsStream("grammar_upgraded.txt"));
             GrammarParser parser = new GrammarParser();
             while (scanner.hasNextLine())
                 parser.parseAndAddProduction(scanner.nextLine());

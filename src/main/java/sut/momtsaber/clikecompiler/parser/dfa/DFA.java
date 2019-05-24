@@ -19,6 +19,7 @@ import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 
 public class DFA
 {
+    private CFGProduction production;   //for debug purpose
     private DFAState<Token> startState;
     private DFAState<Token> acceptState;
     private DFAState<Token> currentState;
@@ -26,8 +27,9 @@ public class DFA
     private Map<DFAState<Token>, CFGNonTerminal> currentReferenceMap;
     private Map<DFAEdge<Token>, CFGTerminal> consumptionMap;
 
-    private DFA()
+    private DFA(CFGProduction production)
     {
+        this.production = production;
         this.startState = new DFAState<>();
         this.acceptState = new DFAState<>();
         this.trueReferenceMap = new HashMap<>();
@@ -37,6 +39,7 @@ public class DFA
     public DFA(CFGProduction production, CFG grammar)
     {
         DFA dfa = getDFA(production, grammar);
+        this.production = dfa.production;
         this.startState = dfa.getStartState();
         this.acceptState = dfa.getAcceptState();
         this.currentState = this.getStartState();
@@ -47,6 +50,7 @@ public class DFA
 
     public DFA(DFA pattern)
     {
+        this.production = pattern.production;
         this.startState = pattern.getStartState();
         this.acceptState = pattern.getAcceptState();
         this.currentState = this.getStartState();
@@ -59,12 +63,14 @@ public class DFA
     {
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
         currentState = result.getNextState();
-        return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState));// what if not present in the hashMap?
+        return new DFAResponse(currentState.equals(acceptState),
+                this.consumptionMap.get(result.getEdge()),
+                this.currentReferenceMap.get(currentState));// what if not present in the hashMap?
     }
 
-    private static DFA getDFA(CFGProduction production, CFG grammar)
+    public static DFA getDFA(CFGProduction production, CFG grammar)
     {
-        DFA dfa = new DFA();
+        DFA dfa = new DFA(production);
         for (int i = 0; i < production.getRightHands().size(); i++)
         {
             CFGRule rule = production.getRightHands().get(i);
@@ -123,6 +129,11 @@ public class DFA
             }
         }
         return dfa;
+    }
+
+    public CFGProduction getProduction()
+    {
+        return production;
     }
 
     private DFAState<Token> getStartState()

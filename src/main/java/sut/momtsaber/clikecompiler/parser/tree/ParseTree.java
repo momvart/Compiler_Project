@@ -2,9 +2,7 @@ package sut.momtsaber.clikecompiler.parser.tree;
 
 import java.util.ArrayList;
 
-import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
-import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
-import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.cfg.*;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 
 public class ParseTree
@@ -31,9 +29,21 @@ public class ParseTree
         return root.children;
     }
 
+    public String toInorderString()
+    {
+        StringBuilder sb = new StringBuilder();
+        this.root.toInorderString(sb);
+        return sb.toString();
+    }
+
     public String toHumanReadableString()
     {
-        return root.toHumanReadableString(0);
+        return this.toHumanReadableString(null);
+    }
+
+    public String toHumanReadableString(CFG namingConsultant)
+    {
+        return root.toHumanReadableString(0, namingConsultant);
     }
 
     private static abstract class Node
@@ -56,23 +66,35 @@ public class ParseTree
             this.children = children;
         }
 
-        private String toHumanReadableString(int level)
+        private String toHumanReadableString(int level, CFG namingConsultant)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < level; i++)
-                sb.append("\t\t");
+                sb.append("  ");
             String shifted = sb.toString();
-            sb.append("├――");
-            sb.append(head);
+            sb.append("├―");
+            sb.append(namingConsultant == null ? head : namingConsultant.getNonTerminalName((CFGNonTerminal)head));
             for (Node child : children)
             {
                 sb.append(System.lineSeparator());
                 if (child instanceof TreeNode)
-                    sb.append(((TreeNode)child).toHumanReadableString(level + 1));
+                    sb.append(((TreeNode)child).toHumanReadableString(level + 1, namingConsultant));
                 else if (child instanceof LeafNode)
-                    sb.append(shifted).append("\t\t").append("├――").append(((LeafNode)child).value);
+                    sb.append(shifted).append("  ").append("├―").append(((LeafNode)child).value);
             }
             return sb.toString();
+        }
+
+        private StringBuilder toInorderString(StringBuilder sb)
+        {
+            for (Node child : children)
+            {
+                if (child instanceof TreeNode)
+                    ((TreeNode)child).toInorderString(sb);
+                else if (child instanceof LeafNode)
+                    sb.append(((LeafNode)child).value.getValue()).append(" ");
+            }
+            return sb;
         }
     }
 

@@ -46,9 +46,9 @@ public class GrammarTrimmer
                             .collect(Collectors.toMap(np -> np.getLeftHand().getId(), np -> np)));
                 });
 
+        newGrammar.copyNamesFrom(input);
         return newGrammar;
     }
-
 
 
     public static CFG doLeftFactoring(CFG input)
@@ -59,6 +59,7 @@ public class GrammarTrimmer
 
         CFG retVal = new CFG();
         retVal.putAllProduction(factoredProductions);
+        retVal.copyNamesFrom(input);
         return retVal;
     }
 

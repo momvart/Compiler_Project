@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
@@ -32,7 +33,7 @@ public class ParseTest
         tokens.add(new Token(TokenType.EOF, null));
 
 
-        ParseTree tree = context.parse(tokens);
+        ParseTree tree = context.parse(new LinkedBlockingQueue<>(tokens));
         System.out.println(tree.toHumanReadableString());
     }
 
@@ -49,7 +50,7 @@ public class ParseTest
         tokens.add(new Token(TokenType.SYMBOL, "*"));
         tokens.add(new Token(TokenType.SYMBOL, "*"));
         tokens.add(new Token(TokenType.EOF, null));
-        ParseTree tree = context.parse(tokens);
+        ParseTree tree = context.parse(new LinkedBlockingQueue<>(tokens));
         System.out.println(tree.toHumanReadableString());
     }
 
