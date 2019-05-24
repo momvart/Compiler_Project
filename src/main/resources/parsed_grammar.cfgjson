@@ -1,0 +1,4358 @@
+{
+  "nonTerminalNames": {
+    "0": "program",
+    "1": "declaration_list",
+    "2": "declaration",
+    "3": "var_declaration_rest",
+    "4": "type_specifier",
+    "5": "fun_declaration_rest",
+    "6": "params",
+    "7": "param_mult_list_optional",
+    "8": "param_list",
+    "9": "param",
+    "10": "compound_stmt",
+    "11": "statement_list",
+    "12": "statement",
+    "13": "expression_stmt",
+    "14": "selection_stmt",
+    "15": "iteration_stmt",
+    "16": "return_stmt",
+    "17": "switch_stmt",
+    "18": "case_stmts",
+    "19": "case_stmt",
+    "20": "default_stmt",
+    "21": "expression",
+    "22": "var",
+    "23": "indexed_or_not",
+    "24": "assignment_or_not",
+    "25": "simple_expression_by_id",
+    "26": "compare_or_not",
+    "27": "call_or_not",
+    "28": "relop",
+    "29": "additive_expression",
+    "30": "additive_expression\u0027",
+    "31": "addop",
+    "32": "term",
+    "33": "term\u0027",
+    "34": "sign",
+    "35": "signed_factor",
+    "36": "signed_factor_without_imm_id",
+    "37": "factor",
+    "38": "factor_without_id",
+    "39": "call",
+    "40": "call_var_unshared",
+    "41": "args",
+    "42": "arg_list"
+  },
+  "productions": {
+    "0": {
+      "leftHand": {
+        "id": 0
+      },
+      "rightHands": [
+        [
+          {
+            "id": 1
+          },
+          {
+            "tokenType": "EOF"
+          }
+        ]
+      ]
+    },
+    "1": {
+      "leftHand": {
+        "id": 1
+      },
+      "rightHands": [
+        [
+          {
+            "id": 43
+          }
+        ]
+      ]
+    },
+    "2": {
+      "leftHand": {
+        "id": 2
+      },
+      "rightHands": [
+        [
+          {
+            "id": 4
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 48
+          }
+        ]
+      ]
+    },
+    "3": {
+      "leftHand": {
+        "id": 3
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "NUMBER"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "4": {
+      "leftHand": {
+        "id": 4
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "int"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "void"
+          }
+        ]
+      ]
+    },
+    "5": {
+      "leftHand": {
+        "id": 5
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 6
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 10
+          }
+        ]
+      ]
+    },
+    "6": {
+      "leftHand": {
+        "id": 6
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "void"
+          },
+          {
+            "id": 49
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "int"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 50
+          }
+        ]
+      ]
+    },
+    "7": {
+      "leftHand": {
+        "id": 7
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ","
+          },
+          {
+            "id": 8
+          }
+        ],
+        []
+      ]
+    },
+    "8": {
+      "leftHand": {
+        "id": 8
+      },
+      "rightHands": [
+        [
+          {
+            "id": 9
+          },
+          {
+            "id": 44
+          }
+        ]
+      ]
+    },
+    "9": {
+      "leftHand": {
+        "id": 9
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "int"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 51
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "void"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 52
+          }
+        ]
+      ]
+    },
+    "10": {
+      "leftHand": {
+        "id": 10
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "{"
+          },
+          {
+            "id": 1
+          },
+          {
+            "id": 11
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "}"
+          }
+        ]
+      ]
+    },
+    "11": {
+      "leftHand": {
+        "id": 11
+      },
+      "rightHands": [
+        [
+          {
+            "id": 45
+          }
+        ]
+      ]
+    },
+    "12": {
+      "leftHand": {
+        "id": 12
+      },
+      "rightHands": [
+        [
+          {
+            "id": 13
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "{"
+          },
+          {
+            "id": 1
+          },
+          {
+            "id": 11
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "}"
+          }
+        ],
+        [
+          {
+            "id": 14
+          }
+        ],
+        [
+          {
+            "id": 15
+          }
+        ],
+        [
+          {
+            "id": 16
+          }
+        ],
+        [
+          {
+            "id": 17
+          }
+        ]
+      ]
+    },
+    "13": {
+      "leftHand": {
+        "id": 13
+      },
+      "rightHands": [
+        [
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "continue"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "break"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "14": {
+      "leftHand": {
+        "id": 14
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "if"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 12
+          },
+          {
+            "tokenType": "KEYWORD",
+            "value": "else"
+          },
+          {
+            "id": 12
+          }
+        ]
+      ]
+    },
+    "15": {
+      "leftHand": {
+        "id": 15
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "while"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "id": 12
+          }
+        ]
+      ]
+    },
+    "16": {
+      "leftHand": {
+        "id": 16
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "return"
+          },
+          {
+            "id": 53
+          }
+        ]
+      ]
+    },
+    "17": {
+      "leftHand": {
+        "id": 17
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "switch"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "{"
+          },
+          {
+            "id": 18
+          },
+          {
+            "id": 20
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "}"
+          }
+        ]
+      ]
+    },
+    "18": {
+      "leftHand": {
+        "id": 18
+      },
+      "rightHands": [
+        [
+          {
+            "id": 46
+          }
+        ]
+      ]
+    },
+    "19": {
+      "leftHand": {
+        "id": 19
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "case"
+          },
+          {
+            "tokenType": "NUMBER"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ":"
+          },
+          {
+            "id": 11
+          }
+        ]
+      ]
+    },
+    "20": {
+      "leftHand": {
+        "id": 20
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "KEYWORD",
+            "value": "default"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ":"
+          },
+          {
+            "id": 11
+          }
+        ],
+        []
+      ]
+    },
+    "21": {
+      "leftHand": {
+        "id": 21
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 23
+          },
+          {
+            "id": 24
+          }
+        ],
+        [
+          {
+            "id": 36
+          },
+          {
+            "id": 33
+          },
+          {
+            "id": 30
+          },
+          {
+            "id": 26
+          }
+        ]
+      ]
+    },
+    "22": {
+      "leftHand": {
+        "id": 22
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 54
+          }
+        ]
+      ]
+    },
+    "23": {
+      "leftHand": {
+        "id": 23
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ],
+        []
+      ]
+    },
+    "24": {
+      "leftHand": {
+        "id": 24
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
+          },
+          {
+            "id": 21
+          }
+        ],
+        [
+          {
+            "id": 25
+          }
+        ]
+      ]
+    },
+    "25": {
+      "leftHand": {
+        "id": 25
+      },
+      "rightHands": [
+        [
+          {
+            "id": 27
+          },
+          {
+            "id": 33
+          },
+          {
+            "id": 30
+          },
+          {
+            "id": 26
+          }
+        ]
+      ]
+    },
+    "26": {
+      "leftHand": {
+        "id": 26
+      },
+      "rightHands": [
+        [
+          {
+            "id": 28
+          },
+          {
+            "id": 29
+          }
+        ],
+        []
+      ]
+    },
+    "27": {
+      "leftHand": {
+        "id": 27
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 41
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ],
+        []
+      ]
+    },
+    "28": {
+      "leftHand": {
+        "id": 28
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003c"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d\u003d"
+          }
+        ]
+      ]
+    },
+    "29": {
+      "leftHand": {
+        "id": 29
+      },
+      "rightHands": [
+        [
+          {
+            "id": 32
+          },
+          {
+            "id": 30
+          }
+        ]
+      ]
+    },
+    "30": {
+      "leftHand": {
+        "id": 30
+      },
+      "rightHands": [
+        [
+          {
+            "id": 31
+          },
+          {
+            "id": 32
+          },
+          {
+            "id": 30
+          }
+        ],
+        []
+      ]
+    },
+    "31": {
+      "leftHand": {
+        "id": 31
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          }
+        ]
+      ]
+    },
+    "32": {
+      "leftHand": {
+        "id": 32
+      },
+      "rightHands": [
+        [
+          {
+            "id": 35
+          },
+          {
+            "id": 33
+          }
+        ]
+      ]
+    },
+    "33": {
+      "leftHand": {
+        "id": 33
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "*"
+          },
+          {
+            "id": 35
+          },
+          {
+            "id": 33
+          }
+        ],
+        []
+      ]
+    },
+    "34": {
+      "leftHand": {
+        "id": 34
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          }
+        ]
+      ]
+    },
+    "35": {
+      "leftHand": {
+        "id": 35
+      },
+      "rightHands": [
+        [
+          {
+            "id": 37
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          },
+          {
+            "id": 37
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          },
+          {
+            "id": 37
+          }
+        ]
+      ]
+    },
+    "36": {
+      "leftHand": {
+        "id": 36
+      },
+      "rightHands": [
+        [
+          {
+            "id": 38
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "+"
+          },
+          {
+            "id": 37
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "-"
+          },
+          {
+            "id": 37
+          }
+        ]
+      ]
+    },
+    "37": {
+      "leftHand": {
+        "id": 37
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ],
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 40
+          }
+        ],
+        [
+          {
+            "tokenType": "NUMBER"
+          }
+        ]
+      ]
+    },
+    "38": {
+      "leftHand": {
+        "id": 38
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ],
+        [
+          {
+            "tokenType": "NUMBER"
+          }
+        ]
+      ]
+    },
+    "39": {
+      "leftHand": {
+        "id": 39
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 41
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ]
+      ]
+    },
+    "40": {
+      "leftHand": {
+        "id": 40
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "("
+          },
+          {
+            "id": 41
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ")"
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ],
+        []
+      ]
+    },
+    "41": {
+      "leftHand": {
+        "id": 41
+      },
+      "rightHands": [
+        [
+          {
+            "id": 42
+          }
+        ],
+        []
+      ]
+    },
+    "42": {
+      "leftHand": {
+        "id": 42
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 23
+          },
+          {
+            "id": 24
+          },
+          {
+            "id": 47
+          }
+        ],
+        [
+          {
+            "id": 36
+          },
+          {
+            "id": 33
+          },
+          {
+            "id": 30
+          },
+          {
+            "id": 26
+          },
+          {
+            "id": 47
+          }
+        ]
+      ]
+    },
+    "43": {
+      "leftHand": {
+        "id": 43
+      },
+      "rightHands": [
+        [
+          {
+            "id": 2
+          },
+          {
+            "id": 43
+          }
+        ],
+        []
+      ]
+    },
+    "44": {
+      "leftHand": {
+        "id": 44
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ","
+          },
+          {
+            "id": 9
+          },
+          {
+            "id": 44
+          }
+        ],
+        []
+      ]
+    },
+    "45": {
+      "leftHand": {
+        "id": 45
+      },
+      "rightHands": [
+        [
+          {
+            "id": 12
+          },
+          {
+            "id": 45
+          }
+        ],
+        []
+      ]
+    },
+    "46": {
+      "leftHand": {
+        "id": 46
+      },
+      "rightHands": [
+        [
+          {
+            "id": 19
+          },
+          {
+            "id": 46
+          }
+        ],
+        []
+      ]
+    },
+    "47": {
+      "leftHand": {
+        "id": 47
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ","
+          },
+          {
+            "id": 21
+          },
+          {
+            "id": 47
+          }
+        ],
+        []
+      ]
+    },
+    "48": {
+      "leftHand": {
+        "id": 48
+      },
+      "rightHands": [
+        [
+          {
+            "id": 3
+          }
+        ],
+        [
+          {
+            "id": 5
+          }
+        ]
+      ]
+    },
+    "49": {
+      "leftHand": {
+        "id": 49
+      },
+      "rightHands": [
+        [],
+        [
+          {
+            "tokenType": "ID"
+          },
+          {
+            "id": 50
+          }
+        ]
+      ]
+    },
+    "50": {
+      "leftHand": {
+        "id": 50
+      },
+      "rightHands": [
+        [
+          {
+            "id": 7
+          }
+        ],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          },
+          {
+            "id": 7
+          }
+        ]
+      ]
+    },
+    "52": {
+      "leftHand": {
+        "id": 52
+      },
+      "rightHands": [
+        [],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ]
+      ]
+    },
+    "51": {
+      "leftHand": {
+        "id": 51
+      },
+      "rightHands": [
+        [],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ]
+      ]
+    },
+    "53": {
+      "leftHand": {
+        "id": 53
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ],
+        [
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": ";"
+          }
+        ]
+      ]
+    },
+    "54": {
+      "leftHand": {
+        "id": 54
+      },
+      "rightHands": [
+        [],
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "["
+          },
+          {
+            "id": 21
+          },
+          {
+            "tokenType": "SYMBOL",
+            "value": "]"
+          }
+        ]
+      ]
+    }
+  },
+  "cachedFirsts": {
+    "0": [
+      {},
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "65536": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "131072": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "196609": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "196608": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      }
+    ],
+    "262144": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "262145": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      }
+    ],
+    "327680": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "393216": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      }
+    ],
+    "458753": [
+      {}
+    ],
+    "393217": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "458752": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "786436": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      }
+    ],
+    "589825": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      }
+    ],
+    "524288": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "786437": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      }
+    ],
+    "589824": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "655360": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      }
+    ],
+    "720896": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "851969": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      }
+    ],
+    "786432": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "851968": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "786433": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      }
+    ],
+    "851971": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      }
+    ],
+    "917504": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      }
+    ],
+    "786434": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      }
+    ],
+    "851970": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      }
+    ],
+    "983040": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      }
+    ],
+    "786435": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      }
+    ],
+    "1048576": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      }
+    ],
+    "1114112": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      }
+    ],
+    "1179648": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "1245184": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "1376257": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "1310720": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "1376256": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "1310721": [
+      {}
+    ],
+    "1441792": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "1507329": [
+      {}
+    ],
+    "1507328": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "1572864": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      }
+    ],
+    "1638400": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1572865": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1769473": [
+      {}
+    ],
+    "1703936": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1769472": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "1703937": [
+      {}
+    ],
+    "1835008": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      }
+    ],
+    "1835009": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1900544": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2031617": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "1966080": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2031616": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      }
+    ],
+    "1966081": [
+      {}
+    ],
+    "2162689": [
+      {}
+    ],
+    "2097152": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2162688": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      }
+    ],
+    "2293762": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2293761": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      }
+    ],
+    "2228224": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      }
+    ],
+    "2293760": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2228225": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2359296": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2424833": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "2359297": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      }
+    ],
+    "2424832": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "2490368": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "2359298": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2490369": [
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2424834": [
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2555904": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "2621440": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "2686977": [
+      {}
+    ],
+    "2621441": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "2686976": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2818049": [
+      {}
+    ],
+    "2621442": [
+      {}
+    ],
+    "2752512": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "2818048": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "2752513": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2949121": [
+      {}
+    ],
+    "2883584": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "2949120": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2883585": [
+      {}
+    ],
+    "3014656": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "3080193": [
+      {}
+    ],
+    "3014657": [
+      {}
+    ],
+    "3080192": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "3145728": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3211265": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "3145729": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "3211264": [
+      {}
+    ],
+    "3276800": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "3342337": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3276801": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3342336": [
+      {}
+    ],
+    "3407872": [
+      {}
+    ],
+    "3473409": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "3407873": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3473408": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      }
+    ],
+    "3538944": [
+      {}
+    ],
+    "3538945": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3604479": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3538943": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "3473407": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3407871": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3342335": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "3276799": [
+      {},
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "3211263": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3145727": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "3080191": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "3014655": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2949119": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "2883583": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "2818047": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2752511": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2686975": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "2621439": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "2555903": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2490367": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2424831": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2359295": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2293759": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2228223": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      }
+    ],
+    "2162687": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2097151": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "2031615": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      }
+    ],
+    "1966079": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "1900543": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1835007": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {}
+    ],
+    "1769471": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1703935": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1638399": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "1572863": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "1507327": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "1441791": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "1376255": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "1310719": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "1245183": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      }
+    ],
+    "1179647": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      }
+    ],
+    "1114111": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      }
+    ],
+    "1048575": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      }
+    ],
+    "983039": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      }
+    ],
+    "917503": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "851967": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "786431": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "720895": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      }
+    ],
+    "655359": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "589823": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "524287": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "458751": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "393215": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "327679": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "262143": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "196607": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "131071": [
+      {},
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ],
+    "65535": [
+      {},
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      }
+    ]
+  },
+  "cachedFollows": {
+    "0": [
+      {
+        "tokenType": "EOF"
+      }
+    ],
+    "1": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "2": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "3": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "4": [
+      {
+        "tokenType": "ID"
+      }
+    ],
+    "5": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "6": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "7": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "8": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "9": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "10": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "11": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "12": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "13": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "14": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      }
+    ],
+    "15": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      }
+    ],
+    "16": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "17": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "18": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "19": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "20": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      }
+    ],
+    "21": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "22": [],
+    "23": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "24": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "25": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "26": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "27": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "28": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "29": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "30": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "31": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "32": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "33": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "34": [],
+    "35": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "36": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "37": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "38": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "39": [],
+    "40": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "41": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "42": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "43": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "44": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "45": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "46": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      }
+    ],
+    "47": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "48": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "int"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "EOF"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "void"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "49": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "50": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "51": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "52": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      }
+    ],
+    "53": [
+      {
+        "tokenType": "KEYWORD",
+        "value": "while"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "continue"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "{"
+      },
+      {
+        "tokenType": "ID"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "}"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "switch"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "default"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "break"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "return"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "case"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "if"
+      },
+      {
+        "tokenType": "KEYWORD",
+        "value": "else"
+      },
+      {
+        "tokenType": "NUMBER"
+      }
+    ],
+    "54": []
+  }
+}
