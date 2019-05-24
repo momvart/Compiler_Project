@@ -16,7 +16,9 @@ import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
 import sut.momtsaber.clikecompiler.parser.SyntaxError;
+import sut.momtsaber.clikecompiler.parser.SyntaxErrorType;
 
 public class DFA
 {
@@ -60,7 +62,7 @@ public class DFA
         this.consumptionMap = new HashMap<>(pattern.consumptionMap);
     }
 
-    public DFAResponse advance(Token input, CFG grammar)
+    public DFAResponse advance(TokenWithLineNum input, CFG grammar)
     {
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
         if (result == null)
@@ -71,7 +73,8 @@ public class DFA
             if (consumptionMap.get(edge) != null)
             {
                 currentState = edge.getNextState();
-                return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), false);
+                return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge).toString()), false);
             }
 
             // error on nonTerminal edge
@@ -80,12 +83,16 @@ public class DFA
                 if (matchEntrance(grammar.findFollow(currentReferenceMap.get(edge.getNextState()))).canEnter(input))
                 {
                     currentState = edge.getNextState();
-                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), false);
+                    SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING);
+                    error.setNonTerminal(currentReferenceMap.get(currentState));
+                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
+                            error, false);// the message should be handled later on.
                 }
                 else
                 {
                     // we stand in the same position as before and put the token we have encountered into garbage.
-                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), true);
+                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge) , currentReferenceMap.get(currentState),
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input.getValue()), true);
                 }
             }
             // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result
