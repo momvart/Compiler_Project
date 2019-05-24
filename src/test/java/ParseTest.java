@@ -60,4 +60,28 @@ public class ParseTest
         System.out.println(tree.toHumanReadableString());
     }
 
+    @Test
+    public void parsingWrongSentence2() throws InterruptedException
+    {
+        GrammarParser parser = new GrammarParser();
+        parser.parseAndAddProduction("A -> int id ;");
+        CFG grammar = parser.closeAndProduce();
+        ParseContext context = new ParseContext(grammar);
+
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token(TokenType.KEYWORD, "int"));
+        tokens.add(new Token(TokenType.SYMBOL, ";"));
+        tokens.add(new Token(TokenType.EOF, null));
+
+
+        LinkedBlockingQueue<Object> errors = new LinkedBlockingQueue<>();
+        ParseTree tree = context.parse(new LinkedBlockingQueue<>(tokens.stream()
+                .map(TokenWithLineNum::new)
+                .collect(Collectors.toList())), errors);
+
+        System.out.println(errors);
+        System.out.println(tree.toHumanReadableString());
+    }
+
+
 }

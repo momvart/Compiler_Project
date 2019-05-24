@@ -56,4 +56,13 @@ public class SyntaxError extends CompileError
         return String.format("%s %s", type.getText(), terminalPart);
     }
 
+    @Override
+    public String toString()
+    {
+        return "SyntaxError{" +
+                "grammar=" + grammar +
+                ", type=" + type +
+                ", symbol=" + symbol +
+                '}';
+    }
 }
