@@ -82,10 +82,10 @@ public class DFA
             {
                 if (matchEntrance(grammar.findFollow(currentReferenceMap.get(edge.getNextState()))).canEnter(input))
                 {
-                    currentState = edge.getNextState();
-                    SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(currentState), grammar);
-                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                            error, false);// the message should be handled later on.
+                    currentState = edge.getNextState().getExitingEdges().get(0).getNextState();
+                    SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(edge.getNextState()), grammar);
+                    return new DFAResponse(currentState.equals(acceptState), null, currentReferenceMap.get(currentState),
+                            error, false);
                 }
                 else
                 {

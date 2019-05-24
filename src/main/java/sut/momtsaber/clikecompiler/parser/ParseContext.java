@@ -71,9 +71,15 @@ public class ParseContext
             }
             if (response.getConsumedTerminal() != null)
             {
-                treeStack.peek().addTerminal(response.getConsumedTerminal(), new Token(response.getConsumedTerminal().getTokenType(), response.getConsumedTerminal().getValue()));//todo should be made the token corresponding by the symbol
                 if (response.getError() == null)
+                {
+                    treeStack.peek().addTerminal(response.getConsumedTerminal(), currentToken);
                     currentToken = null;
+                }
+                else
+                {
+                    treeStack.peek().addTerminal(response.getConsumedTerminal(), new Token(response.getConsumedTerminal().getTokenType(), response.getConsumedTerminal().getValue()));//todo should be made the token corresponding by the symbol
+                }
             }
             if (response.isGarbage())
                 currentToken = null;
