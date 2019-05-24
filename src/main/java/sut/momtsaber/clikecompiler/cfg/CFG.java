@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import sut.momtsaber.clikecompiler.utils.CompositeSet;
+
 public class CFG
 {
     //Just keeping them for testing, debugging and human-readability
@@ -75,7 +77,7 @@ public class CFG
         if (firstSet != null)       //cached
             return firstSet;
 
-        firstSet = new HashSet<>();
+        firstSet = new CompositeSet<>();
         cachedFirsts.put(key, firstSet);
         CFGProduction production = getProduction(nonTerminal.getId());
         for (int i = 0; i < production.getRightHands().size(); i++)
@@ -93,6 +95,7 @@ public class CFG
         //TODO: linked list accessed by index
 //        firstSet = findFirstInternal(Collections.unmodifiableList(production.getRightHands().get(index)), null, true);
         firstSet = findFirstInternal(production.getRightHands().get(index));
+//        firstSet = findFirstInternal(Collections.unmodifiableList(production.getRightHands().get(index)), null, true);
         cachedFirsts.put(key, firstSet);
         return firstSet;
     }
@@ -100,9 +103,9 @@ public class CFG
     private Set<CFGTerminal> findFirstInternal(CFGRule rule)
     {
         if (rule.isEpsilon())
-            return Collections.singleton(CFGTerminal.EPSILON);
+            return new HashSet<>(Collections.singleton(CFGTerminal.EPSILON));
 
-        HashSet<CFGTerminal> retVal = new HashSet<>();
+        CompositeSet<CFGTerminal> retVal = new CompositeSet<>();
         for (CFGSymbol symbol : rule)
         {
             Set<CFGTerminal> first = findFirst(symbol);
@@ -143,7 +146,7 @@ public class CFG
         if (followSet != null)      //cached
             return followSet;
 
-        followSet = new HashSet<>();
+        followSet = new CompositeSet<>();
         cachedFollows.put(myCase.getId(), followSet);
         if (myCase.getId() == 0)      //initial state
             followSet.add(CFGTerminal.EOF);
