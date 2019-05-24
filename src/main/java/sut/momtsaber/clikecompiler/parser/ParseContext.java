@@ -3,6 +3,7 @@ package sut.momtsaber.clikecompiler.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
@@ -38,16 +39,26 @@ public class ParseContext
         dfaStack.push(currentDFA);
     }
 
-    public ParseTree parse(ArrayList<Token> parsingContent)
+    public ParseTree parse(BlockingQueue<Token> queue)
     {
-        int currentToken = 0;
         Stack<ParseTree> treeStack = new Stack<>();
         ParseTree mainTree = new ParseTree(grammar.getProductions().get(0).getLeftHand());
         treeStack.push(mainTree);
+        Token currentToken = null;
         while (!dfaStack.isEmpty())
         {
             currentDFA = dfaStack.peek();
-            DFAResponse response = currentDFA.advance(parsingContent.get(currentToken));
+            DFAResponse response;
+            try
+            {
+                if (currentToken == null)
+                    currentToken = queue.take();
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+            response = currentDFA.advance(currentToken);
             if (response.getReferencing() != null)
             {
                 int reference = response.getReferencing().getId();
@@ -59,8 +70,8 @@ public class ParseContext
             }
             if (response.getConsumedTerminal() != null)
             {
-                treeStack.peek().addTerminal(response.getConsumedTerminal(), parsingContent.get(currentToken));
-                currentToken++;
+                treeStack.peek().addTerminal(response.getConsumedTerminal(), currentToken);
+                currentToken = null;
             }
             if (response.isEndOfDFA())
             {
