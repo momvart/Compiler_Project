@@ -19,11 +19,11 @@ switch_stmt -> switch ( expression ) { case_stmts default_stmt }
 case_stmts -> case_stmts case_stmt | ϵ
 case_stmt -> case NUMBER : statement_list
 default_stmt -> default : statement_list | ϵ
-expression -> ID indexed_or_not assignment_or_not | signed_factor_without_imm_id term' additive_expression' compare_or_not
+expression -> ID = expression | ID [ expression ] = expression | ID [ expression ] simple_expression_by_id | ID ( args ) simple_expression_by_id | ID simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
 var -> ID | ID [ expression ]
 indexed_or_not -> [ expression ] | ϵ
 assignment_or_not -> = expression | simple_expression_by_id
-simple_expression_by_id -> call_or_not term' additive_expression' compare_or_not
+simple_expression_by_id -> term' additive_expression' compare_or_not
 compare_or_not -> relop additive_expression | ϵ
 call_or_not -> ( args ) | ϵ
 relop -> < | ==

@@ -162,7 +162,7 @@ public class CFG
                             for (int i = iSymbol + 1; i < rightHand.size(); i++)
                             {
                                 Set<CFGTerminal> found = findFirst(rightHand.get(i));
-                                followSet.addAll(found);
+                                followSet.addAll(new HashSet<>(found));
                                 if (!found.contains(CFGTerminal.EPSILON))
                                     break;
                                 if (i == rightHand.size() - 1 && !production.getLeftHand().equals(symbol))
