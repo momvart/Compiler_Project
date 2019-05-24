@@ -50,6 +50,8 @@ public class SyntaxError extends CompileError
     @Override
     public String getMessage()
     {
+        if (type == SyntaxErrorType.UNEXPECTED_END_OF_FILE || type == SyntaxErrorType.MALFORMED_INPUT)
+            return type.getText();
         String terminalPart = symbol instanceof CFGNonTerminal ?
                 grammar.getProduction(((CFGNonTerminal)symbol).getId()).getRightHands().get(0).toString(grammar) :
                 symbol.toString();
