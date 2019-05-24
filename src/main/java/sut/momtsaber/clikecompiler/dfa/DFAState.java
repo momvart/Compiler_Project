@@ -42,6 +42,10 @@ public class DFAState<T>
                 .orElse(null);
     }
 
+    public List<DFAEdge<T>> getExitingEdges()
+    {
+        return exitingEdges;
+    }
 
     public static class NextStateResult<T>
     {

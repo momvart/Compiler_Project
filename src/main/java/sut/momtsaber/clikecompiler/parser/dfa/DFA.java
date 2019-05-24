@@ -16,6 +16,7 @@ import sut.momtsaber.clikecompiler.dfa.DFAEdge;
 import sut.momtsaber.clikecompiler.dfa.DFAState;
 import sut.momtsaber.clikecompiler.dfa.Entrance;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.parser.SyntaxError;
 
 public class DFA
 {
@@ -59,13 +60,43 @@ public class DFA
         this.consumptionMap = new HashMap<>(pattern.consumptionMap);
     }
 
-    public DFAResponse advance(Token input)
+    public DFAResponse advance(Token input, CFG grammar)
     {
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
-        currentState = result.getNextState();
-        return new DFAResponse(currentState.equals(acceptState),
-                this.consumptionMap.get(result.getEdge()),
-                this.currentReferenceMap.get(currentState));// what if not present in the hashMap?
+        if (result == null)
+        {
+            DFAEdge<Token> edge = currentState.getExitingEdges().get(0);
+
+            // error on terminal edge
+            if (consumptionMap.get(edge) != null)
+            {
+                currentState = edge.getNextState();
+                return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), false);
+            }
+
+            // error on nonTerminal edge
+            else if (currentReferenceMap.get(edge.getNextState()) != null)
+            {
+                if (matchEntrance(grammar.findFollow(currentReferenceMap.get(edge.getNextState()))).canEnter(input))
+                {
+                    currentState = edge.getNextState();
+                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), false);
+                }
+                else
+                {
+                    // we stand in the same position as before and put the token we have encountered into garbage.
+                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState), new SyntaxError(), true);
+                }
+            }
+            // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result
+            else
+                return null;
+        }
+        else
+        {
+            currentState = result.getNextState();
+            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, false);
+        }
     }
 
     public static DFA getDFA(CFGProduction production, CFG grammar)
@@ -119,7 +150,13 @@ public class DFA
                         if (iSymbol == 0)
                             nonTerminalEntrance = ruleEntrance;
                         else
-                            nonTerminalEntrance = Entrance.ANY;
+                        {
+                            Set<CFGTerminal> firstSet = grammar.findFirst(symbol);
+                            if (firstSet.contains(CFGTerminal.EPSILON))
+                                nonTerminalEntrance = Entrance.ANY;
+                            else
+                                nonTerminalEntrance = matchEntrance(firstSet);
+                        }
                         currentPosition.addExitEdge(new DFAEdge<>(nonTerminalEntrance, intermediateState, false));
                         intermediateState.addExitEdge(new DFAEdge<>(Entrance.ANY, newState, false));
                         dfa.trueReferenceMap.put(intermediateState, (CFGNonTerminal)symbol);

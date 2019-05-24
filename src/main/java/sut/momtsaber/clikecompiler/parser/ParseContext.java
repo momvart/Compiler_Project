@@ -57,7 +57,7 @@ public class ParseContext
             {
                 e.printStackTrace();
             }
-            response = currentDFA.advance(currentToken);
+            response = currentDFA.advance(currentToken, grammar);
             if (response.getReferencing() != null)
             {
                 int reference = response.getReferencing().getId();
