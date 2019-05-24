@@ -1,15 +1,13 @@
 package sut.momtsaber.clikecompiler.parser;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
-import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
 import sut.momtsaber.clikecompiler.parser.dfa.DFA;
 import sut.momtsaber.clikecompiler.parser.dfa.DFAResponse;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
@@ -38,12 +36,12 @@ public class ParseContext
         dfaStack.push(currentDFA);
     }
 
-    public ParseTree parse(BlockingQueue<Token> queue)
+    public ParseTree parse(BlockingQueue<TokenWithLineNum> tokens, BlockingQueue<SyntaxError> errors)
     {
         Stack<ParseTree> treeStack = new Stack<>();
         ParseTree mainTree = new ParseTree(grammar.getProductions().get(0).getLeftHand());
         treeStack.push(mainTree);
-        Token currentToken = null;
+        TokenWithLineNum currentToken = null;
         while (!dfaStack.isEmpty())
         {
             currentDFA = dfaStack.peek();
@@ -51,13 +49,29 @@ public class ParseContext
             try
             {
                 if (currentToken == null)
-                    currentToken = queue.take();
+                {
+                    do
+                    {
+                        currentToken = tokens.take();
+                    }while (currentToken.getType() == TokenType.COMMENT || currentToken.getType() == TokenType.WHITESPACE);
+                }
             }
             catch (InterruptedException e)
             {
                 e.printStackTrace();
             }
             response = currentDFA.advance(currentToken, grammar);
+            if (response.getError() != null)
+            {
+                try
+                {
+                    errors.put(response.getError());
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
             if (response.getReferencing() != null)
             {
                 int reference = response.getReferencing().getId();
@@ -72,6 +86,8 @@ public class ParseContext
                 treeStack.peek().addTerminal(response.getConsumedTerminal(), currentToken);
                 currentToken = null;
             }
+            if (response.isGarbage())
+                currentToken = null;
             if (response.isEndOfDFA())
             {
                 dfaStack.pop();
