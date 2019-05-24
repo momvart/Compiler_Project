@@ -73,6 +73,15 @@ public class CFGRule implements List<CFGSymbol>
                 String.join(" ", (Iterable<String>)() -> stream().map(Object::toString).iterator());
     }
 
+    public String toString(CFG grammar)
+    {
+        return isEpsilon() ? "EPS" :
+                String.join(" ", (Iterable<String>)() -> stream()
+                        .map(symbol -> symbol instanceof CFGNonTerminal ?
+                                grammar.getNonTerminalName((CFGNonTerminal)symbol) :
+                                symbol.toString()).iterator());
+    }
+
     //region Delegated
     @Override
     public int size() {return symbols.size();}

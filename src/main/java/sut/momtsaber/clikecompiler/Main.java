@@ -15,12 +15,15 @@ import java.util.stream.StreamSupport;
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.cfg.CFGRule;
 import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
+import sut.momtsaber.clikecompiler.errors.CompileError;
+import sut.momtsaber.clikecompiler.lexicalanalysis.LexicalError;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
 import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 import sut.momtsaber.clikecompiler.parser.ParseContext;
+import sut.momtsaber.clikecompiler.parser.SyntaxError;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
 import sut.momtsaber.clikecompiler.utils.CFGSymbolDeserializer;
 
@@ -56,12 +59,13 @@ public class Main
         catch (Exception ex) { ex.printStackTrace(); }
     }
 
-    public static void parse(InputStream input, OutputStream output, OutputStream error) throws InterruptedException
+    public static void parse(InputStream input, OutputStream output, OutputStream errStream) throws InterruptedException
     {
         PrintStream outPrinter = new PrintStream(output),
-                errPrinter = new PrintStream(error);
+                errPrinter = new PrintStream(errStream);
 
-        BlockingQueue<TokenWithLineNum> pipeline = new LinkedBlockingQueue<>(20);
+        BlockingQueue<TokenWithLineNum> tokenPipe = new LinkedBlockingQueue<>(20);
+        BlockingQueue<CompileError> errorPipe = new LinkedBlockingQueue<>();
 
         Thread scannerThread = new Thread(() ->
         {
@@ -83,15 +87,15 @@ public class Main
                         case WHITESPACE:
                             break;
                         case INVALID:
-                            errPrinter.printf("%d. (%s, invalid input)%n", outputLineNum, token.getValue());
+                            errorPipe.put(new LexicalError(token));
                             break;
                         default:
-                            pipeline.put(token);
+                            tokenPipe.put(token);
                             break;
                     }
                     outputLineNum = context.getCurrentLineNumber();
                 }
-                pipeline.put(new TokenWithLineNum(TokenType.EOF, null, context.getCurrentLineNumber()));
+                tokenPipe.put(new TokenWithLineNum(TokenType.EOF, null, context.getCurrentLineNumber()));
             }
             catch (Exception ex) { ex.printStackTrace(); }
         }, "Scanner");
@@ -110,17 +114,33 @@ public class Main
                 CFG grammar = gson.fromJson(new InputStreamReader(Test.class.getClassLoader().getResourceAsStream("parsed_grammar.cfgjson")), CFG.class);
 
                 ParseContext context = new ParseContext(grammar);
-                ParseTree outTree = context.parse(pipeline);
+                ParseTree outTree = context.parse(tokenPipe, errorPipe);
 
+                errorPipe.put(new CompileError(-1, null));
                 outPrinter.println(outTree.toHumanReadableString(grammar));
                 outPrinter.println(outTree.toInorderString());
             }
             catch (Exception ex) { ex.printStackTrace(); }
         }, "Parser");
 
+        Thread errorThread = new Thread(() ->
+        {
+            try
+            {
+                CompileError err;
+                while ((err = errorPipe.take()).getLineNumber() != -1)
+                {
+                    errPrinter.printf("%d: %s! %s%n", err.getLineNumber(), err.getName(), err.getMessage());
+                }
+            }
+            catch (Exception ex) {ex.printStackTrace();}
+        }, "Error Writer");
+        errorThread.start();
+
         parserThread.start();
 
         scannerThread.join();
         parserThread.join();
+        errorThread.join();
     }
 }

@@ -74,7 +74,7 @@ public class DFA
             {
                 currentState = edge.getNextState();
                 return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge).toString()), false);
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)), false);
             }
 
             // error on nonTerminal edge
@@ -83,16 +83,15 @@ public class DFA
                 if (matchEntrance(grammar.findFollow(currentReferenceMap.get(edge.getNextState()))).canEnter(input))
                 {
                     currentState = edge.getNextState();
-                    SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING);
-                    error.setNonTerminal(currentReferenceMap.get(currentState));
+                    SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(currentState), grammar);
                     return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
                             error, false);// the message should be handled later on.
                 }
                 else
                 {
                     // we stand in the same position as before and put the token we have encountered into garbage.
-                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge) , currentReferenceMap.get(currentState),
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input.getValue()), true);
+                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input), true);
                 }
             }
             // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result

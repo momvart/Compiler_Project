@@ -36,7 +36,7 @@ public class ParseContext
         dfaStack.push(currentDFA);
     }
 
-    public ParseTree parse(BlockingQueue<TokenWithLineNum> tokens, BlockingQueue<SyntaxError> errors)
+    public ParseTree parse(BlockingQueue<TokenWithLineNum> tokens, BlockingQueue<? super SyntaxError> errors) throws InterruptedException
     {
         Stack<ParseTree> treeStack = new Stack<>();
         ParseTree mainTree = new ParseTree(grammar.getProductions().get(0).getLeftHand());
@@ -46,31 +46,18 @@ public class ParseContext
         {
             currentDFA = dfaStack.peek();
             DFAResponse response;
-            try
+            if (currentToken == null)
             {
-                if (currentToken == null)
+                do
                 {
-                    do
-                    {
-                        currentToken = tokens.take();
-                    }while (currentToken.getType() == TokenType.COMMENT || currentToken.getType() == TokenType.WHITESPACE);
+                    currentToken = tokens.take();
                 }
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
+                while (currentToken.getType() == TokenType.COMMENT || currentToken.getType() == TokenType.WHITESPACE);
             }
             response = currentDFA.advance(currentToken, grammar);
             if (response.getError() != null)
             {
-                try
-                {
-                    errors.put(response.getError());
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                errors.put(response.getError());
             }
             if (response.getReferencing() != null)
             {

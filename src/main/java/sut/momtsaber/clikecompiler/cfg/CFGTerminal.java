@@ -10,7 +10,7 @@ public class CFGTerminal extends CFGSymbol
     private final TokenType tokenType;
     private final String value;
 
-    private CFGTerminal(TokenType tokenType, String value)
+    public CFGTerminal(TokenType tokenType, String value)
     {
         this.tokenType = tokenType;
         this.value = value;

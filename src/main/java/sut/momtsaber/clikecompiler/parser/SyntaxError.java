@@ -2,30 +2,44 @@ package sut.momtsaber.clikecompiler.parser;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
+import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
+import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
+import sut.momtsaber.clikecompiler.errors.CompileError;
+import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 
-public class SyntaxError
+public class SyntaxError extends CompileError
 {
-    private int lineNumber;
+    private CFG grammar;
     private SyntaxErrorType type;
-    private String message;
-    private CFGNonTerminal nonTerminal;
+    private CFGSymbol symbol;
 
-    public SyntaxError(int lineNumber, SyntaxErrorType type, String message)
+    public SyntaxError(int lineNumber, SyntaxErrorType type, CFGSymbol symbol, CFG grammar)
     {
-        this.lineNumber = lineNumber;
+        super(lineNumber, null);
         this.type = type;
-        this.message = message;
+        this.grammar = grammar;
+        this.symbol = symbol;
     }
 
-    public SyntaxError(int lineNumber, SyntaxErrorType type)
+    public SyntaxError(int lineNumber, SyntaxErrorType type, CFGTerminal terminal)
     {
-        this.lineNumber = lineNumber;
-        this.type = type;
+        this(lineNumber, type, terminal, null);
     }
 
-    public int getLineNumber()
+    public SyntaxError(int lineNumber, SyntaxErrorType type, Token token)
     {
-        return lineNumber;
+        this(lineNumber, type, new CFGTerminal(token.getType(), token.getValue()));
+    }
+
+    public SyntaxError(int lineNumber, SyntaxErrorType type, CFGNonTerminal nonTerminal, CFG grammar)
+    {
+        this(lineNumber, type, (CFGSymbol)nonTerminal, grammar);
+    }
+
+    @Override
+    public String getName()
+    {
+        return "Syntax Error";
     }
 
     public SyntaxErrorType getType()
@@ -33,27 +47,13 @@ public class SyntaxError
         return type;
     }
 
-    public String getMessage(CFG grammar)
+    @Override
+    public String getMessage()
     {
-        if (message == null)
-        {
-            return grammar.getProductions().get(nonTerminal.getId()).getRightHands().get(0).toString();
-        }
-        return message;
+        String terminalPart = symbol instanceof CFGNonTerminal ?
+                grammar.getProduction(((CFGNonTerminal)symbol).getId()).getRightHands().get(0).toString(grammar) :
+                symbol.toString();
+        return String.format("%s %s", type.getText(), terminalPart);
     }
 
-    public void setMessage(String message)
-    {
-        this.message = message;
-    }
-
-    public CFGNonTerminal getNonTerminal()
-    {
-        return nonTerminal;
-    }
-
-    public void setNonTerminal(CFGNonTerminal nonTerminal)
-    {
-        this.nonTerminal = nonTerminal;
-    }
 }
