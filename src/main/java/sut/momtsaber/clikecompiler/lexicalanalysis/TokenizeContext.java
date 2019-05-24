@@ -148,9 +148,10 @@ public class TokenizeContext
         return hasNextChar();
     }
 
-    public Token getNextToken()
+    public TokenWithLineNum getNextToken()
     {
         TokenType lastTokenType;
+        int lineNum = getCurrentLineNumber();
         do
         {
             lastTokenType = currentState.getTokenType();
@@ -162,7 +163,7 @@ public class TokenizeContext
         } //When we are back to start, a token is generated
         while (this.hasNextChar() && currentState != startState);
 
-        Token retVal = new Token(lastTokenType, buffer.substring(0, currentReadPosition));
+        TokenWithLineNum retVal = new TokenWithLineNum(lastTokenType, buffer.substring(0, currentReadPosition), lineNum);
         if (retVal.getType() == TokenType.ID && Token.KEYWORDS.contains(retVal.getValue()))
             retVal.setType(TokenType.KEYWORD);
 

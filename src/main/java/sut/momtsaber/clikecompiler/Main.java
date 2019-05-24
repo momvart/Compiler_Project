@@ -15,6 +15,7 @@ import sut.momtsaber.clikecompiler.cfg.CFGRule;
 import sut.momtsaber.clikecompiler.cfg.CFGSymbol;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenizeContext;
 import sut.momtsaber.clikecompiler.lexicalanalysis.characterproviders.ReaderCharacterProvider;
 import sut.momtsaber.clikecompiler.parser.ParseContext;
@@ -58,7 +59,7 @@ public class Main
         PrintStream outPrinter = new PrintStream(output),
                 errPrinter = new PrintStream(error);
 
-        BlockingQueue<Token> pipeline = new LinkedBlockingQueue<>(20);
+        BlockingQueue<TokenWithLineNum> pipeline = new LinkedBlockingQueue<>(20);
 
         Thread scannerThread = new Thread(() ->
         {
@@ -72,7 +73,7 @@ public class Main
 
                 while (context.hasNextToken())
                 {
-                    Token token = context.getNextToken();
+                    TokenWithLineNum token = context.getNextToken();
 
                     switch (token.getType())
                     {
@@ -88,7 +89,7 @@ public class Main
                     }
                     outputLineNum = context.getCurrentLineNumber();
                 }
-                pipeline.put(new Token(TokenType.EOF, null));
+                pipeline.put(new TokenWithLineNum(TokenType.EOF, null, context.getCurrentLineNumber()));
             }
             catch (Exception ex) { ex.printStackTrace(); }
         }, "Scanner");
