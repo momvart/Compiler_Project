@@ -39,20 +39,20 @@ public class Main
         if (args.length >= 2)
             out = args[1];
         else
-            out = "scanner.txt";
+            out = "output.txt";
         if (args.length >= 3)
             err = args[2];
         else
-            err = "lexical_errors.txt";
+            err = "errors.txt";
 
         parse(in, out, err);
     }
 
     public static void parse(String inputPath, String outputPath, String errorPath)
     {
-        try (InputStream input = /*new FileInputStream(inputPath)*/ System.in;
-             OutputStream output = /*new FileOutputStream(outputPath, false)*/ System.out;
-             OutputStream error = /*new FileOutputStream(errorPath, false)*/ System.err)
+        try (InputStream input = new FileInputStream(inputPath);
+             OutputStream output = new FileOutputStream(outputPath, false);
+             OutputStream error = new FileOutputStream(errorPath, false))
         {
             parse(input, output, error);
         }
