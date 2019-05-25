@@ -71,13 +71,20 @@ public class DFA
             DFAEdge<Token> edge = currentState.getExitingEdges().get(0);
             if (input.getType() == TokenType.EOF)
             {
-                return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null)), false);
+                return new DFAResponse(false, null, null,
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null))
+                        , true);
             }
 
             // error on terminal edge
             if (consumptionMap.get(edge) != null)
             {
+                if (consumptionMap.get(edge).getTokenType() == TokenType.EOF)
+                {
+                    return new DFAResponse(false, null, null,
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input),
+                            true);
+                }
                 currentState = edge.getNextState();
                 return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
                         new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)), false);
@@ -90,19 +97,14 @@ public class DFA
                 {
                     currentState = edge.getNextState().getExitingEdges().get(0).getNextState();
                     SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(edge.getNextState()), grammar);
-                    return new DFAResponse(currentState.equals(acceptState), null, currentReferenceMap.get(currentState),
-                            error, false);
+                    return new DFAResponse(currentState.equals(acceptState), null, null, error, false);
                 }
                 else
                 {
                     // putting unexpected tokens into garbage
-                    if (currentState.getExitingEdges().get(currentState.getExitingEdges().size() - 1).getEntrance().canEnter(new Token(TokenType.EOF, null)))
-                    {
-                        return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                                new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input), true);
-                    }
-                    return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input), true);
+                    return new DFAResponse(currentState.equals(acceptState), null, null,
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input),
+                            true);
                 }
             }
             // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result

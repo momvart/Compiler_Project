@@ -74,23 +74,18 @@ public class ParseContext
             if (response.getConsumedTerminal() != null)
             {
                 if (response.getError() == null)
-                {
                     treeStack.peek().addTerminal(response.getConsumedTerminal(), currentToken);
-                    currentToken = null;
-                }
                 else
-                {
                     treeStack.peek().addTerminal(response.getConsumedTerminal(), new Token(response.getConsumedTerminal().getTokenType(), response.getConsumedTerminal().getValue()));
-                }
-            }
-            if (response.isGarbage())
-            {
-                currentToken = null;
             }
             if (response.isEndOfDFA())
             {
                 dfaStack.pop();
                 treeStack.pop();
+            }
+            if (response.isTokenUnexpected() || (response.getConsumedTerminal() != null && response.getError() == null))
+            {
+                currentToken = null;
             }
         }
         return mainTree;

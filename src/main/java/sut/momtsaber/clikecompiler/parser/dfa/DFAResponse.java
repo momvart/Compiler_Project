@@ -10,15 +10,15 @@ public class DFAResponse
     private CFGTerminal consumedTerminal;
     private CFGNonTerminal referencing;
     private SyntaxError error;
-    private boolean isGarbage;
+    private boolean isTokenUnexpected;
 
-    public DFAResponse(boolean isEndOfDFA, CFGTerminal consumedTerminal, CFGNonTerminal referencing, SyntaxError error, boolean isGarbage)
+    public DFAResponse(boolean isEndOfDFA, CFGTerminal consumedTerminal, CFGNonTerminal referencing, SyntaxError error, boolean isTokenUnexpected)
     {
         this.isEndOfDFA = isEndOfDFA;
         this.consumedTerminal = consumedTerminal;
         this.referencing = referencing;
         this.error = error;
-        this.isGarbage = isGarbage;
+        this.isTokenUnexpected = isTokenUnexpected;
     }
 
     public boolean isEndOfDFA()
@@ -42,8 +42,8 @@ public class DFAResponse
         return error;
     }
 
-    public boolean isGarbage()
+    public boolean isTokenUnexpected()
     {
-        return isGarbage;
+        return isTokenUnexpected;
     }
 }
