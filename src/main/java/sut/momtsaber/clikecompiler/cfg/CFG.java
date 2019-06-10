@@ -66,12 +66,13 @@ public class CFG
     private static final BiFunction<Integer, Integer, Integer> firstKeyBuilder = (ntId, ruleIndex) ->
             (ntId << Integer.SIZE / 2) + (ruleIndex & 0xFFFF);
 
-    public Set<CFGTerminal> findFirst(CFGSymbol subject)
+    public Set<CFGTerminal> findFirst(CFGSymbol symbol)
     {
-        if (subject instanceof CFGTerminal)
-            return new HashSet<>(Collections.singletonList((CFGTerminal)subject));
-
-        CFGNonTerminal nonTerminal = (CFGNonTerminal)subject;
+        if (symbol instanceof CFGTerminal)
+            return Collections.singleton((CFGTerminal)symbol);
+        else if (!(symbol instanceof CFGNonTerminal))
+            return Collections.singleton(CFGTerminal.EPSILON);
+        CFGNonTerminal nonTerminal = (CFGNonTerminal)symbol;
         Integer key = firstKeyBuilder.apply(nonTerminal.getId(), -1);
         Set<CFGTerminal> firstSet = cachedFirsts.get(key);
         if (firstSet != null)       //cached

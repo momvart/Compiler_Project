@@ -1,14 +1,11 @@
 package sut.momtsaber.clikecompiler.parser;
 
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
-import sut.momtsaber.clikecompiler.cfg.CFG;
-import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
-import sut.momtsaber.clikecompiler.lexicalanalysis.TokenWithLineNum;
+import sut.momtsaber.clikecompiler.cfg.*;
+import sut.momtsaber.clikecompiler.lexicalanalysis.*;
 import sut.momtsaber.clikecompiler.parser.dfa.DFA;
 import sut.momtsaber.clikecompiler.parser.dfa.DFAResponse;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
@@ -88,6 +85,7 @@ public class ParseContext
                 currentToken = null;
             }
         }
+        errors.put(new SyntaxError(-1, SyntaxErrorType.MALFORMED_INPUT, new CFGTerminal(null, null)));
         return mainTree;
     }
 }
