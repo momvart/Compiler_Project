@@ -48,6 +48,12 @@ public class CFGRule implements List<CFGSymbol>
         return symbols.isEmpty();
     }
 
+    public boolean isEpsilonOrJustAction()
+    {
+        return symbols.isEmpty() ||
+                symbols.stream().allMatch(CFGAction.class::isInstance);
+    }
+
     public CFGRule subRule(int fromIndex, int toIndex)
     {
         return new CFGRule(subList(fromIndex, toIndex));

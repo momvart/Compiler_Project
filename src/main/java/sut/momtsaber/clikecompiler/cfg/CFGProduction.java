@@ -89,7 +89,8 @@ public class CFGProduction implements Cloneable
                 .peek(nonRecursive -> nonRecursive.add(prime))
                 .collect(Collectors.toCollection(LinkedList::new));
 
-        return Arrays.asList(new CFGProduction(production.getLeftHand(), newRightHands),
+        return Arrays.asList(
+                new CFGProduction(production.getLeftHand(), newRightHands),
                 new CFGProduction(prime, primeRightHands));
     }
 
