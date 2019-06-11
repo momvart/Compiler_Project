@@ -10,9 +10,9 @@ public class Scope
     private Scope parent;
     private ArrayListValuedHashMap<String, Definition> definitions = new ArrayListValuedHashMap<>();
 
-    public Scope()
+    public Scope(Scope parent)
     {
-
+        this.parent = parent;
     }
 
     public List<Definition> getDefinition(String name)
