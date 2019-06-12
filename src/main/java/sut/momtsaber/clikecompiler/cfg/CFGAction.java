@@ -32,5 +32,10 @@ public class CFGAction extends CFGSymbol
 
         public static final String CONTINUE = "continue";
         public static final String BREAK = "break";
+
+        public static final String MULTIPLY = "mult";
+        public static final String ADD_SUBTRACT = "add_sub";
+        public static final String APPLY_SIGN = "apply_sign";
+
     }
 }

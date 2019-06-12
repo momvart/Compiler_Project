@@ -39,6 +39,8 @@ public class CodeGenerationContext
         return lastVarAddress += size;
     }
 
+    private int getNextFreeTempAddress() { return lastTempAddress += VARIABLE_SIZE; }
+
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
         switch (action.getName())
@@ -57,6 +59,15 @@ public class CodeGenerationContext
                 break;
             case CFGAction.Names.DECLARE_ARRAY:
                 declareArray();
+                break;
+            case CFGAction.Names.ADD_SUBTRACT:
+                addOrSub();
+                break;
+            case CFGAction.Names.MULTIPLY:
+                multiply();
+                break;
+            case CFGAction.Names.APPLY_SIGN:
+                applySign();
                 break;
         }
     }
@@ -133,6 +144,77 @@ public class CodeGenerationContext
 
     //endregion
 
+    //region Arithmetic
+
+    private void checkArithmeticOperands(Value first, Value second)
+    {
+        if (first.getType() == Value.Type.REFERENCE || second.getType() == Value.Type.REFERENCE ||
+                first.getType() == Value.Type.VOID || second.getType() == Value.Type.VOID)
+            throw new TypeMismatchException(getLineNumber(), first.getType(), second.getType());
+    }
+
+    private Value makeTempResult()
+    {
+        Value result = new Value(Value.Type.VAR, getNextFreeTempAddress());
+        valuesStack.push(result);
+        return result;
+    }
+
+    private void multiply() throws InterruptedException
+    {
+        multiply(valuesStack.pop(), valuesStack.pop());
+    }
+
+    private void multiply(Value first, Value second) throws InterruptedException
+    {
+        checkArithmeticOperands(first, second);
+        statementPipeline.put(ILStatement.multiply(first.toOperand(), second.toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    private void addOrSub() throws InterruptedException
+    {
+        Token addop = tokenStack.pop();
+        if (addop.getType() != TokenType.SYMBOL ||
+                !addop.getValue().equals("+") || !addop.getValue().equals("-"))
+            throw new IllegalStateException("Add operation not found in the stack");
+
+        if (addop.getValue().equals("+"))
+            add(valuesStack.pop(), valuesStack.pop());
+        else
+            sub(valuesStack.pop(), valuesStack.pop());
+    }
+
+    private void add(Value first, Value second) throws InterruptedException
+    {
+        checkArithmeticOperands(first, second);
+        statementPipeline.put(ILStatement.add(first.toOperand(), second.toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    private void sub(Value first, Value second) throws InterruptedException
+    {
+        checkArithmeticOperands(first, second);
+        statementPipeline.put(ILStatement.subtract(first.toOperand(), second.toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    private void applySign() throws InterruptedException
+    {
+        Token sign = tokenStack.pop();
+        if (sign.getType() != TokenType.SYMBOL ||
+                !sign.getValue().equals("+") || !sign.getValue().equals("-"))
+            throw new IllegalStateException("Sign not found in the stack");
+
+        if (sign.getValue().equals("+"))
+            return;
+
+        statementPipeline.put(ILStatement.subtract(ILOperand.immediate(0), valuesStack.pop().toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    //endregion
+
     private void assign() throws InterruptedException
     {
         Value right = valuesStack.pop();
@@ -154,6 +236,7 @@ public class CodeGenerationContext
             CONST,
             VAR,
             REFERENCE,
+            VOID
         }
 
         private final Type type;
