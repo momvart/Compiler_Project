@@ -4,20 +4,20 @@ declaration -> type_specifier #pt ID #pt var_declaration_rest | type_specifier #
 var_declaration_rest -> ; #var_dec | [ NUMBER #pt ] ; #arr_dec
 type_specifier -> int | void
 fun_declaration_rest -> #func_dec ( params ) #func_init compound_stmt
-params -> void | void ID #pt #var_dec param_mult_list_optional | void ID #pt [ ] #arr_param_dec param_mult_list_optional | int #pt ID #pt #var_dec param_mult_list_optional | int #pt ID #pt [ ] #arr_param_dec param_mult_list_optional
+params -> void | void #pt ID #pt #param_var_dec param_mult_list_optional | void #pt ID #pt [ ] #param_arr_dec param_mult_list_optional | int #pt ID #pt #param_var_dec param_mult_list_optional | int #pt ID #pt [ ] #param_arr_dec param_mult_list_optional
 param_mult_list_optional -> , param_list | ϵ
 param_list -> param_list , param | param
-param -> type_specifier #pt ID #pt #var_dec | type_specifier #pt ID #pt [ ] #arr_param_dec
+param -> type_specifier #pt ID #pt #param_var_dec | type_specifier #pt ID #pt [ ] #param_arr_dec
 compound_stmt -> { #begin_scope declaration_list statement_list } #end_scope
 statement_list -> statement_list statement | ϵ
 statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
 expression_stmt -> expression ; | continue ; #continue | break ; #break | ;
 selection_stmt -> if ( expression ) statement else statement
 iteration_stmt -> while ( expression ) statement
-return_stmt -> return ; #push_null #return | return expression ; #push_retval #return
+return_stmt -> return ; #push_void #return | return expression ; #push_retval #return
 switch_stmt -> switch ( expression ) { case_stmts default_stmt }
 case_stmts -> case_stmts case_stmt | ϵ
-case_stmt -> case NUMBER #pt : statement_list
+case_stmt -> case NUMBER #pt #put_num : statement_list
 default_stmt -> default : statement_list | ϵ
 expression -> ID #pt #put_var = expression #var_assign | ID #pt [ expression ] #put_arr_elem = expression #arr_elem_assign | ID #pt [ expression ] #put_arr_elem simple_expression_by_id | ID #pt ( args ) #call simple_expression_by_id | ID #pt #put_var simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
 simple_expression_by_id -> term' additive_expression' compare_or_not
