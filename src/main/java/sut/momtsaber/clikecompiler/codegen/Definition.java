@@ -1,6 +1,16 @@
 package sut.momtsaber.clikecompiler.codegen;
 
-public class Definition
+public abstract class Definition
 {
-    private String id;
+    private final String id;
+
+    public Definition(String id)
+    {
+        this.id = id;
+    }
+
+    public String getId()
+    {
+        return id;
+    }
 }
