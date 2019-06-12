@@ -1,6 +1,6 @@
 package sut.momtsaber.clikecompiler.errors;
 
-public class CompileError
+public class CompileError extends RuntimeException
 {
     private int lineNumber;
     private final String message;

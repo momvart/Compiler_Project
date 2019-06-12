@@ -1,19 +1,193 @@
 package sut.momtsaber.clikecompiler.codegen;
 
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.concurrent.*;
+
+import sut.momtsaber.clikecompiler.cfg.CFGAction;
+import sut.momtsaber.clikecompiler.codegen.exceptions.*;
+import sut.momtsaber.clikecompiler.codegen.il.*;
+import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
+import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
 public class CodeGenerationContext
 {
+    private static final int ADDRESS_START = 100;
+    private static final int TEMP_ADDRESS_START = 1000;
+    private static final int STACK_START_ADDRESS = 10000;
+
+    private static final int STACK_POINTER_ADDRESS = 0;
+    private static final int MAIN_FUNC_POINTER_ADDRESS = 1;
+
+    private static final int VARIABLE_SIZE = 4;
+
+    private BlockingQueue<ILStatement> statementPipeline;
+
     private Deque<Scope> scopes = new LinkedList<>();
 
+    private LinkedList<Value> valuesStack = new LinkedList<>();
+    private LinkedList<Token> tokenStack = new LinkedList<>();
+
+    private int lastVarAddress = ADDRESS_START;
+    private int lastTempAddress = TEMP_ADDRESS_START;
+    private final int stackPointerAddress = STACK_POINTER_ADDRESS;
+    private final int mainFuncPointerAddress = MAIN_FUNC_POINTER_ADDRESS;
+
+    private int getLineNumber() { return -1; }
+
+    private int getNextFreeAddress(int size)
+    {
+        return lastVarAddress += size;
+    }
+
+    public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
+    {
+        switch (action.getName())
+        {
+            case CFGAction.Names.PUSH_TOKEN:
+                tokenStack.push(lastToken);
+                break;
+            case CFGAction.Names.START_PROGRAM:
+                startProgram();
+                break;
+            case CFGAction.Names.END_PROGRAM:
+                endProgram();
+                break;
+            case CFGAction.Names.DECLARE_VAR:
+                declareVariable();
+                break;
+            case CFGAction.Names.DECLARE_ARRAY:
+                declareArray();
+                break;
+        }
+    }
+
+    private void startProgram() throws InterruptedException
+    {
+        Scope global = new Scope(null);
+        global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
+        assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
+        global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
+    }
+
+    private void endProgram() {}
+
+    //region Scope
     private void beginNewScope()
     {
-        scopes.push(new Scope(scopes.element()));
+        scopes.push(new Scope(getCurrentScope()));
     }
 
     private void endCurrentScope()
     {
         scopes.pop();
     }
+
+    private Scope getCurrentScope() { return scopes.element(); }
+    //endregion
+
+    //region Declaration
+
+    private void declareVariable() throws IllegalTypeOfVoidException, DeclarationOfDeclaredException
+    {
+        Token name = tokenStack.pop();
+        Token type = tokenStack.pop();
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Variable name not found in the stack.");
+        if (type.getType() != TokenType.KEYWORD)
+            throw new IllegalStateException("Variable type not found in the stack.");
+        if (!type.getValue().equals("int"))
+            throw new IllegalTypeOfVoidException(getLineNumber(), name.getValue());
+        declareVariable(name.getValue());
+    }
+
+    private void declareVariable(String name) throws DeclarationOfDeclaredException
+    {
+        if (!getCurrentScope()
+                .addDefinition(new VarDefinition(name, getNextFreeAddress(VARIABLE_SIZE))))
+            throw new DeclarationOfDeclaredException(getLineNumber(), name);
+    }
+
+    private void declareArray() throws IllegalTypeOfVoidException, DeclarationOfDeclaredException, InterruptedException
+    {
+        Token size = tokenStack.pop();
+        Token name = tokenStack.pop();
+        Token type = tokenStack.pop();
+        if (size.getType() != TokenType.NUMBER)
+            throw new IllegalStateException("Array size not found in the stack.");
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Array name not found in the stack.");
+        if (type.getType() != TokenType.KEYWORD)
+            throw new IllegalStateException("Array type not found in the stack.");
+        if (!type.getValue().equals("int"))
+            throw new IllegalTypeOfVoidException(getLineNumber(), name.getValue());
+        declareArray(name.getValue(), Integer.parseInt(size.getValue()));
+    }
+
+    private void declareArray(String name, int size) throws DeclarationOfDeclaredException, InterruptedException
+    {
+        VarDefinition def = new VarDefinition(name, getNextFreeAddress(VARIABLE_SIZE), true);
+        if (!getCurrentScope().addDefinition(def))
+            throw new DeclarationOfDeclaredException(getLineNumber(), name);
+        assign(def.getAddress(), new Value(Value.Type.CONST, getNextFreeAddress(VARIABLE_SIZE * size)));
+    }
+
+    //endregion
+
+    private void assign() throws InterruptedException
+    {
+        Value right = valuesStack.pop();
+        Value left = valuesStack.pop();
+        if (right.getType() != left.getType())
+            throw new TypeMismatchException(getLineNumber(), left.getType(), right.getType());
+        assign(left.getValue(), right);
+    }
+
+    private void assign(int address, Value value) throws InterruptedException
+    {
+        statementPipeline.put(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
+    }
+
+    public static class Value
+    {
+        public enum Type
+        {
+            CONST,
+            VAR,
+            REFERENCE,
+        }
+
+        private final Type type;
+        private final int value;
+
+        public Value(Type type, int value)
+        {
+            this.type = type;
+            this.value = value;
+        }
+
+        public Type getType()
+        {
+            return type;
+        }
+
+        public int getValue()
+        {
+            return value;
+        }
+
+        public ILOperand toOperand()
+        {
+            switch (type)
+            {
+                case CONST:
+                    return ILOperand.immediate(value);
+                case VAR:
+                case REFERENCE:
+                    return ILOperand.direct(value);
+                default:
+                    return null;
+            }
+        }
+    }
 }
+
