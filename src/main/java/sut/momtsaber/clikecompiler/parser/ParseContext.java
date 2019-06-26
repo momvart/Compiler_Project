@@ -44,6 +44,7 @@ public class ParseContext
         {
             currentDFA = dfaStack.peek();
             DFAResponse response;
+            // read a valuable token when we haven't got one
             if (currentToken == null)
             {
                 do
@@ -53,12 +54,14 @@ public class ParseContext
                 while (currentToken.getType() == TokenType.COMMENT || currentToken.getType() == TokenType.WHITESPACE);
             }
             response = currentDFA.advance(currentToken, grammar);
+            // put error in error data set if present and finish the job while encountering a terminating error type
             if (response.getError() != null)
             {
                 errors.put(response.getError());
                 if (response.getError().getType() == SyntaxErrorType.UNEXPECTED_END_OF_FILE || response.getError().getType() == SyntaxErrorType.MALFORMED_INPUT)
                     break;
             }
+            // switch into a new dfa when we reach a Noneterminal State and go into it's dfa
             if (response.getReferencing() != null)
             {
                 int reference = response.getReferencing().getId();
@@ -68,6 +71,7 @@ public class ParseContext
                 treeStack.peek().addNonTerminal(grammar.getProductions().get(reference).getLeftHand(), newTree);
                 treeStack.push(newTree);
             }
+            //update tree when a terminal is used or if it is missing but should have been used if it was present.
             if (response.getConsumedTerminal() != null)
             {
                 if (response.getError() == null)
@@ -80,12 +84,18 @@ public class ParseContext
                 dfaStack.pop();
                 treeStack.pop();
             }
-            if (response.isTokenUnexpected() || (response.getConsumedTerminal() != null && response.getError() == null))
+            // if we find a token unexpected or used up we should go to the next token
+            if (gotUnexpected(response.getError()) || (response.getConsumedTerminal() != null && response.getError() == null))
             {
                 currentToken = null;
             }
         }
         errors.put(new SyntaxError(-1, SyntaxErrorType.MALFORMED_INPUT, new CFGTerminal(null, null)));
         return mainTree;
+    }
+
+    private boolean gotUnexpected(SyntaxError error)
+    {
+        return (error != null && (error.getType() == SyntaxErrorType.MALFORMED_INPUT || error.getType() == SyntaxErrorType.UNEXPECTED));
     }
 }

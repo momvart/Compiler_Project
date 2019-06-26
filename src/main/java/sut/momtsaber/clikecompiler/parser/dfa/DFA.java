@@ -72,8 +72,7 @@ public class DFA
             if (input.getType() == TokenType.EOF)
             {
                 return new DFAResponse(false, null, null,
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null))
-                        , true);
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null)));
             }
 
             // error on terminal edge
@@ -82,12 +81,11 @@ public class DFA
                 if (consumptionMap.get(edge).getTokenType() == TokenType.EOF)
                 {
                     return new DFAResponse(false, null, null,
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input),
-                            true);
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input));
                 }
                 currentState = edge.getNextState();
                 return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)), false);
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)));
             }
 
             // error on nonTerminal edge
@@ -97,14 +95,13 @@ public class DFA
                 {
                     currentState = edge.getNextState().getExitingEdges().get(0).getNextState();
                     SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(edge.getNextState()), grammar);
-                    return new DFAResponse(currentState.equals(acceptState), null, null, error, false);
+                    return new DFAResponse(currentState.equals(acceptState), null, null, error);
                 }
                 else
                 {
                     // putting unexpected tokens into garbage
                     return new DFAResponse(currentState.equals(acceptState), null, null,
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input),
-                            true);
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input));
                 }
             }
             // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result
@@ -114,7 +111,7 @@ public class DFA
         else
         {
             currentState = result.getNextState();
-            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, false);
+            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null);
         }
     }
 
@@ -125,7 +122,7 @@ public class DFA
         {
             CFGRule rule = production.getRightHands().get(i);
             // restarting the currentPosition in the beginning of the rule
-            DFAState<Token> currentPosition = dfa.getStartState();
+            DFAState<Token> buildingTail = dfa.getStartState();
 
             //calculating the entrance with which the input should go into this rule
             Entrance<Token> ruleEntrance;
@@ -135,7 +132,7 @@ public class DFA
             ruleEntrance = matchEntrance(matchList);
 
             if (rule.isEpsilon())
-                currentPosition.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
+                buildingTail.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
             else
             {
                 for (int iSymbol = 0; iSymbol < rule.size(); iSymbol++)
@@ -151,12 +148,11 @@ public class DFA
 
                         DFAEdge<Token> edge = new DFAEdge<>(matchEntrance(Collections.singletonList((CFGTerminal)symbol)),
                                 newState, true);
-                        currentPosition.addExitEdge(edge);
-                        currentPosition = newState;
+                        buildingTail.addExitEdge(edge);
+                        buildingTail = newState;
                         dfa.consumptionMap.put(edge, (CFGTerminal)symbol);
-                        continue;
                     }
-                    if (symbol instanceof CFGNonTerminal)
+                    else if (symbol instanceof CFGNonTerminal)
                     {
                         DFAState<Token> intermediateState = new DFAState<>();
                         DFAState<Token> newState;
@@ -176,10 +172,10 @@ public class DFA
                             else
                                 nonTerminalEntrance = matchEntrance(firstSet);
                         }
-                        currentPosition.addExitEdge(new DFAEdge<>(nonTerminalEntrance, intermediateState, false));
+                        buildingTail.addExitEdge(new DFAEdge<>(nonTerminalEntrance, intermediateState, false));
                         intermediateState.addExitEdge(new DFAEdge<>(Entrance.ANY, newState, false));
                         dfa.trueReferenceMap.put(intermediateState, (CFGNonTerminal)symbol);
-                        currentPosition = newState;
+                        buildingTail = newState;
                     }
                 }
             }
