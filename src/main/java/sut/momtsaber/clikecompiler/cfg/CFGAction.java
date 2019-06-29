@@ -37,5 +37,12 @@ public class CFGAction extends CFGSymbol
         public static final String ADD_SUBTRACT = "add_sub";
         public static final String APPLY_SIGN = "apply_sign";
 
+        public static final String LABEL = "label";
+        public static final String SAVE = "save";
+        public static final String WHILE = "while";
+
+        public static final String JPF = "jpf";
+        public static final String JP = "jp";
+
     }
 }

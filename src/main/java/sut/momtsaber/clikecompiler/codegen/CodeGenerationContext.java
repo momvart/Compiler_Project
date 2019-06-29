@@ -1,11 +1,15 @@
 package sut.momtsaber.clikecompiler.codegen;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
 
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
-import sut.momtsaber.clikecompiler.codegen.exceptions.*;
-import sut.momtsaber.clikecompiler.codegen.il.*;
+import sut.momtsaber.clikecompiler.codegen.exceptions.DeclarationOfDeclaredException;
+import sut.momtsaber.clikecompiler.codegen.exceptions.IllegalTypeOfVoidException;
+import sut.momtsaber.clikecompiler.codegen.exceptions.TypeMismatchException;
+import sut.momtsaber.clikecompiler.codegen.il.ILOperand;
+import sut.momtsaber.clikecompiler.codegen.il.ILStatement;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
@@ -69,8 +73,25 @@ public class CodeGenerationContext
             case CFGAction.Names.APPLY_SIGN:
                 applySign();
                 break;
+            case CFGAction.Names.LABEL:
+                label();
+                break;
+            case CFGAction.Names.SAVE:
+                save();
+                break;
+            case CFGAction.Names.WHILE:
+                while_();
+                break;
+            case CFGAction.Names.JPF:
+                jpf();
+                break;
+            case CFGAction.Names.JP:
+                jp();
+                break;
         }
     }
+
+
 
     private void startProgram() throws InterruptedException
     {
@@ -228,6 +249,42 @@ public class CodeGenerationContext
     {
         statementPipeline.put(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
     }
+
+
+    private void label()
+    {
+        valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
+    }
+    private void save()
+    {
+        valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
+        // todo i += 1
+    }
+    private void while_() throws InterruptedException
+    {
+        Value savedCodeLine = valuesStack.pop();
+        Value condition = valuesStack.pop();
+        Value label = valuesStack.pop();
+        // todo fill the program block which had been left empty
+        statementPipeline.put(ILStatement.jump(label.toOperand()));
+
+    }
+
+
+
+    private void jpf()
+    {
+        Value savedCodeLine = valuesStack.pop();
+        Value condition = valuesStack.pop();
+        // todo fill the program block which had been left empty
+    }
+    private void jp()
+    {
+        // todo fill the program block which had been left empty
+    }
+
+
+
 
     public static class Value
     {

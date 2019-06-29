@@ -1,8 +1,11 @@
 package sut.momtsaber.clikecompiler.parser.dfa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +34,7 @@ public class DFA
     private Map<DFAState<Token>, CFGNonTerminal> trueReferenceMap;
     private Map<DFAState<Token>, CFGNonTerminal> currentReferenceMap;
     private Map<DFAEdge<Token>, CFGTerminal> consumptionMap;
-    private Map<DFAState<Token>, CFGAction> actionMap;
+    private Map<DFAState<Token>, List<CFGAction>> actionMap;
 
     private DFA(CFGProduction production)
     {
@@ -184,7 +187,15 @@ public class DFA
                     }
                     else if (symbol instanceof CFGAction)
                     {
-                        dfa.actionMap.put(buildingTail, (CFGAction)symbol);
+                        List<CFGAction> actions = dfa.actionMap.get(buildingTail);
+                        if (actions == null)
+                        {
+                            dfa.actionMap.put(buildingTail, new ArrayList<>(Collections.singletonList((CFGAction)symbol)));
+                        }
+                        else
+                        {
+                            actions.add((CFGAction)symbol);
+                        }
                     }
                 }
             }

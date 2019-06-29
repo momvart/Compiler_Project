@@ -99,9 +99,12 @@ public class ParseContext
 
 
             // handling action
-            if (response.getAction() != null)
+            if (response.getActions() != null)
             {
-                generator.handleAction(response.getAction(), previousToken);
+                for (CFGAction action : response.getActions())
+                {
+                    generator.handleAction(action, previousToken);
+                }
             }
         }
         errors.put(new SyntaxError(-1, SyntaxErrorType.MALFORMED_INPUT, new CFGTerminal(null, null)));

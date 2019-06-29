@@ -1,5 +1,7 @@
 package sut.momtsaber.clikecompiler.parser.dfa;
 
+import java.util.List;
+
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGTerminal;
@@ -11,15 +13,15 @@ public class DFAResponse
     private CFGTerminal consumedTerminal;
     private CFGNonTerminal referencing;
     private SyntaxError error;
-    private CFGAction action;
+    private List<CFGAction> actions;
 
-    public DFAResponse(boolean isEndOfDFA, CFGTerminal consumedTerminal, CFGNonTerminal referencing, SyntaxError error, CFGAction action)
+    public DFAResponse(boolean isEndOfDFA, CFGTerminal consumedTerminal, CFGNonTerminal referencing, SyntaxError error, List<CFGAction> action)
     {
         this.isEndOfDFA = isEndOfDFA;
         this.consumedTerminal = consumedTerminal;
         this.referencing = referencing;
         this.error = error;
-        this.action = action;
+        this.actions = action;
     }
 
     public boolean isEndOfDFA()
@@ -43,8 +45,8 @@ public class DFAResponse
         return error;
     }
 
-    public CFGAction getAction()
+    public List<CFGAction> getActions()
     {
-        return action;
+        return actions;
     }
 }

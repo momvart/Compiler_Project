@@ -12,8 +12,8 @@ compound_stmt -> { #begin_scope declaration_list statement_list } #end_scope
 statement_list -> statement_list statement | ϵ
 statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
 expression_stmt -> expression ; | continue ; #continue | break ; #break | ;
-selection_stmt -> if ( expression ) statement else statement
-iteration_stmt -> while ( expression ) statement
+selection_stmt -> if ( expression ) #save statement else #jpf #save statement #jp
+iteration_stmt -> while #label ( expression ) #save statement #while
 return_stmt -> return ; #push_void #return | return expression ; #push_retval #return
 switch_stmt -> switch ( expression ) { case_stmts default_stmt }
 case_stmts -> case_stmts case_stmt | ϵ
