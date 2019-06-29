@@ -5,6 +5,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
 import sut.momtsaber.clikecompiler.cfg.*;
+import sut.momtsaber.clikecompiler.codegen.CodeGenerationContext;
 import sut.momtsaber.clikecompiler.lexicalanalysis.*;
 import sut.momtsaber.clikecompiler.parser.dfa.DFA;
 import sut.momtsaber.clikecompiler.parser.dfa.DFAResponse;
@@ -16,6 +17,7 @@ public class ParseContext
     private Map<Integer, DFA> DFAs;
     private DFA currentDFA;
     private Stack<DFA> dfaStack;
+    private CodeGenerationContext generator;
 
     public ParseContext(CFG grammar)
     {
@@ -32,6 +34,7 @@ public class ParseContext
         currentDFA = new DFA(cfg.getProduction(0), grammar);
         dfaStack = new Stack<>();
         dfaStack.push(currentDFA);
+        generator = new CodeGenerationContext();
     }
 
     public ParseTree parse(BlockingQueue<TokenWithLineNum> tokens, BlockingQueue<? super SyntaxError> errors) throws InterruptedException
@@ -40,6 +43,9 @@ public class ParseContext
         ParseTree mainTree = new ParseTree(grammar.getProductions().get(0).getLeftHand());
         treeStack.push(mainTree);
         TokenWithLineNum currentToken = null;
+        TokenWithLineNum previousToken = null;
+
+
         while (!dfaStack.isEmpty())
         {
             currentDFA = dfaStack.peek();
@@ -87,7 +93,15 @@ public class ParseContext
             // if we find a token unexpected or used up we should go to the next token
             if (gotUnexpected(response.getError()) || (response.getConsumedTerminal() != null && response.getError() == null))
             {
+                previousToken = currentToken;
                 currentToken = null;
+            }
+
+
+            // handling action
+            if (response.getAction() != null)
+            {
+                generator.handleAction(response.getAction(), previousToken);
             }
         }
         errors.put(new SyntaxError(-1, SyntaxErrorType.MALFORMED_INPUT, new CFGTerminal(null, null)));

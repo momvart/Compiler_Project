@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import sut.momtsaber.clikecompiler.cfg.CFG;
+import sut.momtsaber.clikecompiler.cfg.CFGAction;
 import sut.momtsaber.clikecompiler.cfg.CFGNonTerminal;
 import sut.momtsaber.clikecompiler.cfg.CFGProduction;
 import sut.momtsaber.clikecompiler.cfg.CFGRule;
@@ -30,6 +31,7 @@ public class DFA
     private Map<DFAState<Token>, CFGNonTerminal> trueReferenceMap;
     private Map<DFAState<Token>, CFGNonTerminal> currentReferenceMap;
     private Map<DFAEdge<Token>, CFGTerminal> consumptionMap;
+    private Map<DFAState<Token>, CFGAction> actionMap;
 
     private DFA(CFGProduction production)
     {
@@ -38,6 +40,7 @@ public class DFA
         this.acceptState = new DFAState<>();
         this.trueReferenceMap = new HashMap<>();
         this.consumptionMap = new HashMap<>();
+        this.actionMap = new HashMap<>();
     }
 
     public DFA(CFGProduction production, CFG grammar)
@@ -49,7 +52,8 @@ public class DFA
         this.currentState = this.getStartState();
         this.currentReferenceMap = new HashMap<>(dfa.trueReferenceMap);
         this.trueReferenceMap = new HashMap<>(dfa.trueReferenceMap);
-        this.consumptionMap = new HashMap<>(dfa.consumptionMap);
+        this.consumptionMap = dfa.consumptionMap;
+        this.actionMap = dfa.actionMap;
     }
 
     public DFA(DFA pattern)
@@ -60,7 +64,8 @@ public class DFA
         this.currentState = this.getStartState();
         this.currentReferenceMap = new HashMap<>(pattern.trueReferenceMap);
         this.trueReferenceMap = new HashMap<>(pattern.trueReferenceMap);
-        this.consumptionMap = new HashMap<>(pattern.consumptionMap);
+        this.consumptionMap = pattern.consumptionMap;
+        this.actionMap = pattern.actionMap;
     }
 
     public DFAResponse advance(TokenWithLineNum input, CFG grammar)
@@ -72,7 +77,7 @@ public class DFA
             if (input.getType() == TokenType.EOF)
             {
                 return new DFAResponse(false, null, null,
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null)));
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED_END_OF_FILE, new Token(TokenType.EOF, null)), this.actionMap.get(currentState));
             }
 
             // error on terminal edge
@@ -81,11 +86,11 @@ public class DFA
                 if (consumptionMap.get(edge).getTokenType() == TokenType.EOF)
                 {
                     return new DFAResponse(false, null, null,
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input));
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.MALFORMED_INPUT, input), this.actionMap.get(currentState));
                 }
                 currentState = edge.getNextState();
                 return new DFAResponse(currentState.equals(acceptState), consumptionMap.get(edge), currentReferenceMap.get(currentState),
-                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)));
+                        new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, consumptionMap.get(edge)), this.actionMap.get(currentState));
             }
 
             // error on nonTerminal edge
@@ -95,13 +100,13 @@ public class DFA
                 {
                     currentState = edge.getNextState().getExitingEdges().get(0).getNextState();
                     SyntaxError error = new SyntaxError(input.getLineNum(), SyntaxErrorType.MISSING, currentReferenceMap.get(edge.getNextState()), grammar);
-                    return new DFAResponse(currentState.equals(acceptState), null, null, error);
+                    return new DFAResponse(currentState.equals(acceptState), null, null, error, this.actionMap.get(currentState));
                 }
                 else
                 {
                     // putting unexpected tokens into garbage
                     return new DFAResponse(currentState.equals(acceptState), null, null,
-                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input));
+                            new SyntaxError(input.getLineNum(), SyntaxErrorType.UNEXPECTED, input), this.actionMap.get(currentState));
                 }
             }
             // it is not possible to get into this section because we have an any Entrance on the other edges and it always matches and never gets into null result
@@ -111,7 +116,7 @@ public class DFA
         else
         {
             currentState = result.getNextState();
-            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null);
+            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, this.actionMap.get(currentState));
         }
     }
 
@@ -176,6 +181,10 @@ public class DFA
                         intermediateState.addExitEdge(new DFAEdge<>(Entrance.ANY, newState, false));
                         dfa.trueReferenceMap.put(intermediateState, (CFGNonTerminal)symbol);
                         buildingTail = newState;
+                    }
+                    else if (symbol instanceof CFGAction)
+                    {
+                        dfa.actionMap.put(buildingTail, (CFGAction)symbol);
                     }
                 }
             }
