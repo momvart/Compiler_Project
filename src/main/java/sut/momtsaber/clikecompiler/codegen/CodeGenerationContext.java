@@ -1,8 +1,8 @@
 package sut.momtsaber.clikecompiler.codegen;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.concurrent.BlockingQueue;
 
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
 import sut.momtsaber.clikecompiler.codegen.exceptions.DeclarationOfDeclaredException;
@@ -24,7 +24,7 @@ public class CodeGenerationContext
 
     private static final int VARIABLE_SIZE = 4;
 
-    private BlockingQueue<ILStatement> statementPipeline;
+    private ArrayList<ILStatement> statementPipeline;
 
     private Deque<Scope> scopes = new LinkedList<>();
 
@@ -82,15 +82,14 @@ public class CodeGenerationContext
             case CFGAction.Names.WHILE:
                 while_();
                 break;
-            case CFGAction.Names.JPF:
-                jpf();
+            case CFGAction.Names.JPF_SAVE:
+                jpf_save();
                 break;
             case CFGAction.Names.JP:
                 jp();
                 break;
         }
     }
-
 
 
     private void startProgram() throws InterruptedException
@@ -189,7 +188,7 @@ public class CodeGenerationContext
     private void multiply(Value first, Value second) throws InterruptedException
     {
         checkArithmeticOperands(first, second);
-        statementPipeline.put(ILStatement.multiply(first.toOperand(), second.toOperand(),
+        statementPipeline.add(ILStatement.multiply(first.toOperand(), second.toOperand(),
                 makeTempResult().toOperand()));
     }
 
@@ -209,14 +208,14 @@ public class CodeGenerationContext
     private void add(Value first, Value second) throws InterruptedException
     {
         checkArithmeticOperands(first, second);
-        statementPipeline.put(ILStatement.add(first.toOperand(), second.toOperand(),
+        statementPipeline.add(ILStatement.add(first.toOperand(), second.toOperand(),
                 makeTempResult().toOperand()));
     }
 
     private void sub(Value first, Value second) throws InterruptedException
     {
         checkArithmeticOperands(first, second);
-        statementPipeline.put(ILStatement.subtract(first.toOperand(), second.toOperand(),
+        statementPipeline.add(ILStatement.subtract(first.toOperand(), second.toOperand(),
                 makeTempResult().toOperand()));
     }
 
@@ -230,7 +229,7 @@ public class CodeGenerationContext
         if (sign.getValue().equals("+"))
             return;
 
-        statementPipeline.put(ILStatement.subtract(ILOperand.immediate(0), valuesStack.pop().toOperand(),
+        statementPipeline.add(ILStatement.subtract(ILOperand.immediate(0), valuesStack.pop().toOperand(),
                 makeTempResult().toOperand()));
     }
 
@@ -247,44 +246,51 @@ public class CodeGenerationContext
 
     private void assign(int address, Value value) throws InterruptedException
     {
-        statementPipeline.put(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
+        statementPipeline.add(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
     }
+
 
 
     private void label()
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
     }
+
     private void save()
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
-        // todo i += 1
+        statementPipeline.add(null);
     }
+
+    // while statement
     private void while_() throws InterruptedException
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
         Value label = valuesStack.pop();
-        // todo fill the program block which had been left empty
-        statementPipeline.put(ILStatement.jump(label.toOperand()));
-
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber() + 1).toOperand()));
+        statementPipeline.add(ILStatement.jump(label.toOperand()));
     }
-
-
-
-    private void jpf()
+    // end while
+    // if statement
+    private void jpf_save()
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
-        // todo fill the program block which had been left empty
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber() + 1).toOperand()));
+        save();
     }
+
     private void jp()
     {
-        // todo fill the program block which had been left empty
+        Value savedCodeLine = valuesStack.pop();
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jump(new Value(Value.Type.CONST, getLineNumber()).toOperand()));
     }
+    // end if
 
-
-
+    //case statement
+    
+    //end case
 
     public static class Value
     {
