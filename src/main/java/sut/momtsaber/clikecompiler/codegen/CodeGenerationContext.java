@@ -40,10 +40,17 @@ public class CodeGenerationContext
 
     private int getNextFreeAddress(int size)
     {
-        return lastVarAddress += size;
+        int temp = lastVarAddress;
+        lastVarAddress += size;
+        return temp;
     }
 
-    private int getNextFreeTempAddress() { return lastTempAddress += VARIABLE_SIZE; }
+    private int getNextFreeTempAddress()
+    {
+        int temp = lastTempAddress;
+        lastTempAddress += VARIABLE_SIZE;
+        return temp;
+    }
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
@@ -90,7 +97,6 @@ public class CodeGenerationContext
                 break;
         }
     }
-
 
 
     private void startProgram() throws InterruptedException
@@ -247,7 +253,7 @@ public class CodeGenerationContext
 
     private void assign(int address, Value value) throws InterruptedException
     {
-        statementPipeline.put(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
+        statementPipeline.put(ILStatement.assign(value.toOperand(), ILOperand.direct(address)));
     }
 
 
@@ -255,11 +261,13 @@ public class CodeGenerationContext
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
     }
+
     private void save()
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
         // todo i += 1
     }
+
     private void while_() throws InterruptedException
     {
         Value savedCodeLine = valuesStack.pop();
@@ -271,19 +279,17 @@ public class CodeGenerationContext
     }
 
 
-
     private void jpf()
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
         // todo fill the program block which had been left empty
     }
+
     private void jp()
     {
         // todo fill the program block which had been left empty
     }
-
-
 
 
     public static class Value
