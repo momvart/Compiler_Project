@@ -5,6 +5,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
+import sut.momtsaber.clikecompiler.codegen.exceptions.WrongBreakPositionException;
+import sut.momtsaber.clikecompiler.codegen.exceptions.WrongContinuePositionException;
 import sut.momtsaber.clikecompiler.codegen.exceptions.DeclarationOfDeclaredException;
 import sut.momtsaber.clikecompiler.codegen.exceptions.IllegalTypeOfVoidException;
 import sut.momtsaber.clikecompiler.codegen.exceptions.TypeMismatchException;
@@ -36,14 +38,21 @@ public class CodeGenerationContext
     private final int stackPointerAddress = STACK_POINTER_ADDRESS;
     private final int mainFuncPointerAddress = MAIN_FUNC_POINTER_ADDRESS;
 
-    private int getLineNumber() { return -1; }
+    private int getLineNumber() { return statementPipeline.size(); }
 
     private int getNextFreeAddress(int size)
     {
-        return lastVarAddress += size;
+        int ret = lastTempAddress;
+        lastVarAddress += size;
+        return ret;
     }
 
-    private int getNextFreeTempAddress() { return lastTempAddress += VARIABLE_SIZE; }
+    private int getNextFreeTempAddress()
+    {
+        int ret = lastTempAddress;
+        lastTempAddress += VARIABLE_SIZE;
+        return ret;
+    }
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
@@ -97,14 +106,19 @@ public class CodeGenerationContext
             case CFGAction.Names.JPF:
                 jpf();
                 break;
+            case CFGAction.Names.CONTINUE:
+                continue_();
+                break;
+            case CFGAction.Names.BREAK:
+                break_();
+                break;
         }
     }
 
 
-
     private void startProgram() throws InterruptedException
     {
-        Scope global = new Scope(null);
+        Scope global = new Scope(null, getLineNumber());
         global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
@@ -115,7 +129,7 @@ public class CodeGenerationContext
     //region Scope
     private void beginNewScope()
     {
-        scopes.push(new Scope(getCurrentScope()));
+        scopes.push(new Scope(getCurrentScope(), getLineNumber()));
     }
 
     private void endCurrentScope()
@@ -260,7 +274,6 @@ public class CodeGenerationContext
     }
 
 
-
     private void label()
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
@@ -273,7 +286,7 @@ public class CodeGenerationContext
     }
 
     // while statement
-    private void while_() throws InterruptedException
+    private void while_()
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
@@ -282,6 +295,7 @@ public class CodeGenerationContext
         statementPipeline.add(ILStatement.jump(label.toOperand()));
     }
     // end while
+
     // if statement
     private void jpf_save()
     {
@@ -311,6 +325,7 @@ public class CodeGenerationContext
         statementPipeline.add(ILStatement.equals_(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
         save();
     }
+
     private void jpf()
     {
         Value savedCodeLine = valuesStack.pop();
@@ -327,6 +342,28 @@ public class CodeGenerationContext
 
     //end case
 
+    // break and continue
+    private void continue_()
+    {
+        if (!(getCurrentScope() instanceof WhileScope))
+            throw new WrongContinuePositionException(getLineNumber());
+        statementPipeline.add(ILStatement.jump(new Value(Value.Type.CONST, getCurrentScope().getStartLine()).toOperand()));
+    }
+
+    private void break_()
+    {
+        if (!(getCurrentScope() instanceof WhileScope || getCurrentScope() instanceof SwitchScope))
+            throw new WrongBreakPositionException(getLineNumber());
+        int jumpPosition = getNextFreeTempAddress();
+        if (getCurrentScope() instanceof WhileScope)
+            ((WhileScope)getCurrentScope()).setBreakAddress(jumpPosition);
+        else if (getCurrentScope() instanceof SwitchScope)
+            ((SwitchScope)getCurrentScope()).setBreakAddress(jumpPosition);
+        statementPipeline.add(ILStatement.jump(new Value(Value.Type.REFERENCE, jumpPosition).toOperand()));
+        // we should set the value for jumpPosition after finishing the scope
+    }
+
+    // end break and continue
     public static class Value
     {
         public enum Type
@@ -340,7 +377,7 @@ public class CodeGenerationContext
         private final Type type;
         private final int value;
 
-        public Value(Type type, int value)
+        Value(Type type, int value)
         {
             this.type = type;
             this.value = value;
@@ -356,7 +393,7 @@ public class CodeGenerationContext
             return value;
         }
 
-        public ILOperand toOperand()
+        ILOperand toOperand()
         {
             switch (type)
             {

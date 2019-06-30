@@ -10,10 +10,13 @@ public class Scope
 {
     private Scope parent;
     private ArrayListValuedHashMap<String, Definition> definitions = new ArrayListValuedHashMap<>();
+    private int startLine;
+    private int endLine;
 
-    public Scope(Scope parent)
+    public Scope(Scope parent, int startLine)
     {
         this.parent = parent;
+        this.startLine = startLine;
     }
 
     public boolean addDefinition(Definition definition)
@@ -41,5 +44,20 @@ public class Scope
         if (parent != null)
             return parent.getDefinition(id);
         return new ArrayList<>();
+    }
+
+    public int getStartLine()
+    {
+        return startLine;
+    }
+
+    public int getEndLine()
+    {
+        return endLine;
+    }
+
+    public void setEndLine(int endLine)
+    {
+        this.endLine = endLine;
     }
 }
