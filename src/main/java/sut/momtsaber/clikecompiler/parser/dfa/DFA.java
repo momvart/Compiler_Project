@@ -140,7 +140,15 @@ public class DFA
             ruleEntrance = matchEntrance(matchList);
 
             if (rule.isEpsilonOrJustAction())
+            {
                 buildingTail.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
+                ArrayList<CFGAction> actions = new ArrayList<>();
+                for (CFGSymbol symbol : rule)
+                {
+                    actions.add((CFGAction)symbol);
+                }
+                dfa.actionMap.put(dfa.getAcceptState(), actions);
+            }
             else
             {
                 for (int iSymbol = 0; iSymbol < rule.size(); iSymbol++)
