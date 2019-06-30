@@ -72,7 +72,7 @@ public class ILStatement
         return new ILStatement(CommandType.ASSIGN, source, dest, null);
     }
 
-    public static ILStatement equals(ILOperand first, ILOperand second, ILOperand result)
+    public static ILStatement equals_(ILOperand first, ILOperand second, ILOperand result)
     {
         return new ILStatement(CommandType.EQUALS, first, second, result);
     }

@@ -139,7 +139,7 @@ public class DFA
                 matchList.addAll(grammar.findFollow(production.getLeftHand()));
             ruleEntrance = matchEntrance(matchList);
 
-            if (rule.isEpsilon())
+            if (rule.isEpsilonOrJustAction())
                 buildingTail.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
             else
             {

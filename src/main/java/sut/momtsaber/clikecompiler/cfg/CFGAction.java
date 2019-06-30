@@ -44,5 +44,9 @@ public class CFGAction extends CFGSymbol
         public static final String JPF_SAVE = "jpf_save";
         public static final String JP = "jp";
 
+        public static final String PUT_1 = "put_1";
+        public static final String JPF_CMP_SAVE = "jmp_cmp_save";
+        public static final String JPF = "jpf";
+
     }
 }

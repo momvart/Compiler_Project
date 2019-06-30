@@ -88,8 +88,18 @@ public class CodeGenerationContext
             case CFGAction.Names.JP:
                 jp();
                 break;
+            case CFGAction.Names.PUT_1:
+                put_1();
+                break;
+            case CFGAction.Names.JPF_CMP_SAVE:
+                jpf_cmp_save();
+                break;
+            case CFGAction.Names.JPF:
+                jpf();
+                break;
         }
     }
+
 
 
     private void startProgram() throws InterruptedException
@@ -289,7 +299,32 @@ public class CodeGenerationContext
     // end if
 
     //case statement
-    
+    private void jpf_cmp_save()
+    {
+        Value case_value = valuesStack.pop();
+        Value savedCodeLine = valuesStack.pop();
+        Value condition = valuesStack.pop();
+        Value expression = valuesStack.pop();
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
+        valuesStack.push(expression);
+        Value temp = makeTempResult();
+        statementPipeline.add(ILStatement.equals_(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
+        save();
+    }
+    private void jpf()
+    {
+        Value savedCodeLine = valuesStack.pop();
+        Value condition = valuesStack.pop();
+        // popping expression
+        valuesStack.pop();
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
+    }
+
+    private void put_1()
+    {
+        valuesStack.push(new Value(Value.Type.CONST, 1));
+    }
+
     //end case
 
     public static class Value
