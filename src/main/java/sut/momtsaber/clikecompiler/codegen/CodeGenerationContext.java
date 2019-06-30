@@ -92,16 +92,16 @@ public class CodeGenerationContext
                 while_();
                 break;
             case CFGAction.Names.JPF_SAVE:
-                jpf_save();
+                jpfSave();
                 break;
             case CFGAction.Names.JP:
                 jp();
                 break;
             case CFGAction.Names.PUT_1:
-                put_1();
+                put1();
                 break;
             case CFGAction.Names.JPF_CMP_SAVE:
-                jpf_cmp_save();
+                jpfCmpSave();
                 break;
             case CFGAction.Names.JPF:
                 jpf();
@@ -297,7 +297,7 @@ public class CodeGenerationContext
     // end while
 
     // if statement
-    private void jpf_save()
+    private void jpfSave()
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
@@ -313,7 +313,7 @@ public class CodeGenerationContext
     // end if
 
     //case statement
-    private void jpf_cmp_save()
+    private void jpfCmpSave()
     {
         Value case_value = valuesStack.pop();
         Value savedCodeLine = valuesStack.pop();
@@ -335,7 +335,7 @@ public class CodeGenerationContext
         statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
     }
 
-    private void put_1()
+    private void put1()
     {
         valuesStack.push(new Value(Value.Type.CONST, 1));
     }
