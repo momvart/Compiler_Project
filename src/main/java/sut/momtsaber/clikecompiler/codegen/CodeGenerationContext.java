@@ -42,16 +42,16 @@ public class CodeGenerationContext
 
     private int getNextFreeAddress(int size)
     {
-        int ret = lastTempAddress;
+        int temp = lastVarAddress;
         lastVarAddress += size;
-        return ret;
+        return temp;
     }
 
     private int getNextFreeTempAddress()
     {
-        int ret = lastTempAddress;
+        int temp = lastTempAddress;
         lastTempAddress += VARIABLE_SIZE;
-        return ret;
+        return temp;
     }
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
@@ -377,7 +377,7 @@ public class CodeGenerationContext
         private final Type type;
         private final int value;
 
-        Value(Type type, int value)
+        public Value(Type type, int value)
         {
             this.type = type;
             this.value = value;
@@ -393,7 +393,7 @@ public class CodeGenerationContext
             return value;
         }
 
-        ILOperand toOperand()
+        public ILOperand toOperand()
         {
             switch (type)
             {
