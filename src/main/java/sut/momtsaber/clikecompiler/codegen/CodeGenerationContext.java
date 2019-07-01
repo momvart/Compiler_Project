@@ -222,8 +222,6 @@ public class CodeGenerationContext
 
     private void endWhileScope()
     {
-        System.out.println("after while");
-        System.out.println(lineStack.size());
         WhileScope scope = (WhileScope)getCurrentScope();
         addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
         endCurrentScope();
@@ -231,8 +229,6 @@ public class CodeGenerationContext
 
     private void beginWhileScope()
     {
-        System.out.println("before while");
-        System.out.println(lineStack.size());
         scopes.push(new WhileScope(getCurrentScope(), getLineNumber()));
     }
 
@@ -667,11 +663,22 @@ public class CodeGenerationContext
     // break and continue
     private void continueLoop()
     {
-        System.out.println(getCurrentScope().getClass());
-        System.out.println(getCurrentScope().getParent().getClass());
-        if (!(getCurrentScope() instanceof WhileScope))
+        WhileScope whileScope = getWhileScope();
+        if (whileScope == null)
             throw new WrongContinuePositionException(getLineNumber());
-        jumpTo(getCurrentScope().getStartLine());
+        jumpTo(whileScope.getStartLine());
+    }
+
+    private WhileScope getWhileScope()
+    {
+        for (Scope scope : scopes)
+        {
+            if (scope instanceof WhileScope)
+            {
+                return (WhileScope)scope;
+            }
+        }
+        return null;
     }
 
     private void breakLoop()
