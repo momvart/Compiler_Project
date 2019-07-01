@@ -76,6 +76,7 @@ public class DFA
         ArrayList<CFGAction> actionsToBePassed = new ArrayList<>();
         if (currentState == this.getStartState())
         {
+            if (this.actionMap.get(currentState) != null)
             actionsToBePassed.addAll(this.actionMap.get(currentState));
         }
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
