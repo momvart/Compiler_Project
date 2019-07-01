@@ -228,43 +228,6 @@ public class DFA
                 dfa.actionMap.put(currentEdge, accumulatedActions);
             }
         }
-        if (production.getLeftHand().getId() == 49)
-        {
-            System.out.println(production);
-//            for (int i = 0; i < production.getRightHands().size(); i++)
-//            {
-//                DFAState<Token> state = dfa.startState;
-//                int j = 0;
-//                while (state != dfa.acceptState)
-//                {
-//                    System.out.println(j);
-//                    DFAEdge<Token> edge;
-//                    if (j == 0)
-//                         edge = state.getExitingEdges().get(i);
-//                    else
-//                        edge = state.getExitingEdges().get(0);
-//                    if (dfa.actionMap.get(edge) != null)
-//                        for (CFGAction action : dfa.actionMap.get(edge))
-//                        {
-//                            System.out.println(action.getName());
-//                        }
-//                    state = edge.getNextState();
-//                    j++;
-//                }
-//                System.out.println("____________");
-//            }
-            dfa.currentState = dfa.startState;
-            Token token = new Token(TokenType.SYMBOL, "(");
-            DFAState.NextStateResult<Token> result = dfa.currentState.getNextState(token);
-            for (DFAEdge<Token> edge : dfa.currentState.getExitingEdges())
-            {
-                System.out.println(edge.getEntrance().canEnter(token));
-            }
-            System.out.println(dfa.currentState.getExitingEdges().indexOf(result.getEdge()));
-            System.out.println(dfa.actionMap.get(result.getEdge()));
-
-        }
-
         return dfa;
     }
 

@@ -557,8 +557,16 @@ public class CodeGenerationContext
     // end if
 
     //case statement
+    int turn = 0;
     private void jpfCmpSave()
     {
+        if (turn == 0)
+        {
+            for (Value value : valuesStack)
+            {
+                System.out.println(value);
+            }
+        }
         Integer savedCodeLine = lineStack.pop();
         Value case_value = valuesStack.pop();
         Value condition = valuesStack.pop();
@@ -566,8 +574,9 @@ public class CodeGenerationContext
         setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber())));
         valuesStack.push(expression);
         Value temp = makeTempResult();
-        statementPipeline.add(ILStatement.equals(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
+        addNewStatement(ILStatement.equals(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
         save();
+        turn++;
     }
 
     private void jpf()
