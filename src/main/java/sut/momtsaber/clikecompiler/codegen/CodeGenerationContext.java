@@ -79,6 +79,7 @@ public class CodeGenerationContext
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
+        System.err.printf("Got %s with %s%n", action.getName(), lastToken);
         switch (action.getName())
         {
             case CFGAction.Names.PUSH_TOKEN:
@@ -211,11 +212,11 @@ public class CodeGenerationContext
 
     private VarDefinition declareVariable(boolean isArray) throws IllegalTypeOfVoidException, DeclarationOfDeclaredException
     {
-        Token name = tokenStack.pop();
-        Token type = tokenStack.pop();
-        if (name.getType() != TokenType.ID)
+        Token name = tokenStack.pollFirst();
+        Token type = tokenStack.pollFirst();
+        if (name == null || name.getType() != TokenType.ID)
             throw new IllegalStateException("Variable name not found in the stack.");
-        if (type.getType() != TokenType.KEYWORD)
+        if (type == null || type.getType() != TokenType.KEYWORD)
             throw new IllegalStateException("Variable type not found in the stack.");
         if (!type.getValue().equals("int"))
             throw new IllegalTypeOfVoidException(getSourceCodeLineNumber(), name.getValue());
@@ -232,8 +233,8 @@ public class CodeGenerationContext
 
     private void declareArray() throws IllegalTypeOfVoidException, DeclarationOfDeclaredException, InterruptedException
     {
-        Token size = tokenStack.pop();
-        if (size.getType() != TokenType.NUMBER)
+        Token size = tokenStack.pollFirst();
+        if (size == null || size.getType() != TokenType.NUMBER)
             throw new IllegalStateException("Array size not found in the stack.");
         VarDefinition def = declareVariable(true);
         assign(def.getAddress(), new Value(Value.Type.CONST,

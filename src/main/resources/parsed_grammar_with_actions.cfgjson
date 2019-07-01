@@ -83,6 +83,15 @@
             "id": 4
           },
           {
+            "name": "pt"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "name": "pt"
+          },
+          {
             "id": 43
           }
         ]
@@ -198,6 +207,15 @@
             "value": "int"
           },
           {
+            "name": "pt"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "name": "pt"
+          },
+          {
             "id": 45
           }
         ]
@@ -246,6 +264,15 @@
             "value": "int"
           },
           {
+            "name": "pt"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "name": "pt"
+          },
+          {
             "id": 46
           }
         ],
@@ -253,6 +280,15 @@
           {
             "tokenType": "KEYWORD",
             "value": "void"
+          },
+          {
+            "name": "pt"
+          },
+          {
+            "tokenType": "ID"
+          },
+          {
+            "name": "pt"
           },
           {
             "id": 47
@@ -622,6 +658,9 @@
         [
           {
             "tokenType": "ID"
+          },
+          {
+            "name": "pt"
           },
           {
             "id": 49
@@ -1042,7 +1081,10 @@
             "tokenType": "ID"
           },
           {
-            "id": 50
+            "name": "pt"
+          },
+          {
+            "id": 52
           }
         ],
         [
@@ -1156,28 +1198,10 @@
       "rightHands": [
         [
           {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
-          {
             "id": 3
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
           {
             "id": 5
           }
@@ -1201,35 +1225,7 @@
             "name": "pt"
           },
           {
-            "name": "param_var_dec"
-          },
-          {
-            "id": 7
-          }
-        ],
-        [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "["
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "]"
-          },
-          {
-            "name": "param_arr_dec"
-          },
-          {
-            "id": 7
+            "id": 45
           }
         ]
       ]
@@ -1241,15 +1237,6 @@
       "rightHands": [
         [
           {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
-          {
             "name": "param_var_dec"
           },
           {
@@ -1257,15 +1244,6 @@
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "["
@@ -1290,28 +1268,10 @@
       "rightHands": [
         [
           {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
-          {
             "name": "param_var_dec"
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "["
@@ -1333,28 +1293,10 @@
       "rightHands": [
         [
           {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
-          {
             "name": "param_var_dec"
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "ID"
-          },
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "["
@@ -1407,26 +1349,13 @@
       "rightHands": [
         [
           {
-            "name": "pt"
-          },
-          {
             "name": "put_var"
           },
           {
-            "tokenType": "SYMBOL",
-            "value": "\u003d"
-          },
-          {
-            "id": 21
-          },
-          {
-            "name": "assign"
+            "id": 50
           }
         ],
         [
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "["
@@ -1442,42 +1371,10 @@
             "name": "put_arr_elem"
           },
           {
-            "tokenType": "SYMBOL",
-            "value": "\u003d"
-          },
-          {
-            "id": 21
-          },
-          {
-            "name": "assign"
+            "id": 51
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "["
-          },
-          {
-            "id": 21
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "]"
-          },
-          {
-            "name": "put_arr_elem"
-          },
-          {
-            "id": 22
-          }
-        ],
-        [
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "("
@@ -1491,17 +1388,6 @@
           },
           {
             "name": "call"
-          },
-          {
-            "id": 22
-          }
-        ],
-        [
-          {
-            "name": "pt"
-          },
-          {
-            "name": "put_var"
           },
           {
             "id": 22
@@ -1516,32 +1402,61 @@
       "rightHands": [
         [
           {
-            "name": "pt"
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
           },
+          {
+            "id": 21
+          },
+          {
+            "name": "assign"
+          }
+        ],
+        [
+          {
+            "id": 22
+          }
+        ]
+      ]
+    },
+    "51": {
+      "leftHand": {
+        "id": 51
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
+          },
+          {
+            "id": 21
+          },
+          {
+            "name": "assign"
+          }
+        ],
+        [
+          {
+            "id": 22
+          }
+        ]
+      ]
+    },
+    "52": {
+      "leftHand": {
+        "id": 52
+      },
+      "rightHands": [
+        [
           {
             "name": "put_var"
           },
           {
-            "tokenType": "SYMBOL",
-            "value": "\u003d"
-          },
-          {
-            "id": 21
-          },
-          {
-            "name": "assign"
-          },
-          {
-            "name": "put_arg"
-          },
-          {
-            "id": 42
+            "id": 53
           }
         ],
         [
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "["
@@ -1557,54 +1472,10 @@
             "name": "put_arr_elem"
           },
           {
-            "tokenType": "SYMBOL",
-            "value": "\u003d"
-          },
-          {
-            "id": 21
-          },
-          {
-            "name": "assign"
-          },
-          {
-            "name": "put_arg"
-          },
-          {
-            "id": 42
+            "id": 54
           }
         ],
         [
-          {
-            "name": "pt"
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "["
-          },
-          {
-            "id": 21
-          },
-          {
-            "tokenType": "SYMBOL",
-            "value": "]"
-          },
-          {
-            "name": "put_arr_elem"
-          },
-          {
-            "id": 22
-          },
-          {
-            "name": "put_arg"
-          },
-          {
-            "id": 42
-          }
-        ],
-        [
-          {
-            "name": "pt"
-          },
           {
             "tokenType": "SYMBOL",
             "value": "("
@@ -1628,14 +1499,69 @@
           {
             "id": 42
           }
+        ]
+      ]
+    },
+    "53": {
+      "leftHand": {
+        "id": 53
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
+          },
+          {
+            "id": 21
+          },
+          {
+            "name": "assign"
+          },
+          {
+            "name": "put_arg"
+          },
+          {
+            "id": 42
+          }
         ],
         [
           {
-            "name": "pt"
+            "id": 22
           },
           {
-            "name": "put_var"
+            "name": "put_arg"
           },
+          {
+            "id": 42
+          }
+        ]
+      ]
+    },
+    "54": {
+      "leftHand": {
+        "id": 54
+      },
+      "rightHands": [
+        [
+          {
+            "tokenType": "SYMBOL",
+            "value": "\u003d"
+          },
+          {
+            "id": 21
+          },
+          {
+            "name": "assign"
+          },
+          {
+            "name": "put_arg"
+          },
+          {
+            "id": 42
+          }
+        ],
+        [
           {
             "id": 22
           },
@@ -2338,34 +2264,39 @@
         "value": "case"
       }
     ],
-    "2818049": [
-      {},
-      {
-        "tokenType": "ID"
-      }
-    ],
     "2752512": [
       {
         "tokenType": "SYMBOL",
         "value": ","
       }
     ],
-    "2818048": [
+    "2818049": [
       {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "("
       }
     ],
     "2752513": [
       {}
     ],
+    "2818048": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
     "2883584": [
       {}
     ],
     "2949121": [
-      {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "2883585": [
@@ -2377,38 +2308,27 @@
     "2949120": [
       {},
       {
-        "tokenType": "ID"
-      }
-    ],
-    "2883586": [
-      {},
-      {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": ","
       }
     ],
     "3014656": [
-      {},
-      {
-        "tokenType": "ID"
-      }
+      {}
     ],
     "3080193": [
-      {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "3014657": [
-      {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "3080192": [
-      {},
-      {
-        "tokenType": "ID"
-      }
+      {}
     ],
     "3145728": [
       {
@@ -2417,14 +2337,6 @@
       }
     ],
     "3211265": [
-      {},
-      {
-        "tokenType": "SYMBOL",
-        "value": "["
-      }
-    ],
-    "3276802": [
-      {},
       {
         "tokenType": "SYMBOL",
         "value": "["
@@ -2454,45 +2366,36 @@
       {},
       {
         "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
         "value": "\u003d"
-      }
-    ],
-    "3276803": [
-      {},
+      },
       {
         "tokenType": "SYMBOL",
-        "value": "("
-      }
-    ],
-    "3211267": [
-      {},
+        "value": "-"
+      },
       {
         "tokenType": "SYMBOL",
-        "value": "("
+        "value": "\u003d\u003d"
       }
     ],
     "3276800": [
-      {},
       {
         "tokenType": "SYMBOL",
         "value": "\u003d"
       }
     ],
-    "3211266": [
-      {},
-      {
-        "tokenType": "SYMBOL",
-        "value": "["
-      }
-    ],
-    "3276801": [
-      {},
-      {
-        "tokenType": "SYMBOL",
-        "value": "["
-      }
-    ],
-    "3211268": [
+    "3342337": [
       {},
       {
         "tokenType": "SYMBOL",
@@ -2515,7 +2418,42 @@
         "value": "\u003d\u003d"
       }
     ],
-    "3276804": [
+    "3276801": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3211266": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "3342336": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      }
+    ],
+    "3473409": [
       {},
       {
         "tokenType": "SYMBOL",
@@ -2532,6 +2470,216 @@
       {
         "tokenType": "SYMBOL",
         "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3407872": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3473408": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      }
+    ],
+    "3407873": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      }
+    ],
+    "3407874": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      }
+    ],
+    "3538944": [
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      }
+    ],
+    "3538945": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3604479": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3538943": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3473407": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "-"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d\u003d"
+      }
+    ],
+    "3407871": [
+      {},
+      {
+        "tokenType": "SYMBOL",
+        "value": "*"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003c"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "+"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "\u003d"
       },
       {
         "tokenType": "SYMBOL",
@@ -2546,23 +2694,11 @@
       {},
       {
         "tokenType": "SYMBOL",
-        "value": "("
-      },
-      {
-        "tokenType": "SYMBOL",
         "value": "*"
       },
       {
         "tokenType": "SYMBOL",
         "value": "\u003c"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": ","
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "["
       },
       {
         "tokenType": "SYMBOL",
@@ -2597,11 +2733,11 @@
       },
       {
         "tokenType": "SYMBOL",
-        "value": "["
+        "value": "+"
       },
       {
         "tokenType": "SYMBOL",
-        "value": "+"
+        "value": "["
       },
       {
         "tokenType": "SYMBOL",
@@ -2643,19 +2779,26 @@
     "3145727": [
       {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "3080191": [
       {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "3014655": [
       {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "2949119": [
@@ -2667,7 +2810,16 @@
     "2883583": [
       {},
       {
-        "tokenType": "ID"
+        "tokenType": "SYMBOL",
+        "value": "("
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "["
       }
     ],
     "2818047": [
@@ -3495,69 +3647,7 @@
     ],
     "4": [
       {
-        "tokenType": "KEYWORD",
-        "value": "break"
-      },
-      {
-        "tokenType": "EOF"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "("
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "int"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "void"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": ";"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "{"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "}"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "switch"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "while"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "continue"
-      },
-      {
-        "tokenType": "NUMBER"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "if"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "+"
-      },
-      {
         "tokenType": "ID"
-      },
-      {
-        "tokenType": "SYMBOL",
-        "value": "-"
-      },
-      {
-        "tokenType": "KEYWORD",
-        "value": "return"
       }
     ],
     "5": [
@@ -4864,6 +4954,54 @@
       }
     ],
     "50": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "51": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ","
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": ";"
+      },
+      {
+        "tokenType": "SYMBOL",
+        "value": "]"
+      }
+    ],
+    "52": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "53": [
+      {
+        "tokenType": "SYMBOL",
+        "value": ")"
+      }
+    ],
+    "54": [
       {
         "tokenType": "SYMBOL",
         "value": ")"

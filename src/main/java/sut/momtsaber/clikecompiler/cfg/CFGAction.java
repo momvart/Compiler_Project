@@ -1,5 +1,7 @@
 package sut.momtsaber.clikecompiler.cfg;
 
+import java.util.Objects;
+
 public class CFGAction extends CFGSymbol
 {
     private final String name;
@@ -12,6 +14,14 @@ public class CFGAction extends CFGSymbol
     public String getName()
     {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof CFGAction)) return false;
+        return Objects.equals(name, ((CFGAction)o).name);
     }
 
     public static class Names
