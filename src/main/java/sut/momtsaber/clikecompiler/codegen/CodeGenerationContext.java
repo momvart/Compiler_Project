@@ -530,9 +530,9 @@ public class CodeGenerationContext
     {
         Integer savedCodeLine = lineStack.pop();
         Value condition = valuesStack.pop();
-        Value label = valuesStack.pop();
+        Integer label = lineStack.pop();
         setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber() + 1)));
-        jumpTo(label.getValue());
+        jumpTo(label);
     }
     // end while
 
