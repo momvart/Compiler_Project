@@ -24,6 +24,14 @@ public class CFGAction extends CFGSymbol
         return Objects.equals(name, ((CFGAction)o).name);
     }
 
+    @Override
+    public String toString()
+    {
+        return "CFGAction{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public static class Names
     {
         public static final String PUSH_TOKEN = "pt";

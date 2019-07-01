@@ -73,6 +73,11 @@ public class DFA
 
     public DFAResponse advance(TokenWithLineNum input, CFG grammar)
     {
+        ArrayList<CFGAction> actionsToBePassed = new ArrayList<>();
+        if (currentState == this.getStartState())
+        {
+            actionsToBePassed.addAll(this.actionMap.get(currentState));
+        }
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
         if (result == null)
         {
@@ -119,7 +124,10 @@ public class DFA
         else
         {
             currentState = result.getNextState();
-            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, this.actionMap.get(currentState));
+            List<CFGAction> newActions = this.actionMap.get(currentState);
+            if (newActions != null)
+                actionsToBePassed.addAll(newActions);
+            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, actionsToBePassed);
         }
     }
 
@@ -208,6 +216,8 @@ public class DFA
                 }
             }
         }
+//        System.out.println(production);
+//        System.out.println(dfa.actionMap);
         return dfa;
     }
 
