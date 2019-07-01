@@ -196,7 +196,7 @@ public class DFA
                             newState = new DFAState<>();
 
                         Entrance<? super Token> nonTerminalEntrance;
-                        if (iSymbol == 0)
+                        if (isFirstNonActionSymbol(iSymbol, rule))
                             nonTerminalEntrance = ruleEntrance;
                         else
                         {
@@ -254,9 +254,15 @@ public class DFA
 //                System.out.println("____________");
 //            }
             dfa.currentState = dfa.startState;
-            DFAState.NextStateResult<Token> result = dfa.currentState.getNextState(new Token(TokenType.SYMBOL, "("));
+            Token token = new Token(TokenType.SYMBOL, "(");
+            DFAState.NextStateResult<Token> result = dfa.currentState.getNextState(token);
+            for (DFAEdge<Token> edge : dfa.currentState.getExitingEdges())
+            {
+                System.out.println(edge.getEntrance().canEnter(token));
+            }
             System.out.println(dfa.currentState.getExitingEdges().indexOf(result.getEdge()));
             System.out.println(dfa.actionMap.get(result.getEdge()));
+
         }
 
         return dfa;
