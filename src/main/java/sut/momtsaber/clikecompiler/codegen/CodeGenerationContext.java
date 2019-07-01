@@ -483,7 +483,7 @@ public class CodeGenerationContext
 
     private void jumpTo(int line)
     {
-        addNewStatement(ILStatement.jump(ILOperand.direct(getLineNumber())));
+        addNewStatement(ILStatement.jump(ILOperand.direct(line)));
     }
 
     private void jumpIndirect(int address)
@@ -493,13 +493,13 @@ public class CodeGenerationContext
 
     private void label()
     {
-        valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
+        lineStack.push(getLineNumber());
     }
 
     private void save()
     {
-        valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
-        // todo i += 1
+        label();
+        addNewStatement(null);
     }
 
     //region Control Flow
@@ -507,38 +507,38 @@ public class CodeGenerationContext
     // while statement
     private void _while()
     {
-        Value savedCodeLine = valuesStack.pop();
+        Integer savedCodeLine = lineStack.pop();
         Value condition = valuesStack.pop();
         Value label = valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber() + 1).toOperand()));
-        statementPipeline.add(ILStatement.jump(label.toOperand()));
+        setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber() + 1)));
+        jumpTo(label.getValue());
     }
     // end while
 
     // if statement
     private void jpfSave()
     {
-        Value savedCodeLine = valuesStack.pop();
+        Integer savedCodeLine = lineStack.pop();
         Value condition = valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber() + 1).toOperand()));
+        setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber() + 1)));
         save();
     }
 
     private void jp()
     {
-        Value savedCodeLine = valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jump(ILOperand.direct(getLineNumber())));
+        Integer savedCodeLine = lineStack.pop();
+        setStatementAt(savedCodeLine, ILStatement.jump(ILOperand.direct(getLineNumber())));
     }
     // end if
 
     //case statement
     private void jpfCmpSave()
     {
+        Integer savedCodeLine = lineStack.pop();
         Value case_value = valuesStack.pop();
-        Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
         Value expression = valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
+        setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber())));
         valuesStack.push(expression);
         Value temp = makeTempResult();
         statementPipeline.add(ILStatement.equals(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
@@ -547,11 +547,11 @@ public class CodeGenerationContext
 
     private void jpf()
     {
-        Value savedCodeLine = valuesStack.pop();
+        Integer savedCodeLine = lineStack.pop();
         Value condition = valuesStack.pop();
         // popping expression
         valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
+        setStatementAt(savedCodeLine, ILStatement.jumpFalse(condition.toOperand(), ILOperand.direct(getLineNumber())));
     }
 
     private void put1()
@@ -566,7 +566,7 @@ public class CodeGenerationContext
     {
         if (!(getCurrentScope() instanceof WhileScope))
             throw new WrongContinuePositionException(getLineNumber());
-        statementPipeline.add(ILStatement.jump(new Value(Value.Type.CONST, getCurrentScope().getStartLine()).toOperand()));
+        jumpTo(getCurrentScope().getStartLine());
     }
 
     private void breakLoop()
@@ -578,7 +578,7 @@ public class CodeGenerationContext
             ((WhileScope)getCurrentScope()).setBreakAddress(jumpPosition);
         else if (getCurrentScope() instanceof SwitchScope)
             ((SwitchScope)getCurrentScope()).setBreakAddress(jumpPosition);
-        statementPipeline.add(ILStatement.jump(new Value(Value.Type.REFERENCE, jumpPosition).toOperand()));
+        jumpIndirect(jumpPosition);
         // we should set the value for jumpPosition after finishing the scope
     }
 
