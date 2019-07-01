@@ -16,6 +16,10 @@ import sut.momtsaber.clikecompiler.codegen.exceptions.IllegalTypeOfVoidException
 import sut.momtsaber.clikecompiler.codegen.exceptions.TypeMismatchException;
 import sut.momtsaber.clikecompiler.codegen.il.ILOperand;
 import sut.momtsaber.clikecompiler.codegen.il.ILStatement;
+import sut.momtsaber.clikecompiler.codegen.scopes.BreakableScope;
+import sut.momtsaber.clikecompiler.codegen.scopes.Scope;
+import sut.momtsaber.clikecompiler.codegen.scopes.SwitchScope;
+import sut.momtsaber.clikecompiler.codegen.scopes.WhileScope;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
 
@@ -592,13 +596,17 @@ public class CodeGenerationContext
 
     private void breakLoop()
     {
-        if (!(getCurrentScope() instanceof WhileScope || getCurrentScope() instanceof SwitchScope))
+        BreakableScope breakable = null;
+        for (Scope scope : scopes)
+            if (scope instanceof BreakableScope)
+            {
+                breakable = (BreakableScope)scope;
+                break;
+            }
+        if (breakable == null)
             throw new WrongBreakPositionException(getLineNumber());
         int jumpPosition = getNextFreeTempAddress();
-        if (getCurrentScope() instanceof WhileScope)
-            ((WhileScope)getCurrentScope()).setBreakAddress(jumpPosition);
-        else if (getCurrentScope() instanceof SwitchScope)
-            ((SwitchScope)getCurrentScope()).setBreakAddress(jumpPosition);
+        breakable.setBreakAddress(jumpPosition);
         jumpIndirect(jumpPosition);
         // we should set the value for jumpPosition after finishing the scope
     }

@@ -1,10 +1,14 @@
-package sut.momtsaber.clikecompiler.codegen;
+package sut.momtsaber.clikecompiler.codegen.scopes;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import sut.momtsaber.clikecompiler.codegen.Definition;
+import sut.momtsaber.clikecompiler.codegen.FuncDefinition;
+import sut.momtsaber.clikecompiler.codegen.VarDefinition;
 
 public class Scope
 {

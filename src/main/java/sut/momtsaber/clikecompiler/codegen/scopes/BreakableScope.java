@@ -1,9 +1,10 @@
-package sut.momtsaber.clikecompiler.codegen;
+package sut.momtsaber.clikecompiler.codegen.scopes;
 
-public class SwitchScope extends Scope
+public class BreakableScope extends Scope
 {
     private int breakAddress;
-    public SwitchScope(Scope parent, int startLine)
+
+    public BreakableScope(Scope parent, int startLine)
     {
         super(parent, startLine);
     }
