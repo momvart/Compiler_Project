@@ -21,7 +21,7 @@ public class Scope
 
     public boolean addDefinition(Definition definition)
     {
-        if (getDefinition(definition.getId()).stream()
+        if (definitions.get(definition.getId()).stream()
                 .anyMatch(def -> def.getClass().isInstance(definition)))
             return false;
         definitions.put(definition.getId(), definition);
@@ -31,7 +31,15 @@ public class Scope
     public VarDefinition getVarDefinition(String id) throws NoSuchElementException
     {
         return (VarDefinition)getDefinition(id).stream()
-                .filter(def -> def instanceof VarDefinition)
+                .filter(VarDefinition.class::isInstance)
+                .findFirst()
+                .get();
+    }
+
+    public FuncDefinition getFuncDefinition(String id) throws NoSuchElementException
+    {
+        return (FuncDefinition)getDefinition(id).stream()
+                .filter(VarDefinition.class::isInstance)
                 .findFirst()
                 .get();
     }

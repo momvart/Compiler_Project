@@ -26,12 +26,17 @@ public class CFGAction extends CFGSymbol
         public static final String DECLARE_PARAM_VAR = "param_var_dec";
         public static final String DECLARE_PARAM_ARRAY = "param_arr_dec";
         public static final String FUNC_INIT = "func_init";
-        public static final String PUSH_RETURN_VAL = "push_retval";
-        public static final String PUSH_VOID = "push_void";
+        public static final String SET_RETURN_VAL = "set_retval";
         public static final String RETURN = "return";
+        public static final String START_ARGS = "start_args";
+        public static final String PUT_ARG = "put_arg";
 
         public static final String CONTINUE = "continue";
         public static final String BREAK = "break";
+
+        public static final String PUT_VARIABLE = "put_var";
+        public static final String PUT_ARRAY_ELEMENT = "put_arr_elem";
+        public static final String PUT_NUMBER = "put_num";
 
         public static final String MULTIPLY = "mult";
         public static final String ADD_SUBTRACT = "add_sub";

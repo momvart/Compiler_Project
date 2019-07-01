@@ -3,8 +3,11 @@ package sut.momtsaber.clikecompiler.codegen;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
+import sut.momtsaber.clikecompiler.codegen.exceptions.ArgumentNumberMismatchException;
+import sut.momtsaber.clikecompiler.codegen.exceptions.SemanticError;
 import sut.momtsaber.clikecompiler.codegen.exceptions.WrongBreakPositionException;
 import sut.momtsaber.clikecompiler.codegen.exceptions.WrongContinuePositionException;
 import sut.momtsaber.clikecompiler.codegen.exceptions.DeclarationOfDeclaredException;
@@ -40,6 +43,11 @@ public class CodeGenerationContext
 
     private int getLineNumber() { return statementPipeline.size(); }
 
+    private int getSourceCodeLineNumber()
+    {
+        return -1;
+    }
+
     private int getNextFreeAddress(int size)
     {
         int temp = lastVarAddress;
@@ -53,6 +61,13 @@ public class CodeGenerationContext
         lastTempAddress += VARIABLE_SIZE;
         return temp;
     }
+
+    private void addNewStatement(ILStatement statement)
+    {
+        statementPipeline.add(statement);
+    }
+
+    private void setStatementAt(int index, ILStatement statement) { statementPipeline.set(index, statement); }
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
@@ -68,10 +83,28 @@ public class CodeGenerationContext
                 endProgram();
                 break;
             case CFGAction.Names.DECLARE_VAR:
-                declareVariable();
+                declareVariable(false);
                 break;
             case CFGAction.Names.DECLARE_ARRAY:
                 declareArray();
+                break;
+            case CFGAction.Names.DECLARE_FUNC:
+                declareFunction();
+                break;
+            case CFGAction.Names.DECLARE_PARAM_VAR:
+                declareParamVariable();
+                break;
+            case CFGAction.Names.FUNC_INIT:
+                initFunction();
+                break;
+            case CFGAction.Names.SET_RETURN_VAL:
+                setReturnValue();
+                break;
+            case CFGAction.Names.RETURN:
+                returnFromFunction();
+                break;
+            case CFGAction.Names.DECLARE_PARAM_ARRAY:
+                declareParamArray();
                 break;
             case CFGAction.Names.ADD_SUBTRACT:
                 addOrSub();
@@ -82,6 +115,15 @@ public class CodeGenerationContext
             case CFGAction.Names.APPLY_SIGN:
                 applySign();
                 break;
+            case CFGAction.Names.PUT_ARRAY_ELEMENT:
+                putArrayElement();
+                break;
+            case CFGAction.Names.PUT_VARIABLE:
+                putVariable();
+                break;
+            case CFGAction.Names.PUT_NUMBER:
+                putNumber();
+                break;
             case CFGAction.Names.LABEL:
                 label();
                 break;
@@ -89,7 +131,7 @@ public class CodeGenerationContext
                 save();
                 break;
             case CFGAction.Names.WHILE:
-                while_();
+                _while();
                 break;
             case CFGAction.Names.JPF_SAVE:
                 jpfSave();
@@ -107,14 +149,13 @@ public class CodeGenerationContext
                 jpf();
                 break;
             case CFGAction.Names.CONTINUE:
-                continue_();
+                continueLoop();
                 break;
             case CFGAction.Names.BREAK:
-                break_();
+                breakLoop();
                 break;
         }
     }
-
 
     private void startProgram() throws InterruptedException
     {
@@ -122,6 +163,8 @@ public class CodeGenerationContext
         global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
+
+        addNewStatement(null);  //jump to main function
     }
 
     private void endProgram() {}
@@ -142,7 +185,7 @@ public class CodeGenerationContext
 
     //region Declaration
 
-    private void declareVariable() throws IllegalTypeOfVoidException, DeclarationOfDeclaredException
+    private VarDefinition declareVariable(boolean isArray) throws IllegalTypeOfVoidException, DeclarationOfDeclaredException
     {
         Token name = tokenStack.pop();
         Token type = tokenStack.pop();
@@ -151,39 +194,26 @@ public class CodeGenerationContext
         if (type.getType() != TokenType.KEYWORD)
             throw new IllegalStateException("Variable type not found in the stack.");
         if (!type.getValue().equals("int"))
-            throw new IllegalTypeOfVoidException(getLineNumber(), name.getValue());
-        declareVariable(name.getValue());
+            throw new IllegalTypeOfVoidException(getSourceCodeLineNumber(), name.getValue());
+        return declareVariable(name.getValue(), isArray);
     }
 
-    private void declareVariable(String name) throws DeclarationOfDeclaredException
+    private VarDefinition declareVariable(String name, boolean isArray) throws DeclarationOfDeclaredException
     {
-        if (!getCurrentScope()
-                .addDefinition(new VarDefinition(name, getNextFreeAddress(VARIABLE_SIZE))))
-            throw new DeclarationOfDeclaredException(getLineNumber(), name);
+        VarDefinition retVal = new VarDefinition(name, getNextFreeAddress(VARIABLE_SIZE), isArray);
+        if (!getCurrentScope().addDefinition(retVal))
+            throw new DeclarationOfDeclaredException(getSourceCodeLineNumber(), name);
+        return retVal;
     }
 
     private void declareArray() throws IllegalTypeOfVoidException, DeclarationOfDeclaredException, InterruptedException
     {
         Token size = tokenStack.pop();
-        Token name = tokenStack.pop();
-        Token type = tokenStack.pop();
         if (size.getType() != TokenType.NUMBER)
             throw new IllegalStateException("Array size not found in the stack.");
-        if (name.getType() != TokenType.ID)
-            throw new IllegalStateException("Array name not found in the stack.");
-        if (type.getType() != TokenType.KEYWORD)
-            throw new IllegalStateException("Array type not found in the stack.");
-        if (!type.getValue().equals("int"))
-            throw new IllegalTypeOfVoidException(getLineNumber(), name.getValue());
-        declareArray(name.getValue(), Integer.parseInt(size.getValue()));
-    }
-
-    private void declareArray(String name, int size) throws DeclarationOfDeclaredException, InterruptedException
-    {
-        VarDefinition def = new VarDefinition(name, getNextFreeAddress(VARIABLE_SIZE), true);
-        if (!getCurrentScope().addDefinition(def))
-            throw new DeclarationOfDeclaredException(getLineNumber(), name);
-        assign(def.getAddress(), new Value(Value.Type.CONST, getNextFreeAddress(VARIABLE_SIZE * size)));
+        VarDefinition def = declareVariable(true);
+        assign(def.getAddress(), new Value(Value.Type.CONST,
+                getNextFreeAddress(VARIABLE_SIZE * Integer.parseInt(size.getValue()))));
     }
 
     //endregion
@@ -194,7 +224,7 @@ public class CodeGenerationContext
     {
         if (first.getType() == Value.Type.REFERENCE || second.getType() == Value.Type.REFERENCE ||
                 first.getType() == Value.Type.VOID || second.getType() == Value.Type.VOID)
-            throw new TypeMismatchException(getLineNumber(), first.getType(), second.getType());
+            throw new TypeMismatchException(getSourceCodeLineNumber(), first.getType(), second.getType());
     }
 
     private Value makeTempResult()
@@ -259,12 +289,131 @@ public class CodeGenerationContext
 
     //endregion
 
+    //region Function
+
+    private FuncDefinition currentFuncDef;
+
+    private void declareFunction()
+    {
+        Token name = tokenStack.pop();
+        Token type = tokenStack.pop();
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Function name not found in the stack.");
+        if (type.getType() != TokenType.KEYWORD)
+            throw new IllegalStateException("Function type not found in the stack.");
+        declareFunction(name.getValue(), type.getValue().equals("void"));
+    }
+
+    private void declareFunction(String name, boolean isVoid)
+    {
+        currentFuncDef = new FuncDefinition(name, getLineNumber(),
+                getNextFreeAddress(VARIABLE_SIZE),
+                isVoid ? -1 : getNextFreeAddress(VARIABLE_SIZE));
+        getCurrentScope().addDefinition(currentFuncDef);
+        beginNewScope();
+    }
+
+    private void declareParamVariable()
+    {
+        currentFuncDef.addArg(declareVariable(false));
+    }
+
+    private void declareParamArray()
+    {
+        currentFuncDef.addArg(declareVariable(true));
+    }
+
+    private void initFunction()
+    {
+        getCurrentScope().addDefinition(currentFuncDef.getReturnAddress());
+        getCurrentScope().addDefinition(currentFuncDef.getReturnValue());
+        currentFuncDef = null;
+    }
+
+    private void setReturnValue() throws InterruptedException
+    {
+        assign(getCurrentScope().getVarDefinition(FuncDefinition.RETURN_VAL_VAR_NAME).getAddress(),
+                valuesStack.pop());
+    }
+
+    private void returnFromFunction()
+    {
+        addNewStatement(ILStatement.jump(
+                ILOperand.indirect(
+                        getCurrentScope().getVarDefinition(FuncDefinition.RETURN_ADDR_VAR_NAME).getAddress())));
+    }
+
+    private void startArgs()
+    {
+        valuesStack.push(null); //mark in the stack to show the start of arguments
+    }
+
+    private void callFunction() throws InterruptedException
+    {
+        Token name = tokenStack.pop();
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Function name not found in the stack.");
+
+        currentFuncDef = getCurrentScope().getFuncDefinition(name.getValue());
+        List<VarDefinition> args = currentFuncDef.getArgs();
+        for (int i = args.size() - 1; i >= 0; i--)
+        {
+            Value arg = valuesStack.pop();
+            if (arg == null)
+                throw new ArgumentNumberMismatchException(getSourceCodeLineNumber(), currentFuncDef.getId(), args.size());
+            assign(args.get(i).getAddress(), arg);
+        }
+        if (valuesStack.pop() != null)
+            throw new ArgumentNumberMismatchException(getSourceCodeLineNumber(), currentFuncDef.getId(), args.size());
+
+        assign(currentFuncDef.getReturnAddress().getAddress(), new Value(Value.Type.CONST, getLineNumber() + 1));
+
+        addNewStatement(ILStatement.jump(ILOperand.immediate(currentFuncDef.getLineNum())));
+
+        valuesStack.push(currentFuncDef.getReturnValue() == null ?
+                new Value(Value.Type.VOID, 0) :
+                new Value(Value.Type.VAR, currentFuncDef.getReturnValue().getAddress()));
+    }
+
+    //endregion
+
+    private void putArrayElement() throws InterruptedException
+    {
+        Token name = tokenStack.pop();
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Variable name not found in the stack");
+        VarDefinition def = getCurrentScope().getVarDefinition(name.getValue());
+        if (!def.isArray())
+            throw new SemanticError(getSourceCodeLineNumber(), "Variable is not an array.");
+        Value index = valuesStack.pop();
+        multiply(index, new Value(Value.Type.CONST, VARIABLE_SIZE));
+        index = valuesStack.pop();
+        add(new Value(Value.Type.VAR, def.getAddress()), index);
+    }
+
+    private void putVariable()
+    {
+        Token name = tokenStack.pop();
+        if (name.getType() != TokenType.ID)
+            throw new IllegalStateException("Variable name not found in the stack");
+        VarDefinition def = getCurrentScope().getVarDefinition(name.getValue());
+        valuesStack.push(new Value(def.isArray() ? Value.Type.REFERENCE : Value.Type.VAR, def.getAddress()));
+    }
+
+    private void putNumber()
+    {
+        Token num = tokenStack.pop();
+        if (num.getType() != TokenType.NUMBER)
+            throw new IllegalStateException("Number found in the stack");
+        valuesStack.push(new Value(Value.Type.CONST, Integer.parseInt(num.getValue())));
+    }
+
     private void assign() throws InterruptedException
     {
         Value right = valuesStack.pop();
         Value left = valuesStack.pop();
         if (right.getType() != left.getType())
-            throw new TypeMismatchException(getLineNumber(), left.getType(), right.getType());
+            throw new TypeMismatchException(getSourceCodeLineNumber(), left.getType(), right.getType());
         assign(left.getValue(), right);
     }
 
@@ -273,6 +422,15 @@ public class CodeGenerationContext
         statementPipeline.add(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
     }
 
+    private void jumpTo(int line)
+    {
+        addNewStatement(ILStatement.jump(ILOperand.direct(getLineNumber())));
+    }
+
+    private void jumpIndirect(int address)
+    {
+        addNewStatement(ILStatement.jump(ILOperand.indirect(address)));
+    }
 
     private void label()
     {
@@ -282,11 +440,13 @@ public class CodeGenerationContext
     private void save()
     {
         valuesStack.push(new Value(Value.Type.CONST, getLineNumber()));
-        statementPipeline.add(null);
+        // todo i += 1
     }
 
+    //region Control Flow
+
     // while statement
-    private void while_()
+    private void _while()
     {
         Value savedCodeLine = valuesStack.pop();
         Value condition = valuesStack.pop();
@@ -308,7 +468,7 @@ public class CodeGenerationContext
     private void jp()
     {
         Value savedCodeLine = valuesStack.pop();
-        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jump(new Value(Value.Type.CONST, getLineNumber()).toOperand()));
+        statementPipeline.set(savedCodeLine.getValue(), ILStatement.jump(ILOperand.direct(getLineNumber())));
     }
     // end if
 
@@ -343,14 +503,14 @@ public class CodeGenerationContext
     //end case
 
     // break and continue
-    private void continue_()
+    private void continueLoop()
     {
         if (!(getCurrentScope() instanceof WhileScope))
             throw new WrongContinuePositionException(getLineNumber());
         statementPipeline.add(ILStatement.jump(new Value(Value.Type.CONST, getCurrentScope().getStartLine()).toOperand()));
     }
 
-    private void break_()
+    private void breakLoop()
     {
         if (!(getCurrentScope() instanceof WhileScope || getCurrentScope() instanceof SwitchScope))
             throw new WrongBreakPositionException(getLineNumber());
@@ -407,5 +567,6 @@ public class CodeGenerationContext
             }
         }
     }
+    //endregion
 }
 

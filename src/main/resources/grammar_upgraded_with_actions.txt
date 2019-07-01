@@ -3,7 +3,7 @@ declaration_list -> declaration_list declaration | ϵ
 declaration -> type_specifier #pt ID #pt var_declaration_rest | type_specifier #pt ID #pt fun_declaration_rest
 var_declaration_rest -> ; #var_dec | [ NUMBER #pt ] ; #arr_dec
 type_specifier -> int | void
-fun_declaration_rest -> #func_dec ( params ) #func_init compound_stmt
+fun_declaration_rest -> #func_dec ( params ) #func_init compound_stmt #end_scope
 params -> void | void #pt ID #pt #param_var_dec param_mult_list_optional | void #pt ID #pt [ ] #param_arr_dec param_mult_list_optional | int #pt ID #pt #param_var_dec param_mult_list_optional | int #pt ID #pt [ ] #param_arr_dec param_mult_list_optional
 param_mult_list_optional -> , param_list | ϵ
 param_list -> param_list , param | param
@@ -14,12 +14,12 @@ statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt |
 expression_stmt -> expression ; | continue ; #continue | break ; #break | ;
 selection_stmt -> if ( expression ) #save statement else #jpf_save statement #jp
 iteration_stmt -> while #label ( expression ) #save statement #while
-return_stmt -> return ; #push_void #return | return expression ; #push_retval #return
+return_stmt -> return ; #return | return expression ; #set_retval #return
 switch_stmt -> switch ( expression ) { #put_1 #save case_stmts default_stmt }
 case_stmts -> case_stmts case_stmt | ϵ
 case_stmt -> case NUMBER #pt #put_num #jpf_cmp_save : statement_list
 default_stmt -> default : #jpf statement_list | ϵ #jpf
-expression -> ID #pt #put_var = expression #var_assign | ID #pt [ expression ] #put_arr_elem = expression #arr_elem_assign | ID #pt [ expression ] #put_arr_elem simple_expression_by_id | ID #pt ( args ) #call simple_expression_by_id | ID #pt #put_var simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
+expression -> ID #pt #put_var = expression #assign | ID #pt [ expression ] #put_arr_elem = expression #assign | ID #pt [ expression ] #put_arr_elem simple_expression_by_id | ID #pt ( args ) #call simple_expression_by_id | ID #pt #put_var simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
 simple_expression_by_id -> term' additive_expression' compare_or_not
 compare_or_not -> relop #pt additive_expression #compare | ϵ
 relop -> < | ==
@@ -33,6 +33,6 @@ signed_factor -> factor | sign #pt factor #apply_sign
 signed_factor_without_imm_id -> factor_without_id | sign #pt factor #apply_sign
 factor -> ( expression ) | ID #pt call_var_unshared | NUMBER #pt #put_num
 factor_without_id -> ( expression ) | NUMBER #pt #put_num
-call_var_unshared -> ( args ) #call | [ expression ] #put_arr_elem | #put_var
+call_var_unshared -> ( #find_func #start_args args ) #call | [ expression ] #put_arr_elem | #put_var
 args -> arg_list | ϵ
-arg_list -> arg_list , expression | expression #push_arg
+arg_list -> arg_list , expression | expression #put_arg
