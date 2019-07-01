@@ -33,6 +33,7 @@ public class CodeGenerationContext
 
     private Deque<Scope> scopes = new LinkedList<>();
 
+    private LinkedList<Integer> lineStack = new LinkedList<>();
     private LinkedList<Value> valuesStack = new LinkedList<>();
     private LinkedList<Token> tokenStack = new LinkedList<>();
 
@@ -163,7 +164,7 @@ public class CodeGenerationContext
         global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
-
+        lineStack.push(getLineNumber());
         addNewStatement(null);  //jump to main function
     }
 
