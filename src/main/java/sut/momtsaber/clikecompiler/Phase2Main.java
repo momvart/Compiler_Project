@@ -141,6 +141,6 @@ public class Phase2Main
 
         int line = 0;
         for (ILStatement stmt : cgContext.getCodeBlock())
-            System.out.printf("%d\t%s%n", line++, stmt.toString());
+            System.out.printf("%d\t%s%n", line++, stmt == null ? "null" : stmt.toString());
     }
 }

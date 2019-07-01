@@ -257,9 +257,9 @@ public class CodeGenerationContext
 
     private void endProgram() throws InterruptedException
     {
-//        setStatementAt(lineStack.pop(),
-//                ILStatement.assign(ILOperand.immediate(getLineNumber()),
-//                        ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress())));
+        setStatementAt(lineStack.pop(),
+                ILStatement.assign(ILOperand.immediate(getLineNumber()),
+                        ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress())));
     }
 
     //region Scope
