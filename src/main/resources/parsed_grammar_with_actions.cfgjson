@@ -182,7 +182,7 @@
             "id": 10
           },
           {
-            "name": "end_scope"
+            "name": "end_func"
           }
         ]
       ]
@@ -510,7 +510,7 @@
             "value": ")"
           },
           {
-            "name": "save"
+            "name": "cmp_save"
           },
           {
             "id": 12
