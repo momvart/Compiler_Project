@@ -11,7 +11,7 @@ param -> type_specifier #pt ID #pt #param_var_dec | type_specifier #pt ID #pt [ 
 compound_stmt -> { #begin_scope declaration_list statement_list } #end_scope
 statement_list -> statement_list statement | ϵ
 statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
-expression_stmt -> expression ; | continue ; #continue | break ; #break | ;
+expression_stmt -> expression ; #pop_value | continue ; #continue | break ; #break | ;
 selection_stmt -> if ( expression ) #save statement else #jpf_save statement #jp
 iteration_stmt -> while #label ( expression ) #save statement #while
 return_stmt -> return ; #return | return expression ; #set_retval #return
@@ -19,7 +19,7 @@ switch_stmt -> switch ( expression ) { #put_1 #save case_stmts default_stmt }
 case_stmts -> case_stmts case_stmt | ϵ
 case_stmt -> case NUMBER #pt #put_num #jpf_cmp_save : statement_list
 default_stmt -> default : #jpf statement_list | ϵ #jpf
-expression -> ID #pt #put_var = expression #assign | ID #pt [ expression ] #put_arr_elem = expression #assign | ID #pt [ expression ] #put_arr_elem simple_expression_by_id | ID #pt ( args ) #call simple_expression_by_id | ID #pt #put_var simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
+expression -> ID #pt #put_var = expression #assign | ID #pt [ expression ] #put_arr_elem = expression #assign | ID #pt [ expression ] #put_arr_elem simple_expression_by_id | ID #pt ( #find_func #start_args args ) #call simple_expression_by_id | ID #pt #put_var simple_expression_by_id | signed_factor_without_imm_id simple_expression_by_id
 simple_expression_by_id -> term' additive_expression' compare_or_not
 compare_or_not -> relop #pt additive_expression #compare | ϵ
 relop -> < | ==

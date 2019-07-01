@@ -142,6 +142,9 @@ public class CodeGenerationContext
             case CFGAction.Names.PUT_NUMBER:
                 putNumber();
                 break;
+            case CFGAction.Names.POP_VALUE:
+                popValue();
+                break;
             case CFGAction.Names.LABEL:
                 label();
                 break;
@@ -191,6 +194,7 @@ public class CodeGenerationContext
         initFunction();
         addNewStatement(ILStatement.print(ILOperand.direct(getCurrentScope().getVarDefinition("a").getAddress())));
         returnFromFunction();
+        endCurrentScope();
     }
 
     private void endProgram() {}
@@ -276,7 +280,7 @@ public class CodeGenerationContext
     {
         Token addop = tokenStack.pop();
         if (addop.getType() != TokenType.SYMBOL ||
-                !addop.getValue().equals("+") || !addop.getValue().equals("-"))
+                !addop.getValue().equals("+") && !addop.getValue().equals("-"))
             throw new IllegalStateException("Add operation not found in the stack");
 
         if (addop.getValue().equals("+"))
@@ -427,7 +431,7 @@ public class CodeGenerationContext
 
         assign(currentFuncDef.getReturnAddress().getAddress(), new Value(Value.Type.CONST, getLineNumber() + 1));
 
-        addNewStatement(ILStatement.jump(ILOperand.immediate(currentFuncDef.getLineNum())));
+        jumpTo(currentFuncDef.getLineNum());
 
         valuesStack.push(currentFuncDef.getReturnValue() == null ?
                 new Value(Value.Type.VOID, 0) :
@@ -438,8 +442,8 @@ public class CodeGenerationContext
 
     private void putArrayElement() throws InterruptedException
     {
-        Token name = tokenStack.pop();
-        if (name.getType() != TokenType.ID)
+        Token name = tokenStack.pollFirst();
+        if (name == null || name.getType() != TokenType.ID)
             throw new IllegalStateException("Variable name not found in the stack");
         VarDefinition def = getCurrentScope().getVarDefinition(name.getValue());
         if (!def.isArray())
@@ -452,8 +456,8 @@ public class CodeGenerationContext
 
     private void putVariable()
     {
-        Token name = tokenStack.pop();
-        if (name.getType() != TokenType.ID)
+        Token name = tokenStack.pollFirst();
+        if (name == null || name.getType() != TokenType.ID)
             throw new IllegalStateException("Variable name not found in the stack");
         VarDefinition def = getCurrentScope().getVarDefinition(name.getValue());
         valuesStack.push(new Value(def.isArray() ? Value.Type.REFERENCE : Value.Type.VAR, def.getAddress()));
@@ -461,10 +465,15 @@ public class CodeGenerationContext
 
     private void putNumber()
     {
-        Token num = tokenStack.pop();
-        if (num.getType() != TokenType.NUMBER)
+        Token num = tokenStack.pollFirst();
+        if (num == null || num.getType() != TokenType.NUMBER)
             throw new IllegalStateException("Number found in the stack");
         valuesStack.push(new Value(Value.Type.CONST, Integer.parseInt(num.getValue())));
+    }
+
+    private void popValue()
+    {
+        valuesStack.pop();
     }
 
     private void assign() throws InterruptedException
@@ -474,6 +483,7 @@ public class CodeGenerationContext
         if (right.getType() != left.getType())
             throw new TypeMismatchException(getSourceCodeLineNumber(), left.getType(), right.getType());
         assign(left.getValue(), right);
+        valuesStack.push(right);
     }
 
     private void assign(int address, Value value) throws InterruptedException

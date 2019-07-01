@@ -403,6 +403,9 @@
           {
             "tokenType": "SYMBOL",
             "value": ";"
+          },
+          {
+            "name": "pop_value"
           }
         ],
         [
@@ -1380,6 +1383,12 @@
             "value": "("
           },
           {
+            "name": "find_func"
+          },
+          {
+            "name": "start_args"
+          },
+          {
             "id": 36
           },
           {
@@ -1479,6 +1488,12 @@
           {
             "tokenType": "SYMBOL",
             "value": "("
+          },
+          {
+            "name": "find_func"
+          },
+          {
+            "name": "start_args"
           },
           {
             "id": 36
