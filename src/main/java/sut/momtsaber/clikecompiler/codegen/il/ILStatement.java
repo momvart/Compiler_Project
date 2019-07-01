@@ -100,7 +100,7 @@ public class ILStatement
     @Override
     public String toString()
     {
-        return String.format("%d\t(%s)", this.lineNum,
+        return String.format("(%s)",
                 Stream.concat(Stream.of(command.str), Stream.of(operands).map(ILOperand::convertToString))
                         .collect(Collectors.joining(", ")));
     }

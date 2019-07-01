@@ -139,6 +139,8 @@ public class Phase2Main
         parserThread.join();
         errorThread.join();
 
-        cgContext.getCodeBlock().forEach(stmt -> System.out.println(stmt.toString()));
+        int line = 0;
+        for (ILStatement stmt : cgContext.getCodeBlock())
+            System.out.printf("%d\t%s%n", line++, stmt.toString());
     }
 }

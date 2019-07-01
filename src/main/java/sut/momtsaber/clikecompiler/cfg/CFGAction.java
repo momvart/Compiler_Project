@@ -63,6 +63,7 @@ public class CFGAction extends CFGSymbol
         public static final String PUT_ARRAY_ELEMENT = "put_arr_elem";
         public static final String PUT_NUMBER = "put_num";
         public static final String POP_VALUE = "pop_value";
+        public static final String ASSIGN = "assign";
 
         public static final String MULTIPLY = "mult";
         public static final String ADD_SUBTRACT = "add_sub";

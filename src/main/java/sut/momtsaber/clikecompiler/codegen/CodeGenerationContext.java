@@ -91,6 +91,12 @@ public class CodeGenerationContext
             case CFGAction.Names.END_PROGRAM:
                 endProgram();
                 break;
+            case CFGAction.Names.BEGIN_SCOPE:
+                beginNewScope();
+                break;
+            case CFGAction.Names.END_SCOPE:
+                endCurrentScope();
+                break;
             case CFGAction.Names.DECLARE_VAR:
                 declareVariable(false);
                 break;
@@ -145,6 +151,9 @@ public class CodeGenerationContext
             case CFGAction.Names.POP_VALUE:
                 popValue();
                 break;
+            case CFGAction.Names.ASSIGN:
+                assign();
+                break;
             case CFGAction.Names.LABEL:
                 label();
                 break;
@@ -188,6 +197,7 @@ public class CodeGenerationContext
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
         lineStack.push(getLineNumber());
         addNewStatement(null);  //jump to main function
+        ILStatement.lineNumber++;
 
         declareFunction("output", true);
         addParam(declareVariable("a", false));
@@ -321,7 +331,7 @@ public class CodeGenerationContext
     {
         Token relop = tokenStack.pop();
         if (relop.getType() != TokenType.SYMBOL ||
-                !relop.getValue().equals("<") || !relop.getValue().equals("=="))
+                !relop.getValue().equals("<") && !relop.getValue().equals("=="))
             throw new IllegalStateException("Compare operation not found in the stack");
 
         if (relop.getValue().equals("<"))
@@ -480,7 +490,8 @@ public class CodeGenerationContext
     {
         Value right = valuesStack.pop();
         Value left = valuesStack.pop();
-        if (right.getType() != left.getType())
+        if (right.getType() == Value.Type.REFERENCE && left.getType() != Value.Type.REFERENCE ||
+                right.getType() == Value.Type.VOID || left.getType() == Value.Type.VOID)
             throw new TypeMismatchException(getSourceCodeLineNumber(), left.getType(), right.getType());
         assign(left.getValue(), right);
         valuesStack.push(right);
