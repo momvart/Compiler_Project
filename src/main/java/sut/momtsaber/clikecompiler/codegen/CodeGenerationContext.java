@@ -221,14 +221,17 @@ public class CodeGenerationContext
 
     private void endWhileScope()
     {
+        System.out.println("after while");
+        System.out.println(lineStack.size());
         WhileScope scope = (WhileScope)getCurrentScope();
         addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
         endCurrentScope();
-
     }
 
     private void beginWhileScope()
     {
+        System.out.println("before while");
+        System.out.println(lineStack.size());
         scopes.push(new WhileScope(getCurrentScope(), getLineNumber()));
     }
 

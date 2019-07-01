@@ -121,7 +121,6 @@ public class DFA
         {
             currentState = result.getNextState();
             List<CFGAction> newActions = this.actionMap.get(currentState);
-            System.out.println(this.getProduction() + "  " + input);
 
             return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, this.actionMap.get(result.getEdge()));
         }

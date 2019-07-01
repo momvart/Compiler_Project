@@ -13,7 +13,7 @@ statement_list -> statement_list statement | ϵ
 statement -> expression_stmt | compound_stmt | selection_stmt | iteration_stmt | return_stmt | switch_stmt
 expression_stmt -> expression ; #pop_value | continue ; #continue | break ; #break | ;
 selection_stmt -> if ( expression ) #save statement else #jpf_save statement #jp
-iteration_stmt -> while #begin_while_scope #label ( expression ) #cmp_save statement #while #end_while_scope
+iteration_stmt -> while #begin_while_scope #label ( expression ) #save statement #while #end_while_scope
 return_stmt -> return ; #return | return expression ; #set_retval #return
 switch_stmt -> switch #begin_switch_scope ( expression ) { #put_1 #save case_stmts default_stmt } #end_switch_scope
 case_stmts -> case_stmts case_stmt | ϵ
