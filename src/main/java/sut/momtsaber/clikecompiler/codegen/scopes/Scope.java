@@ -72,4 +72,9 @@ public class Scope
     {
         this.endLine = endLine;
     }
+
+    public Scope getParent()
+    {
+        return parent;
+    }
 }

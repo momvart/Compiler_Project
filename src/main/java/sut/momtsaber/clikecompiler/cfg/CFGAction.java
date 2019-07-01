@@ -81,5 +81,10 @@ public class CFGAction extends CFGSymbol
         public static final String JPF_CMP_SAVE = "jpf_cmp_save";
         public static final String JPF = "jpf";
 
+        public static final String BEGIN_WHILE_SCOPE = "begin_while_scope";
+        public static final String END_WHILE_SCOPE = "end_while_scope";
+
+        public static final String BEGIN_SWICH_SCOPE = "begin_switch_scope";
+        public static final String END_SWITCH_SCOPE = "end_switch_scope";
     }
 }

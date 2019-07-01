@@ -188,7 +188,44 @@ public class CodeGenerationContext
             case CFGAction.Names.BREAK:
                 breakLoop();
                 break;
+            case CFGAction.Names.BEGIN_WHILE_SCOPE:
+                beginWhileScope();
+                break;
+            case CFGAction.Names.END_WHILE_SCOPE:
+                endWhileScope();
+                break;
+            case CFGAction.Names.BEGIN_SWICH_SCOPE:
+                beginSwitchScope();
+                break;
+            case CFGAction.Names.END_SWITCH_SCOPE:
+                endSwitchScope();
+                break;
         }
+    }
+
+    private void endSwitchScope()
+    {
+        SwitchScope scope = (SwitchScope)getCurrentScope();
+        addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
+        endCurrentScope();
+    }
+
+    private void beginSwitchScope()
+    {
+        scopes.push(new SwitchScope(getCurrentScope(), getLineNumber()));
+    }
+
+    private void endWhileScope()
+    {
+        WhileScope scope = (WhileScope)getCurrentScope();
+        addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
+        endCurrentScope();
+
+    }
+
+    private void beginWhileScope()
+    {
+        scopes.push(new WhileScope(getCurrentScope(), getLineNumber()));
     }
 
     private void startProgram() throws InterruptedException
@@ -221,7 +258,8 @@ public class CodeGenerationContext
 
     private void endCurrentScope()
     {
-        scopes.pop();
+        Scope scope = scopes.pop();
+        scope.setEndLine(getLineNumber());
     }
 
     private Scope getCurrentScope() { return scopes.element(); }
@@ -557,16 +595,8 @@ public class CodeGenerationContext
     // end if
 
     //case statement
-    int turn = 0;
     private void jpfCmpSave()
     {
-        if (turn == 0)
-        {
-            for (Value value : valuesStack)
-            {
-                System.out.println(value);
-            }
-        }
         Integer savedCodeLine = lineStack.pop();
         Value case_value = valuesStack.pop();
         Value condition = valuesStack.pop();
@@ -576,7 +606,6 @@ public class CodeGenerationContext
         Value temp = makeTempResult();
         addNewStatement(ILStatement.equals(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
         save();
-        turn++;
     }
 
     private void jpf()
@@ -598,6 +627,8 @@ public class CodeGenerationContext
     // break and continue
     private void continueLoop()
     {
+        System.out.println(getCurrentScope().getClass());
+        System.out.println(getCurrentScope().getParent().getClass());
         if (!(getCurrentScope() instanceof WhileScope))
             throw new WrongContinuePositionException(getLineNumber());
         jumpTo(getCurrentScope().getStartLine());
