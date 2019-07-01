@@ -179,6 +179,7 @@ public class CodeGenerationContext
     {
         Scope global = new Scope(null, getLineNumber());
         this.globalScope = global;
+        scopes.push(globalScope);
         global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
@@ -186,7 +187,7 @@ public class CodeGenerationContext
         addNewStatement(null);  //jump to main function
 
         declareFunction("output", true);
-        addParam(new VarDefinition("a", getNextFreeAddress(VARIABLE_SIZE)));
+        addParam(declareVariable("a", false));
         initFunction();
         addNewStatement(ILStatement.print(ILOperand.direct(getCurrentScope().getVarDefinition("a").getAddress())));
         returnFromFunction();
