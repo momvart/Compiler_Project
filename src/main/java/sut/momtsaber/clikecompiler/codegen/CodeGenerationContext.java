@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import sut.momtsaber.clikecompiler.cfg.CFGAction;
 import sut.momtsaber.clikecompiler.codegen.exceptions.ArgumentNumberMismatchException;
@@ -257,9 +258,16 @@ public class CodeGenerationContext
 
     private void endProgram() throws InterruptedException
     {
-        setStatementAt(lineStack.pop(),
-                ILStatement.assign(ILOperand.immediate(getLineNumber()),
-                        ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress())));
+        try
+        {
+            setStatementAt(lineStack.pop(),
+                    ILStatement.assign(ILOperand.immediate(getLineNumber()),
+                            ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress())));
+        }
+        catch (NoSuchElementException ex)
+        {
+            throw new SemanticError(getSourceCodeLineNumber(), "main function not found!");
+        }
     }
 
     //region Scope
@@ -389,7 +397,10 @@ public class CodeGenerationContext
             throw new IllegalStateException("Compare operation not found in the stack");
 
         if (relop.getValue().equals("<"))
-            lessThan(valuesStack.pop(), valuesStack.pop());
+        {
+            Value right = valuesStack.pop();
+            lessThan(valuesStack.pop(), right);
+        }
         else
             equals(valuesStack.pop(), valuesStack.pop());
     }

@@ -9,6 +9,8 @@ import java.util.NoSuchElementException;
 import sut.momtsaber.clikecompiler.codegen.Definition;
 import sut.momtsaber.clikecompiler.codegen.FuncDefinition;
 import sut.momtsaber.clikecompiler.codegen.VarDefinition;
+import sut.momtsaber.clikecompiler.codegen.exceptions.UndefinedFunctionException;
+import sut.momtsaber.clikecompiler.codegen.exceptions.UndefinedVariableException;
 
 public class Scope
 {
@@ -32,20 +34,20 @@ public class Scope
         return true;
     }
 
-    public VarDefinition getVarDefinition(String id) throws NoSuchElementException
+    public VarDefinition getVarDefinition(String id) throws UndefinedVariableException
     {
         return (VarDefinition)getDefinition(id).stream()
                 .filter(VarDefinition.class::isInstance)
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new UndefinedVariableException(0, id));
     }
 
-    public FuncDefinition getFuncDefinition(String id) throws NoSuchElementException
+    public FuncDefinition getFuncDefinition(String id) throws UndefinedFunctionException
     {
         return (FuncDefinition)getDefinition(id).stream()
                 .filter(FuncDefinition.class::isInstance)
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new UndefinedFunctionException(0, id));
     }
 
     public List<Definition> getDefinition(String id)
