@@ -24,6 +24,12 @@ public class ParseContext
         init(grammar);
     }
 
+    public ParseContext(CFG grammar, CodeGenerationContext generator)
+    {
+        this.generator = generator;
+        init(grammar);
+    }
+
     private void init(CFG cfg)
     {
         grammar = cfg;
@@ -34,7 +40,6 @@ public class ParseContext
         currentDFA = new DFA(cfg.getProduction(0), grammar);
         dfaStack = new Stack<>();
         dfaStack.push(currentDFA);
-        generator = new CodeGenerationContext();
     }
 
     public ParseTree parse(BlockingQueue<TokenWithLineNum> tokens, BlockingQueue<? super SyntaxError> errors) throws InterruptedException

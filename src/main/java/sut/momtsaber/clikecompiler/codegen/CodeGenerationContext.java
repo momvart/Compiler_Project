@@ -1,6 +1,7 @@
 package sut.momtsaber.clikecompiler.codegen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class CodeGenerationContext
 
     private static final int VARIABLE_SIZE = 4;
 
-    private ArrayList<ILStatement> statementPipeline;
+    private ArrayList<ILStatement> statementPipeline = new ArrayList<>();
 
     private Deque<Scope> scopes = new LinkedList<>();
     private Scope globalScope;
@@ -70,6 +71,11 @@ public class CodeGenerationContext
     }
 
     private void setStatementAt(int index, ILStatement statement) { statementPipeline.set(index, statement); }
+
+    public List<ILStatement> getCodeBlock()
+    {
+        return Collections.unmodifiableList(statementPipeline);
+    }
 
     public void handleAction(CFGAction action, Token lastToken) throws InterruptedException
     {
@@ -122,6 +128,9 @@ public class CodeGenerationContext
                 break;
             case CFGAction.Names.APPLY_SIGN:
                 applySign();
+                break;
+            case CFGAction.Names.COMPARE:
+                compare();
                 break;
             case CFGAction.Names.PUT_ARRAY_ELEMENT:
                 putArrayElement();
@@ -299,6 +308,33 @@ public class CodeGenerationContext
             return;
 
         statementPipeline.add(ILStatement.subtract(ILOperand.immediate(0), valuesStack.pop().toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    private void compare()
+    {
+        Token relop = tokenStack.pop();
+        if (relop.getType() != TokenType.SYMBOL ||
+                !relop.getValue().equals("<") || !relop.getValue().equals("=="))
+            throw new IllegalStateException("Compare operation not found in the stack");
+
+        if (relop.getValue().equals("<"))
+            lessThan(valuesStack.pop(), valuesStack.pop());
+        else
+            equals(valuesStack.pop(), valuesStack.pop());
+    }
+
+    private void equals(Value first, Value second)
+    {
+        checkArithmeticOperands(first, second);
+        addNewStatement(ILStatement.equals(first.toOperand(), second.toOperand(),
+                makeTempResult().toOperand()));
+    }
+
+    private void lessThan(Value first, Value second)
+    {
+        checkArithmeticOperands(first, second);
+        addNewStatement(ILStatement.lessThan(first.toOperand(), second.toOperand(),
                 makeTempResult().toOperand()));
     }
 
@@ -503,7 +539,7 @@ public class CodeGenerationContext
         statementPipeline.set(savedCodeLine.getValue(), ILStatement.jumpFalse(condition.toOperand(), new Value(Value.Type.CONST, getLineNumber()).toOperand()));
         valuesStack.push(expression);
         Value temp = makeTempResult();
-        statementPipeline.add(ILStatement.equals_(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
+        statementPipeline.add(ILStatement.equals(expression.toOperand(), case_value.toOperand(), temp.toOperand()));
         save();
     }
 
