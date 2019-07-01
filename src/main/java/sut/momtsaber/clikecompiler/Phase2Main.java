@@ -106,7 +106,7 @@ public class Phase2Main
                                 new CFGRule(StreamSupport.stream(json.getAsJsonArray().spliterator(), false)
                                         .map(element -> context.deserialize(element, CFGSymbol.class))))
                         .create();
-                CFG grammar = gson.fromJson(new InputStreamReader(Test.class.getClassLoader().getResourceAsStream("parsed_grammar.cfgjson")), CFG.class);
+                CFG grammar = gson.fromJson(new InputStreamReader(Test.class.getClassLoader().getResourceAsStream("parsed_grammar_with_actions.cfgjson")), CFG.class);
 
                 ParseContext context = new ParseContext(grammar, cgContext);
                 ParseTree outTree = context.parse(tokenPipe, errorPipe);

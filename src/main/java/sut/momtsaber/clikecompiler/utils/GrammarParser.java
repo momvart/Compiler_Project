@@ -64,6 +64,8 @@ public class GrammarParser
                             .filter(r -> !(r.equals("ϵ") || r.equals("EPS"))) //empty list for epsilon
                             .map(r ->
                             {
+                                if (r.startsWith("#"))
+                                    return new CFGAction(r.substring(1));
                                 Integer id = nonTerminalIds.get(r);
                                 if (id == null)
                                     return CFGTerminal.parse(r);
@@ -93,7 +95,7 @@ public class GrammarParser
     {
         public static void main(String[] args)
         {
-            Scanner scanner = new Scanner(JsonBuilder.class.getClassLoader().getResourceAsStream("grammar_upgraded.txt"));
+            Scanner scanner = new Scanner(JsonBuilder.class.getClassLoader().getResourceAsStream("grammar_upgraded_with_actions.txt"));
             GrammarParser parser = new GrammarParser();
             while (scanner.hasNextLine())
                 parser.parseAndAddProduction(scanner.nextLine());

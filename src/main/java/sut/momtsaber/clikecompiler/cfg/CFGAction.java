@@ -2,7 +2,12 @@ package sut.momtsaber.clikecompiler.cfg;
 
 public class CFGAction extends CFGSymbol
 {
-    private String name;
+    private final String name;
+
+    public CFGAction(String name)
+    {
+        this.name = name;
+    }
 
     public String getName()
     {
