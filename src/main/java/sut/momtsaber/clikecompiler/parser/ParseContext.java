@@ -50,7 +50,6 @@ public class ParseContext
         TokenWithLineNum currentToken = null;
         TokenWithLineNum previousToken = null;
 
-
         while (!dfaStack.isEmpty())
         {
             currentDFA = dfaStack.peek();
@@ -104,7 +103,7 @@ public class ParseContext
 
 
             // handling action
-            if (response.getActions() != null)
+            if (response.getActions() != null && generator != null)
             {
                 for (CFGAction action : response.getActions())
                 {

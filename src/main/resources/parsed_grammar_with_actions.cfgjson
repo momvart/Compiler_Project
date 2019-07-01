@@ -496,6 +496,9 @@
             "value": "while"
           },
           {
+            "name": "begin_while_scope"
+          },
+          {
             "name": "label"
           },
           {
@@ -517,6 +520,9 @@
           },
           {
             "name": "while"
+          },
+          {
+            "name": "end_while_scope"
           }
         ]
       ]
@@ -548,6 +554,9 @@
             "value": "switch"
           },
           {
+            "name": "begin_switch_scope"
+          },
+          {
             "tokenType": "SYMBOL",
             "value": "("
           },
@@ -577,6 +586,9 @@
           {
             "tokenType": "SYMBOL",
             "value": "}"
+          },
+          {
+            "name": "end_switch_scope"
           }
         ]
       ]

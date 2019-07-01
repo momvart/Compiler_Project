@@ -19,6 +19,7 @@ import sut.momtsaber.clikecompiler.codegen.il.ILStatement;
 import sut.momtsaber.clikecompiler.codegen.scopes.BreakableScope;
 import sut.momtsaber.clikecompiler.codegen.scopes.FuncScope;
 import sut.momtsaber.clikecompiler.codegen.scopes.Scope;
+import sut.momtsaber.clikecompiler.codegen.scopes.SwitchScope;
 import sut.momtsaber.clikecompiler.codegen.scopes.WhileScope;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
@@ -236,8 +237,8 @@ public class CodeGenerationContext
         Scope global = new Scope(null, getLineNumber());
         this.globalScope = global;
         scopes.push(globalScope);
-        global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
-        assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
+//        global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
+//        assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
         lineStack.push(getLineNumber());
         addNewStatement(null);  //set return address of main
@@ -248,15 +249,14 @@ public class CodeGenerationContext
         addParam(declareVariable("a", false));
         initFunction();
         addNewStatement(ILStatement.print(ILOperand.direct(getCurrentScope().getVarDefinition("a").getAddress())));
-        returnFromFunction();
-        endCurrentScope();
+        endFunction();
     }
 
     private void endProgram() throws InterruptedException
     {
-        setStatementAt(lineStack.pop(),
-                ILStatement.assign(ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress()),
-                        ILOperand.immediate(getLineNumber())));
+//        setStatementAt(lineStack.pop(),
+//                ILStatement.assign(ILOperand.immediate(getLineNumber()),
+//                        ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress())));
     }
 
     //region Scope
@@ -474,11 +474,11 @@ public class CodeGenerationContext
 
     private void endFunction() throws InterruptedException
     {
-        FuncScope funcScope = (FuncScope)scopes.element();
+        FuncScope funcScope = (FuncScope)getCurrentScope();
         if (!funcScope.getFuncDefinition().isVoid())
             setReturnValue(new Value(Value.Type.CONST, 0));
         returnFromFunction();
-        scopes.pop();
+        endCurrentScope();
     }
 
     private void startArgs()
@@ -527,6 +527,7 @@ public class CodeGenerationContext
         multiply(index, new Value(Value.Type.CONST, VARIABLE_SIZE));
         index = valuesStack.pop();
         add(new Value(Value.Type.VAR, def.getAddress()), index);
+        valuesStack.push(new Value(Value.Type.INDIRECT, valuesStack.pop().getValue()));
     }
 
     private void putVariable()
@@ -558,13 +559,13 @@ public class CodeGenerationContext
         if (right.getType() == Value.Type.REFERENCE && left.getType() != Value.Type.REFERENCE ||
                 right.getType() == Value.Type.VOID || left.getType() == Value.Type.VOID)
             throw new TypeMismatchException(getSourceCodeLineNumber(), left.getType(), right.getType());
-        assign(left.getValue(), right);
+        addNewStatement(ILStatement.assign(right.toOperand(), left.toOperand()));
         valuesStack.push(right);
     }
 
     private ILStatement assign(int address, Value value) throws InterruptedException
     {
-        ILStatement retVal = ILStatement.assign(ILOperand.direct(address), value.toOperand());
+        ILStatement retVal = ILStatement.assign(value.toOperand(), ILOperand.direct(address));
         statementPipeline.add(retVal);
         return retVal;
     }
@@ -677,6 +678,8 @@ public class CodeGenerationContext
     }
 
     // end break and continue
+    //endregion
+
     public static class Value
     {
         public enum Type
@@ -684,7 +687,8 @@ public class CodeGenerationContext
             CONST,
             VAR,
             REFERENCE,
-            VOID
+            VOID,
+            INDIRECT
         }
 
         private final Type type;
@@ -715,11 +719,12 @@ public class CodeGenerationContext
                 case VAR:
                 case REFERENCE:
                     return ILOperand.direct(value);
+                case INDIRECT:
+                    return ILOperand.indirect(value);
                 default:
                     return null;
             }
         }
     }
-    //endregion
 }
 
