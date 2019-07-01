@@ -17,8 +17,8 @@ import sut.momtsaber.clikecompiler.codegen.exceptions.TypeMismatchException;
 import sut.momtsaber.clikecompiler.codegen.il.ILOperand;
 import sut.momtsaber.clikecompiler.codegen.il.ILStatement;
 import sut.momtsaber.clikecompiler.codegen.scopes.BreakableScope;
+import sut.momtsaber.clikecompiler.codegen.scopes.FuncScope;
 import sut.momtsaber.clikecompiler.codegen.scopes.Scope;
-import sut.momtsaber.clikecompiler.codegen.scopes.SwitchScope;
 import sut.momtsaber.clikecompiler.codegen.scopes.WhileScope;
 import sut.momtsaber.clikecompiler.lexicalanalysis.Token;
 import sut.momtsaber.clikecompiler.lexicalanalysis.TokenType;
@@ -131,6 +131,9 @@ public class CodeGenerationContext
             case CFGAction.Names.CALL:
                 callFunction();
                 break;
+            case CFGAction.Names.END_FUNC:
+                endFunction();
+                break;
             case CFGAction.Names.ADD_SUBTRACT:
                 addOrSub();
                 break;
@@ -200,8 +203,9 @@ public class CodeGenerationContext
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
         lineStack.push(getLineNumber());
+        addNewStatement(null);  //set return address of main
+        lineStack.push(getLineNumber());
         addNewStatement(null);  //jump to main function
-        ILStatement.lineNumber++;
 
         declareFunction("output", true);
         addParam(declareVariable("a", false));
@@ -211,7 +215,12 @@ public class CodeGenerationContext
         endCurrentScope();
     }
 
-    private void endProgram() {}
+    private void endProgram() throws InterruptedException
+    {
+        setStatementAt(lineStack.pop(),
+                ILStatement.assign(ILOperand.direct(getCurrentScope().getFuncDefinition("main").getReturnAddress().getAddress()),
+                        ILOperand.immediate(getLineNumber())));
+    }
 
     //region Scope
     private void beginNewScope()
@@ -383,7 +392,7 @@ public class CodeGenerationContext
         getCurrentScope().addDefinition(currentFuncDef);
         if (getCurrentScope() == globalScope && name.equals("main"))
             setStatementAt(lineStack.pop(), ILStatement.jump(ILOperand.immediate(currentFuncDef.getLineNum())));
-        beginNewScope();
+        scopes.push(new FuncScope(getCurrentScope(), getLineNumber(), currentFuncDef));
     }
 
     private void addParam(VarDefinition def)
@@ -411,13 +420,27 @@ public class CodeGenerationContext
 
     private void setReturnValue() throws InterruptedException
     {
+        setReturnValue(valuesStack.pop());
+    }
+
+    private void setReturnValue(Value retVal) throws InterruptedException
+    {
         assign(getCurrentScope().getVarDefinition(FuncDefinition.RETURN_VAL_VAR_NAME).getAddress(),
-                valuesStack.pop());
+                retVal);
     }
 
     private void returnFromFunction()
     {
         jumpIndirect(getCurrentScope().getVarDefinition(FuncDefinition.RETURN_ADDR_VAR_NAME).getAddress());
+    }
+
+    private void endFunction() throws InterruptedException
+    {
+        FuncScope funcScope = (FuncScope)scopes.element();
+        if (!funcScope.getFuncDefinition().isVoid())
+            setReturnValue(new Value(Value.Type.CONST, 0));
+        returnFromFunction();
+        scopes.pop();
     }
 
     private void startArgs()
@@ -443,7 +466,7 @@ public class CodeGenerationContext
         if (valuesStack.pop() != null)
             throw new ArgumentNumberMismatchException(getSourceCodeLineNumber(), currentFuncDef.getId(), args.size());
 
-        assign(currentFuncDef.getReturnAddress().getAddress(), new Value(Value.Type.CONST, getLineNumber() + 1));
+        assign(currentFuncDef.getReturnAddress().getAddress(), new Value(Value.Type.CONST, getLineNumber() + 2));
 
         jumpTo(currentFuncDef.getLineNum());
 
@@ -501,9 +524,11 @@ public class CodeGenerationContext
         valuesStack.push(right);
     }
 
-    private void assign(int address, Value value) throws InterruptedException
+    private ILStatement assign(int address, Value value) throws InterruptedException
     {
-        statementPipeline.add(ILStatement.assign(ILOperand.direct(address), value.toOperand()));
+        ILStatement retVal = ILStatement.assign(ILOperand.direct(address), value.toOperand());
+        statementPipeline.add(retVal);
+        return retVal;
     }
 
     private void jumpTo(int line)
@@ -558,6 +583,7 @@ public class CodeGenerationContext
 
     //case statement
     int turn = 0;
+
     private void jpfCmpSave()
     {
         if (turn == 0)

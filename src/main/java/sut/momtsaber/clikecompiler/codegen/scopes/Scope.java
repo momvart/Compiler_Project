@@ -43,7 +43,7 @@ public class Scope
     public FuncDefinition getFuncDefinition(String id) throws NoSuchElementException
     {
         return (FuncDefinition)getDefinition(id).stream()
-                .filter(VarDefinition.class::isInstance)
+                .filter(FuncDefinition.class::isInstance)
                 .findFirst()
                 .get();
     }

@@ -47,4 +47,6 @@ public class FuncDefinition extends Definition
     {
         return returnValue;
     }
+
+    public boolean isVoid() { return getReturnValue() == null; }
 }

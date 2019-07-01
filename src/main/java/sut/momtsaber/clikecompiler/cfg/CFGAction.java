@@ -49,6 +49,8 @@ public class CFGAction extends CFGSymbol
         public static final String FUNC_INIT = "func_init";
         public static final String SET_RETURN_VAL = "set_retval";
         public static final String RETURN = "return";
+        public static final String END_FUNC = "end_func";
+
         @Deprecated
         public static final String FIND_FUNC = "find_func";
         public static final String START_ARGS = "start_args";
