@@ -34,7 +34,7 @@ public class DFA
     private Map<DFAState<Token>, CFGNonTerminal> trueReferenceMap;
     private Map<DFAState<Token>, CFGNonTerminal> currentReferenceMap;
     private Map<DFAEdge<Token>, CFGTerminal> consumptionMap;
-    private Map<DFAState<Token>, List<CFGAction>> actionMap;
+    private Map<DFAEdge<Token>, List<CFGAction>> actionMap;
 
     private DFA(CFGProduction production)
     {
@@ -73,13 +73,8 @@ public class DFA
 
     public DFAResponse advance(TokenWithLineNum input, CFG grammar)
     {
-        ArrayList<CFGAction> actionsToBePassed = new ArrayList<>();
-        if (currentState == this.getStartState())
-        {
-            if (this.actionMap.get(currentState) != null)
-            actionsToBePassed.addAll(this.actionMap.get(currentState));
-        }
         DFAState.NextStateResult<Token> result = currentState.getNextState(input);
+
         if (result == null)
         {
             DFAEdge<Token> edge = currentState.getExitingEdges().get(0);
@@ -126,17 +121,19 @@ public class DFA
         {
             currentState = result.getNextState();
             List<CFGAction> newActions = this.actionMap.get(currentState);
-            if (newActions != null)
-                actionsToBePassed.addAll(newActions);
-            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, actionsToBePassed);
+            System.out.println(this.getProduction() + "  " + input);
+
+            return new DFAResponse(currentState.equals(acceptState), this.consumptionMap.get(result.getEdge()), this.currentReferenceMap.get(currentState), null, this.actionMap.get(result.getEdge()));
         }
     }
 
     public static DFA getDFA(CFGProduction production, CFG grammar)
     {
+        DFAEdge<Token> currentEdge = null;
         DFA dfa = new DFA(production);
         for (int i = 0; i < production.getRightHands().size(); i++)
         {
+            ArrayList<CFGAction> accumulatedActions = new ArrayList<>();
             CFGRule rule = production.getRightHands().get(i);
             // restarting the currentPosition in the beginning of the rule
             DFAState<Token> buildingTail = dfa.getStartState();
@@ -150,13 +147,14 @@ public class DFA
 
             if (rule.isEpsilonOrJustAction())
             {
-                buildingTail.addExitEdge(new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false));
+                DFAEdge<Token> newEdge = new DFAEdge<>(ruleEntrance, dfa.getAcceptState(), false);
+                buildingTail.addExitEdge(newEdge);
                 ArrayList<CFGAction> actions = new ArrayList<>();
                 for (CFGSymbol symbol : rule)
                 {
                     actions.add((CFGAction)symbol);
                 }
-                dfa.actionMap.put(dfa.getAcceptState(), actions);
+                dfa.actionMap.put(newEdge, actions);
             }
             else
             {
@@ -165,8 +163,13 @@ public class DFA
                     CFGSymbol symbol = rule.get(iSymbol);
                     if (symbol instanceof CFGTerminal)
                     {
+                        if (!isFirstNonActionSymbol(iSymbol, rule))
+                        {
+                            dfa.actionMap.put(currentEdge, accumulatedActions);
+                            accumulatedActions = new ArrayList<>();
+                        }
                         DFAState<Token> newState;
-                        if (iSymbol == rule.size() - 1)
+                        if (isLastNonActionSymbol(iSymbol, rule))
                             newState = dfa.getAcceptState();
                         else
                             newState = new DFAState<>();
@@ -176,12 +179,18 @@ public class DFA
                         buildingTail.addExitEdge(edge);
                         buildingTail = newState;
                         dfa.consumptionMap.put(edge, (CFGTerminal)symbol);
+                        currentEdge = edge;
                     }
                     else if (symbol instanceof CFGNonTerminal)
                     {
+                        if (!isFirstNonActionSymbol(iSymbol, rule))
+                        {
+                            dfa.actionMap.put(currentEdge, accumulatedActions);
+                            accumulatedActions = new ArrayList<>();
+                        }
                         DFAState<Token> intermediateState = new DFAState<>();
                         DFAState<Token> newState;
-                        if (iSymbol == rule.size() - 1)
+                        if (isLastNonActionSymbol(iSymbol, rule))
                             newState = dfa.getAcceptState();
                         else
                             newState = new DFAState<>();
@@ -198,28 +207,49 @@ public class DFA
                                 nonTerminalEntrance = matchEntrance(firstSet);
                         }
                         buildingTail.addExitEdge(new DFAEdge<>(nonTerminalEntrance, intermediateState, false));
-                        intermediateState.addExitEdge(new DFAEdge<>(Entrance.ANY, newState, false));
+                        DFAEdge<Token> newEdge = new DFAEdge<>(Entrance.ANY, newState, false);
+                        intermediateState.addExitEdge(newEdge);
                         dfa.trueReferenceMap.put(intermediateState, (CFGNonTerminal)symbol);
                         buildingTail = newState;
+                        currentEdge = newEdge;
                     }
                     else if (symbol instanceof CFGAction)
                     {
-                        List<CFGAction> actions = dfa.actionMap.get(buildingTail);
-                        if (actions == null)
-                        {
-                            dfa.actionMap.put(buildingTail, new ArrayList<>(Collections.singletonList((CFGAction)symbol)));
-                        }
-                        else
-                        {
-                            actions.add((CFGAction)symbol);
-                        }
+                        accumulatedActions.add((CFGAction)symbol);
                     }
                 }
+                dfa.actionMap.put(currentEdge, accumulatedActions);
             }
         }
-//        System.out.println(production);
-//        System.out.println(dfa.actionMap);
         return dfa;
+    }
+
+    private static boolean isFirstNonActionSymbol(int iSymbol, CFGRule rule)
+    {
+        boolean isFirstNonAction = true;
+        for (int i = 0; i < iSymbol - 1; i++)
+        {
+            if (!(rule.get(i) instanceof CFGAction))
+            {
+                isFirstNonAction = false;
+                break;
+            }
+        }
+        return isFirstNonAction;
+    }
+
+    private static boolean isLastNonActionSymbol(int iSymbol, CFGRule rule)
+    {
+        boolean isRestAction = true;
+        for (int i = iSymbol + 1; i < rule.size(); i++)
+        {
+            if (!(rule.get(i) instanceof CFGAction))
+            {
+                isRestAction = false;
+                break;
+            }
+        }
+        return isRestAction;
     }
 
     public CFGProduction getProduction()
