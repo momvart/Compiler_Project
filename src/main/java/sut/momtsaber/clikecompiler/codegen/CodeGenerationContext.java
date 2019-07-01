@@ -32,6 +32,7 @@ public class CodeGenerationContext
     private ArrayList<ILStatement> statementPipeline;
 
     private Deque<Scope> scopes = new LinkedList<>();
+    private Scope globalScope;
 
     private LinkedList<Integer> lineStack = new LinkedList<>();
     private LinkedList<Value> valuesStack = new LinkedList<>();
@@ -95,6 +96,9 @@ public class CodeGenerationContext
             case CFGAction.Names.DECLARE_PARAM_VAR:
                 declareParamVariable();
                 break;
+            case CFGAction.Names.DECLARE_PARAM_ARRAY:
+                declareParamArray();
+                break;
             case CFGAction.Names.FUNC_INIT:
                 initFunction();
                 break;
@@ -104,8 +108,11 @@ public class CodeGenerationContext
             case CFGAction.Names.RETURN:
                 returnFromFunction();
                 break;
-            case CFGAction.Names.DECLARE_PARAM_ARRAY:
-                declareParamArray();
+            case CFGAction.Names.START_ARGS:
+                startArgs();
+                break;
+            case CFGAction.Names.CALL:
+                callFunction();
                 break;
             case CFGAction.Names.ADD_SUBTRACT:
                 addOrSub();
@@ -161,11 +168,18 @@ public class CodeGenerationContext
     private void startProgram() throws InterruptedException
     {
         Scope global = new Scope(null, getLineNumber());
+        this.globalScope = global;
         global.addDefinition(new VarDefinition("0sp", stackPointerAddress));
         assign(stackPointerAddress, new Value(Value.Type.CONST, STACK_START_ADDRESS));
         global.addDefinition(new VarDefinition("1mainp", mainFuncPointerAddress));
         lineStack.push(getLineNumber());
         addNewStatement(null);  //jump to main function
+
+        declareFunction("output", true);
+        addParam(new VarDefinition("a", getNextFreeAddress(VARIABLE_SIZE)));
+        initFunction();
+        addNewStatement(ILStatement.print(ILOperand.direct(getCurrentScope().getVarDefinition("a").getAddress())));
+        returnFromFunction();
     }
 
     private void endProgram() {}
@@ -311,23 +325,31 @@ public class CodeGenerationContext
                 getNextFreeAddress(VARIABLE_SIZE),
                 isVoid ? -1 : getNextFreeAddress(VARIABLE_SIZE));
         getCurrentScope().addDefinition(currentFuncDef);
+        if (getCurrentScope() == globalScope && name.equals("main"))
+            setStatementAt(lineStack.pop(), ILStatement.jump(ILOperand.immediate(currentFuncDef.getLineNum())));
         beginNewScope();
+    }
+
+    private void addParam(VarDefinition def)
+    {
+        currentFuncDef.addParam(def);
     }
 
     private void declareParamVariable()
     {
-        currentFuncDef.addArg(declareVariable(false));
+        addParam(declareVariable(false));
     }
 
     private void declareParamArray()
     {
-        currentFuncDef.addArg(declareVariable(true));
+        addParam(declareVariable(true));
     }
 
     private void initFunction()
     {
         getCurrentScope().addDefinition(currentFuncDef.getReturnAddress());
-        getCurrentScope().addDefinition(currentFuncDef.getReturnValue());
+        if (currentFuncDef.getReturnValue() != null)
+            getCurrentScope().addDefinition(currentFuncDef.getReturnValue());
         currentFuncDef = null;
     }
 
@@ -339,9 +361,7 @@ public class CodeGenerationContext
 
     private void returnFromFunction()
     {
-        addNewStatement(ILStatement.jump(
-                ILOperand.indirect(
-                        getCurrentScope().getVarDefinition(FuncDefinition.RETURN_ADDR_VAR_NAME).getAddress())));
+        jumpIndirect(getCurrentScope().getVarDefinition(FuncDefinition.RETURN_ADDR_VAR_NAME).getAddress());
     }
 
     private void startArgs()
@@ -356,7 +376,7 @@ public class CodeGenerationContext
             throw new IllegalStateException("Function name not found in the stack.");
 
         currentFuncDef = getCurrentScope().getFuncDefinition(name.getValue());
-        List<VarDefinition> args = currentFuncDef.getArgs();
+        List<VarDefinition> args = currentFuncDef.getParams();
         for (int i = args.size() - 1; i >= 0; i--)
         {
             Value arg = valuesStack.pop();

@@ -27,7 +27,7 @@ import sut.momtsaber.clikecompiler.parser.SyntaxError;
 import sut.momtsaber.clikecompiler.parser.tree.ParseTree;
 import sut.momtsaber.clikecompiler.utils.CFGSymbolDeserializer;
 
-public class Main
+public class Phase1Main
 {
     public static void main(String[] args)
     {

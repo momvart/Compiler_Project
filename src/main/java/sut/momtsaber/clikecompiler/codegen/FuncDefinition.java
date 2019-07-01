@@ -10,7 +10,7 @@ public class FuncDefinition extends Definition
     public static final String RETURN_VAL_VAR_NAME = "1rv";
 
     private int lineNum;
-    private List<VarDefinition> args;
+    private List<VarDefinition> params;
     private final VarDefinition returnAddress;
     private final VarDefinition returnValue;
 
@@ -18,7 +18,7 @@ public class FuncDefinition extends Definition
     {
         super(id);
         this.lineNum = lineNum;
-        this.args = new ArrayList<>();
+        this.params = new ArrayList<>();
         this.returnAddress = new VarDefinition(RETURN_ADDR_VAR_NAME, returnAddressAddress);
         this.returnValue = returnValAddress > 0 ? new VarDefinition(RETURN_VAL_VAR_NAME, returnValAddress) : null;
     }
@@ -28,14 +28,14 @@ public class FuncDefinition extends Definition
         return lineNum;
     }
 
-    public List<VarDefinition> getArgs()
+    public List<VarDefinition> getParams()
     {
-        return Collections.unmodifiableList(args);
+        return Collections.unmodifiableList(params);
     }
 
-    public void addArg(VarDefinition definition)
+    public void addParam(VarDefinition definition)
     {
-        args.add(definition);
+        params.add(definition);
     }
 
     public VarDefinition getReturnAddress()
