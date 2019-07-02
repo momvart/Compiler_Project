@@ -387,7 +387,7 @@ public class CodeGenerationContext
     {
         Token sign = tokenStack.pop();
         if (sign.getType() != TokenType.SYMBOL ||
-                !sign.getValue().equals("+") || !sign.getValue().equals("-"))
+                !sign.getValue().equals("+") && !sign.getValue().equals("-"))
             throw new IllegalStateException("Sign not found in the stack");
 
         if (sign.getValue().equals("+"))
