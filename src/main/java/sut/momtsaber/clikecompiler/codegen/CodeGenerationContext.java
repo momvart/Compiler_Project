@@ -210,26 +210,38 @@ public class CodeGenerationContext
 
     private void endSwitchScope()
     {
-        SwitchScope scope = (SwitchScope)getCurrentScope();
-        addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
+        BreakableScope breakableScope = findBreakableScope();
+        if (breakableScope == null)
+            System.err.println("switch scope is not a breakable scope!!!");
+        else
+            setStatementAt(lineStack.pop(), ILStatement.assign(ILOperand.immediate(getLineNumber()), ILOperand.direct(breakableScope.getBreakAddress())));
         endCurrentScope();
     }
 
     private void beginSwitchScope()
     {
-        scopes.push(new SwitchScope(getCurrentScope(), getLineNumber()));
+        SwitchScope newScope = new SwitchScope(getCurrentScope(), getLineNumber());
+        scopes.push(newScope);
+        int jumpPosition = getNextFreeTempAddress();
+        newScope.setBreakAddress(jumpPosition);
     }
 
     private void endWhileScope()
     {
-        WhileScope scope = (WhileScope)getCurrentScope();
-        addNewStatement(ILStatement.assign(ILOperand.direct(getLineNumber()), ILOperand.direct(scope.getBreakAddress())));
+        BreakableScope breakableScope = findBreakableScope();
+        if (breakableScope == null)
+            System.err.println("while scope is not a breakable scope!!!");
+        else
+            setStatementAt(lineStack.pop(), ILStatement.assign(ILOperand.immediate(getLineNumber()), ILOperand.direct(breakableScope.getBreakAddress())));
         endCurrentScope();
     }
 
     private void beginWhileScope()
     {
-        scopes.push(new WhileScope(getCurrentScope(), getLineNumber()));
+        WhileScope newScope = new WhileScope(getCurrentScope(), getLineNumber());
+        scopes.push(newScope);
+        int jumpPosition = getNextFreeTempAddress();
+        newScope.setBreakAddress(jumpPosition);
     }
 
     private void startProgram() throws InterruptedException
@@ -663,13 +675,13 @@ public class CodeGenerationContext
     // break and continue
     private void continueLoop()
     {
-        WhileScope whileScope = getWhileScope();
+        WhileScope whileScope = getPredecissorWhileScope();
         if (whileScope == null)
             throw new WrongContinuePositionException(getLineNumber());
         jumpTo(whileScope.getStartLine());
     }
 
-    private WhileScope getWhileScope()
+    private WhileScope getPredecissorWhileScope()
     {
         for (Scope scope : scopes)
         {
@@ -683,19 +695,18 @@ public class CodeGenerationContext
 
     private void breakLoop()
     {
-        BreakableScope breakable = null;
-        for (Scope scope : scopes)
-            if (scope instanceof BreakableScope)
-            {
-                breakable = (BreakableScope)scope;
-                break;
-            }
+        BreakableScope breakable = findBreakableScope();
         if (breakable == null)
             throw new WrongBreakPositionException(getLineNumber());
-        int jumpPosition = getNextFreeTempAddress();
-        breakable.setBreakAddress(jumpPosition);
-        jumpIndirect(jumpPosition);
-        // we should set the value for jumpPosition after finishing the scope
+        jumpIndirect(breakable.getBreakAddress());
+    }
+
+    private BreakableScope findBreakableScope()
+    {
+        for (Scope scope : scopes)
+            if (scope instanceof BreakableScope)
+                return (BreakableScope)scope;
+        return null;
     }
 
     // end break and continue
