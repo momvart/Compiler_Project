@@ -95,9 +95,7 @@ public class GrammarParser
     {
         public static void main(String[] args)
         {
-            System.out.println("before");
             Scanner scanner = new Scanner(JsonBuilder.class.getClassLoader().getResourceAsStream("grammar_upgraded_with_actions.txt"));
-            System.out.println("after");
             GrammarParser parser = new GrammarParser();
             while (scanner.hasNextLine())
                 parser.parseAndAddProduction(scanner.nextLine());
